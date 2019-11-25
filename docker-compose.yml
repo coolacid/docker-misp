@@ -1,0 +1,33 @@
+version: '3'
+services:
+  redis:
+    image: redis:5.0.6
+
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - "MYSQL_USER=misp"
+      - "MYSQL_PASSWORD=example"
+      - "MYSQL_ROOT_PASSWORD=password"
+      - "MYSQL_DATABASE=misp"
+
+  misp:
+    image: misp
+    build: server/.
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./server-configs/:/var/www/MISP/app/Config/"
+      - "./logs/:/var/www/MISP/app/tmp/logs/"
+      - "./files/:/var/www/MISP/app/files"
+      - "./ssl/:/etc/apache2/ssl/"
+    environment:
+      - "MYSQL_PASSWORD=example"
+      - "INIT_MYSQL=true" # Lack of "IF NOT EXISTS" in sql dump.. sigh
+
+  misp-modules:
+    image: misp-modules
+    build: modules/.

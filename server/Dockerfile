@@ -11,7 +11,7 @@ ARG VERSION=2.4.118
         gcc \
         zip unzip \
         openssl \
-        gpg-agent \
+        gpg-agent gpg \
         python3 \
         python3-setuptools \
         python3-dev \

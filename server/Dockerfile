@@ -37,9 +37,8 @@ ARG VERSION=2.4.118
     WORKDIR /var/www
     RUN git clone --branch v${MISP_TAG} --depth 1 https://github.com/MISP/MISP.git /var/www/MISP
     WORKDIR /var/www/MISP
-    RUN chown www-data:www-data /var/www/MISP; \
     # Make git ignore filesystem permission differences
-    git config core.filemode false; \
+    RUN git config core.filemode false; \
     # CakePHP and a lot of other things is included as a submodule of MISP, execute the following commands to let git fetch it:
     git submodule update --init --recursive; \
     # Make git ignore filesystem permission differences for submodules
@@ -89,14 +88,6 @@ ARG VERSION=2.4.118
         ;cp /usr/lib/x86_64-linux-gnu/libfuzzy.* /usr/lib; pecl install ssdeep; phpenmod ssdeep \
     # To use the scheduler worker for scheduled tasks, do the following:
         ;cp -fa /var/www/MISP/INSTALL/setup/config.php /var/www/MISP/app/Plugin/CakeResque/Config/config.php
-
-# Set the permissions
-    # Check if the permissions are set correctly using the following commands:
-    RUN chown -R www-data:www-data /var/www/MISP \
-        ;chmod -R 750 /var/www/MISP \
-        ;chmod -R g+ws /var/www/MISP/app/tmp \ 
-        ;chmod -R g+ws /var/www/MISP/app/files \
-        ;chmod -R g+ws /var/www/MISP/app/files/scripts/tmp
 
 # Configure Apache
     # add HTTP MISP Config

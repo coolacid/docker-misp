@@ -25,6 +25,7 @@ services:
       - "./files/:/var/www/MISP/app/files"
       - "./ssl/:/etc/apache2/ssl/"
     environment:
+      - "CRON_USER_ID=1"
       - "MYSQL_PASSWORD=example"
       - "INIT_MYSQL=true" # Lack of "IF NOT EXISTS" in sql dump.. sigh
 

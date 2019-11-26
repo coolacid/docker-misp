@@ -8,6 +8,7 @@ ARG VERSION=2.4.118
         apache2 \
         supervisor \
         git make \
+        cron \
         gcc \
         zip unzip \
         openssl \
@@ -105,10 +106,6 @@ ARG VERSION=2.4.118
         ;a2enmod ssl \
         ;a2enmod rewrite \
         ;a2enmod headers
-
-# MISP Update and MISP Cron
-    COPY --chown=www-data:www-data files/usr/local/bin/misp_update.sh /usr/local/bin/
-    COPY --chown=www-data:www-data files/usr/local/bin/misp_cron.sh /usr/local/bin/
 
 # Make a copy of the file store, so we can sync from it
     RUN cp -R /var/www/MISP/app/files /var/www/MISP/app/files.dist

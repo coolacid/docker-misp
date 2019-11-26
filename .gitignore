@@ -9,3 +9,4 @@ server-configs/bootstrap.php
 server-configs/core.php
 server-configs/config.php.bk
 files/INIT
+files/[0-9]*

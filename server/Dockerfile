@@ -2,7 +2,7 @@ FROM debian:buster-slim
 ENV DEBIAN_FRONTEND noninteractive
 ARG VERSION=2.4.118
 
-# Based on DCSO Dockererized MISP
+# OS Packages
     RUN apt-get update; apt-get install -y --no-install-recommends \
         sudo \
         apache2 \
@@ -35,14 +35,14 @@ ARG VERSION=2.4.118
     # Download MISP using git in the /var/www/ directory.
     # Attention: we replaced the fixed tag with a variable
     WORKDIR /var/www
-    RUN git clone --branch v${MISP_TAG} --depth 1 https://github.com/MISP/MISP.git /var/www/MISP
+    RUN git clone --branch v${MISP_TAG} --recursive --depth 1 https://github.com/MISP/MISP.git /var/www/MISP
     WORKDIR /var/www/MISP
     # Make git ignore filesystem permission differences
-    RUN git config core.filemode false; \
+#    RUN git config core.filemode false; \
     # CakePHP and a lot of other things is included as a submodule of MISP, execute the following commands to let git fetch it:
-    git submodule update --init --recursive; \
+#    git submodule update --init --recursive; \
     # Make git ignore filesystem permission differences for submodules
-    git submodule foreach --recursive git config core.filemode false
+#    git submodule foreach --recursive git config core.filemode false
 
 # Python Modules
     # install Mitre's STIX and its dependencies by running the following commands:
@@ -122,4 +122,4 @@ ARG VERSION=2.4.118
     ENTRYPOINT [ "/entrypoint.sh" ]
 
 # Change Workdirectory
-WORKDIR /var/www/MISP
+    WORKDIR /var/www/MISP

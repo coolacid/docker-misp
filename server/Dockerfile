@@ -48,19 +48,19 @@ ARG VERSION=2.4.118
     # install Mitre's STIX and its dependencies by running the following commands:
     # install mixbox to accomodate the new STIX dependencies:
     WORKDIR /var/www/MISP/app/files/scripts
-    RUN git clone https://github.com/CybOXProject/mixbox.git; \
+    RUN git clone --depth 1 https://github.com/CybOXProject/mixbox.git; \
         cd mixbox; python3 setup.py install
 
     # install python-maec
-    RUN git clone https://github.com/MAECProject/python-maec.git; \
+    RUN git clone --depth 1 https://github.com/MAECProject/python-maec.git; \
         cd python-maec; python3 setup.py install
 
     # install python-cybox
-    RUN git clone https://github.com/CybOXProject/python-cybox.git; \
+    RUN git clone --depth 1 https://github.com/CybOXProject/python-cybox.git; \
         cd python-cybox; python3 setup.py install
 
     # install python stix
-    RUN git clone https://github.com/STIXProject/python-stix.git; \
+    RUN git clone --depth 1 https://github.com/STIXProject/python-stix.git; \
         cd python-stix; python3 setup.py install
 
     # install STIX2.0 library to support STIX 2.0 export:

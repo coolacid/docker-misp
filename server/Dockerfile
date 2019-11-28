@@ -1,6 +1,6 @@
 FROM debian:buster-slim
 ENV DEBIAN_FRONTEND noninteractive
-ARG VERSION=2.4.118
+ARG MISP_TAG=2.4.118
 
 # OS Packages
     RUN apt-get update; apt-get install -y --no-install-recommends \
@@ -31,19 +31,8 @@ ARG VERSION=2.4.118
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # MISP code
-    ARG MISP_TAG=${VERSION}
-    ENV MISP_TAG=${MISP_TAG}
     # Download MISP using git in the /var/www/ directory.
-    # Attention: we replaced the fixed tag with a variable
-    WORKDIR /var/www
     RUN git clone --branch v${MISP_TAG} --recursive --depth 1 https://github.com/MISP/MISP.git /var/www/MISP
-    WORKDIR /var/www/MISP
-    # Make git ignore filesystem permission differences
-#    RUN git config core.filemode false; \
-    # CakePHP and a lot of other things is included as a submodule of MISP, execute the following commands to let git fetch it:
-#    git submodule update --init --recursive; \
-    # Make git ignore filesystem permission differences for submodules
-#    git submodule foreach --recursive git config core.filemode false
 
 # Python Modules
     # install Mitre's STIX and its dependencies by running the following commands:
@@ -75,7 +64,7 @@ ARG VERSION=2.4.118
     RUN pip3 install --no-cache-dir plyara pyzmq redis maec python-magic lief https://github.com/lief-project/packages/raw/lief-master-latest/pylief-0.9.0.dev.zip git+https://github.com/kbandla/pydeep.git
 
 # CakePHP
-    # Once done, install CakeResque along with its dependencies if you intend to use the built in background jobs:
+    # Once done, install CakeResque, first get latest composer
     COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
     WORKDIR /var/www/MISP/app
     RUN composer install \

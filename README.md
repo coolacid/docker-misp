@@ -13,10 +13,16 @@ Getting Started:
     - Password: admin
 
 Server image notes:
-- File Sizes
+- Server file sizes
     - Original Image: 3.17GB
     - First attempt: 2.24GB
     - Remove chown: 1.56GB
     - PreBuild python modules, and only pull submodules we need: 800MB
     - PreBuild PHP modules: 664MB
-- Saved: 2.5GB
+- Server Saved: 2.5GB
+
+- Modules file sizes:
+    - Original: 1.36GB
+    - Pre-build modules: 750MB
+- Modules Saved: 640MB
+

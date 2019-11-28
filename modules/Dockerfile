@@ -1,40 +1,36 @@
-FROM python:3.7-slim-buster
+FROM python:3.7-slim-buster  as builder
 ENV DEBIAN_FRONTEND noninteractive
+ARG VERSION=2.4.118
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
                 git \
                 python3-dev \
                 python3-pip \
+                python3-wheel \
                 build-essential \
                 pkg-config \
                 libpoppler-cpp-dev \
-#                libpq5 \
-#                libjpeg-dev \
-#                tesseract-ocr \ 
-#                imagemagick \
-#                virtualenv \
-#                libopencv-dev \
-#                zbar-tools \
-#                libzbar0 \
-#                libzbar-dev \
-#                libfuzzy-dev \
-#                gem \
-#                curl \
-#                gosu \
             && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-# Add Argument for MISP-Modules releases
-ARG VERSION=2.4.118
+# Build MISP Modules
+    WORKDIR /srv
+    RUN git clone --branch v${VERSION} --depth 1  https://github.com/MISP/misp-modules.git
+    RUN mkdir /wheel
+    WORKDIR /srv/misp-modules
+    RUN sed -i 's/-e //g' REQUIREMENTS
+    RUN pip3 wheel -r REQUIREMENTS --no-cache-dir -w /wheel/
 
-# Install MISP Modules
-WORKDIR /srv
-RUN git clone --branch v${VERSION} --depth 1  https://github.com/MISP/misp-modules.git
+FROM python:3.7-slim-buster
 
-WORKDIR /srv/misp-modules
+RUN apt-get update && apt-get install -y --no-install-recommends \
+            libglib2.0-0 \
+            libzbar0 \
+            libxrender1 \
+            libxext6 \
+            libpoppler-cpp0v5 \
+        && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install -I -r REQUIREMENTS --no-cache-dir
-RUN pip3 install . --no-cache-dir 
-RUN chown -R www-data /srv/misp-modules
+COPY --from=builder /wheel /wheel
+RUN pip install /wheel/*.whl
 
-USER www-data
 ENTRYPOINT [ "/usr/local/bin/misp-modules", "-l", "0.0.0.0"]

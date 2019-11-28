@@ -17,4 +17,6 @@ Server image notes:
     - Original Image: 3.17GB
     - First attempt: 2.24GB
     - Remove chown: 1.56GB
-- Saved: 1.61GB
+    - PreBuild python modules, and only pull submodules we need: 800MB
+    - PreBuild PHP modules: 664MB
+- Saved: 2.5GB

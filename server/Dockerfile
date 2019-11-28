@@ -1,3 +1,18 @@
+FROM debian:buster-slim as php-build
+
+    RUN apt-get update; apt-get install -y --no-install-recommends \
+        gcc \
+        make \
+        libfuzzy-dev \
+        ca-certificates \
+        php \
+        php-dev \
+        php-pear \
+        && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
+        RUN cp /usr/lib/x86_64-linux-gnu/libfuzzy.* /usr/lib; pecl install ssdeep
+
+
 FROM debian:buster-slim as python-build
     RUN apt-get update; apt-get install -y --no-install-recommends \
         gcc \
@@ -41,32 +56,33 @@ FROM debian:buster-slim as python-build
 FROM debian:buster-slim
 ENV DEBIAN_FRONTEND noninteractive
 ARG MISP_TAG=2.4.118
+ARG PHP_VER=20180731
 
 # OS Packages
     RUN apt-get update; apt-get install -y --no-install-recommends \
         sudo \
         apache2 \
         supervisor \
-        git make \
+        git \
         cron \
-        gcc \
-        zip unzip \
         openssl \
         gpg-agent gpg \
         python3 \
         python3-setuptools \
         python3-pip \
         ssdeep \
+        mariadb-client \
+
+        zip unzip \
+
         php \
         php-xml \
         php-mbstring \
         php-mysql \
-        php-pear \
-        php-dev \
+#        php-dev \
         php-redis \
         php-gd \
-        libfuzzy-dev \
-        mariadb-client \
+        libfuzzy2 \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # MISP code
@@ -87,6 +103,7 @@ ARG MISP_TAG=2.4.118
 
 # CakePHP
     # Once done, install CakeResque, first get latest composer
+    COPY --from=php-build /usr/lib/php/${PHP_VER}/ssdeep.so /usr/lib/php/${PHP_VER}/ssdeep.so
     COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
     WORKDIR /var/www/MISP/app
     RUN composer install \
@@ -94,8 +111,8 @@ ARG MISP_TAG=2.4.118
         ;phpenmod redis \
     # Enable CakeResque with php-gnupgp
         ;phpenmod gnupg \
-    #installing ssdeep_php - pecl is dumb, we need to ensure the libs are in the specific place
-        ;cp /usr/lib/x86_64-linux-gnu/libfuzzy.* /usr/lib; pecl install ssdeep; phpenmod ssdeep \
+    # Enable ssdeep we build earlier
+        ;phpenmod ssdeep \
     # To use the scheduler worker for scheduled tasks, do the following:
         ;cp -fa /var/www/MISP/INSTALL/setup/config.php /var/www/MISP/app/Plugin/CakeResque/Config/config.php
 

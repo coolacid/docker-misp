@@ -1,7 +1,7 @@
 # docker-misp
 A (nearly) production ready Dockered MISP
 
-This is based on some of the work from the DSCO docker build. 
+This is based on some of the work from the DSCO docker build, nearly all of the details have been rewritten. 
 
 Getting Started:
 - Copy the "default" configs removing "default" and edit the files in `server-configs`

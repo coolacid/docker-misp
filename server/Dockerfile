@@ -90,15 +90,15 @@ ARG PHP_VER=20180731
         cd /var/www/MISP/app; git submodule update --init --recursive .;
 
 # Python Modules
-    COPY --from=python-build /tmp/PyMISP/dist/*.whl /tmp
-    COPY --from=python-build /tmp/cti-python-stix2/dist/*.whl /tmp
-    COPY --from=python-build /tmp/mixbox/dist/*.whl /tmp
-    COPY --from=python-build /tmp/python-cybox/dist/*.whl /tmp
-    COPY --from=python-build /tmp/python-maec/dist/*.whl /tmp
-    COPY --from=python-build /tmp/python-stix/dist/*.whl /tmp
-    COPY --from=python-build /tmp/pydeep/dist/*.whl /tmp
-
-    RUN pip3 install --no-cache-dir /tmp/*.whl plyara pyzmq redis python-magic lief
+    RUN mkdir /wheels
+    COPY --from=python-build /tmp/PyMISP/dist/*.whl /wheels
+    COPY --from=python-build /tmp/cti-python-stix2/dist/*.whl /wheels
+    COPY --from=python-build /tmp/mixbox/dist/*.whl /wheels
+    COPY --from=python-build /tmp/python-cybox/dist/*.whl /wheels
+    COPY --from=python-build /tmp/python-maec/dist/*.whl /wheels
+    COPY --from=python-build /tmp/python-stix/dist/*.whl /wheels
+    COPY --from=python-build /tmp/pydeep/dist/*.whl /wheels
+    RUN pip3 install --no-cache-dir /wheels/*.whl plyara pyzmq redis python-magic lief && rm -rf /wheels
 
 # PHP
     # Install ssdeep prebuild, latest composer, then install the app's PHP deps

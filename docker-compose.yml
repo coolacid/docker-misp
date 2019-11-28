@@ -16,6 +16,9 @@ services:
   misp:
     image: misp
     build: server/.
+    depends_on:
+      - redis
+      - db
     ports:
       - "80:80"
       - "443:443"
@@ -33,3 +36,9 @@ services:
   misp-modules:
     image: misp-modules
     build: modules/.
+    environment:
+      - "REDIS_BACKEND=redis"
+    depends_on:
+      - redis
+      - db
+

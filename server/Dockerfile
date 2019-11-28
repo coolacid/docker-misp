@@ -1,5 +1,4 @@
 FROM debian:buster-slim as php-build
-
     RUN apt-get update; apt-get install -y --no-install-recommends \
         gcc \
         make \
@@ -11,7 +10,6 @@ FROM debian:buster-slim as php-build
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
         RUN cp /usr/lib/x86_64-linux-gnu/libfuzzy.* /usr/lib; pecl install ssdeep
-
 
 FROM debian:buster-slim as python-build
     RUN apt-get update; apt-get install -y --no-install-recommends \
@@ -102,8 +100,8 @@ ARG PHP_VER=20180731
 
     RUN pip3 install --no-cache-dir /tmp/*.whl plyara pyzmq redis python-magic lief
 
-# CakePHP
-    # Once done, install CakeResque, first get latest composer
+# PHP
+    # Install ssdeep prebuild, latest composer, then install the app's PHP deps
     COPY --from=php-build /usr/lib/php/${PHP_VER}/ssdeep.so /usr/lib/php/${PHP_VER}/ssdeep.so
     COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
     WORKDIR /var/www/MISP/app
@@ -117,7 +115,7 @@ ARG PHP_VER=20180731
     # To use the scheduler worker for scheduled tasks, do the following:
         ;cp -fa /var/www/MISP/INSTALL/setup/config.php /var/www/MISP/app/Plugin/CakeResque/Config/config.php
 
-# Configure Apache
+# Apache
     # add HTTP MISP Config
     RUN rm /etc/apache2/sites-enabled/*;
     COPY files/etc/apache2/sites-enabled/misp.conf /etc/apache2/sites-enabled/

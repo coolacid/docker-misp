@@ -60,6 +60,7 @@ ARG PHP_VER=20180731
 
 # OS Packages
     RUN apt-get update; apt-get install -y --no-install-recommends \
+        # Requirements:
         sudo \
         apache2 \
         supervisor \
@@ -67,22 +68,22 @@ ARG PHP_VER=20180731
         cron \
         openssl \
         gpg-agent gpg \
+        ssdeep \
+        libfuzzy2 \
+        mariadb-client \
+        # Python Requirements
         python3 \
         python3-setuptools \
         python3-pip \
-        ssdeep \
-        mariadb-client \
-
-        zip unzip \
-
+        # PHP Requirements
         php \
         php-xml \
         php-mbstring \
         php-mysql \
-#        php-dev \
         php-redis \
         php-gd \
-        libfuzzy2 \
+        # Unsure we need these
+        zip unzip \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # MISP code

@@ -78,9 +78,7 @@ ARG VERSION=2.4.118
     # Once done, install CakeResque along with its dependencies if you intend to use the built in background jobs:
     COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
     WORKDIR /var/www/MISP/app
-    RUN  composer require kamisama/cake-resque:4.1.2 \
-        ;composer config vendor-dir Vendor \
-        ;composer install \
+    RUN composer install \
     # Enable CakeResque with php-redis
         ;phpenmod redis \
     # Enable CakeResque with php-gnupgp

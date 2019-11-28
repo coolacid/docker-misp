@@ -1,3 +1,43 @@
+FROM debian:buster-slim as python-build
+    RUN apt-get update; apt-get install -y --no-install-recommends \
+        gcc \
+        git \
+        python3 \
+        python3-dev \
+        python3-setuptools \
+        python3-wheel \
+        libfuzzy-dev \
+        ca-certificates \
+        && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
+    WORKDIR /tmp
+    RUN git clone --depth 1 https://github.com/CybOXProject/mixbox.git; \
+        cd mixbox; python3 setup.py bdist_wheel
+
+    # install python-maec
+    RUN git clone --depth 1 https://github.com/MAECProject/python-maec.git; \
+        cd python-maec; python3 setup.py bdist_wheel
+
+    # install python-cybox
+    RUN git clone --depth 1 https://github.com/CybOXProject/python-cybox.git; \
+        cd python-cybox; python3 setup.py bdist_wheel
+
+    # install python stix
+    RUN git clone --depth 1 https://github.com/STIXProject/python-stix.git; \
+        cd python-stix; python3 setup.py bdist_wheel
+
+    # install STIX2.0 library to support STIX 2.0 export:
+    RUN git clone --depth 1 https://github.com/MISP/cti-python-stix2.git; \
+        cd cti-python-stix2; python3 setup.py bdist_wheel
+
+    # install PyMISP
+    RUN git clone --depth 1 https://github.com/MISP/PyMISP.git; \
+        cd PyMISP; python3 setup.py bdist_wheel
+
+    # install pydeep
+    RUN git clone --depth 1 https://github.com/coolacid/pydeep.git; \
+        cd pydeep; python3 setup.py bdist_wheel
+
 FROM debian:buster-slim
 ENV DEBIAN_FRONTEND noninteractive
 ARG MISP_TAG=2.4.118
@@ -15,7 +55,6 @@ ARG MISP_TAG=2.4.118
         gpg-agent gpg \
         python3 \
         python3-setuptools \
-        python3-dev \
         python3-pip \
         ssdeep \
         php \
@@ -32,36 +71,19 @@ ARG MISP_TAG=2.4.118
 
 # MISP code
     # Download MISP using git in the /var/www/ directory.
-    RUN git clone --branch v${MISP_TAG} --recursive --depth 1 https://github.com/MISP/MISP.git /var/www/MISP
+    RUN git clone --branch v${MISP_TAG} --depth 1 https://github.com/MISP/MISP.git /var/www/MISP; \
+        cd /var/www/MISP/app; git submodule update --init --recursive .;
 
 # Python Modules
-    # install Mitre's STIX and its dependencies by running the following commands:
-    # install mixbox to accomodate the new STIX dependencies:
-    WORKDIR /var/www/MISP/app/files/scripts
-    RUN git clone --depth 1 https://github.com/CybOXProject/mixbox.git; \
-        cd mixbox; python3 setup.py install
+    COPY --from=python-build /tmp/PyMISP/dist/*.whl /tmp
+    COPY --from=python-build /tmp/cti-python-stix2/dist/*.whl /tmp
+    COPY --from=python-build /tmp/mixbox/dist/*.whl /tmp
+    COPY --from=python-build /tmp/python-cybox/dist/*.whl /tmp
+    COPY --from=python-build /tmp/python-maec/dist/*.whl /tmp
+    COPY --from=python-build /tmp/python-stix/dist/*.whl /tmp
+    COPY --from=python-build /tmp/pydeep/dist/*.whl /tmp
 
-    # install python-maec
-    RUN git clone --depth 1 https://github.com/MAECProject/python-maec.git; \
-        cd python-maec; python3 setup.py install
-
-    # install python-cybox
-    RUN git clone --depth 1 https://github.com/CybOXProject/python-cybox.git; \
-        cd python-cybox; python3 setup.py install
-
-    # install python stix
-    RUN git clone --depth 1 https://github.com/STIXProject/python-stix.git; \
-        cd python-stix; python3 setup.py install
-
-    # install STIX2.0 library to support STIX 2.0 export:
-    WORKDIR /var/www/MISP/cti-python-stix2
-    RUN python3 setup.py install
-
-    # install PyMISP
-    WORKDIR /var/www/MISP/PyMISP
-    RUN python3 setup.py install
-
-    RUN pip3 install --no-cache-dir plyara pyzmq redis maec python-magic lief https://github.com/lief-project/packages/raw/lief-master-latest/pylief-0.9.0.dev.zip git+https://github.com/kbandla/pydeep.git
+    RUN pip3 install --no-cache-dir /tmp/*.whl plyara pyzmq redis python-magic lief
 
 # CakePHP
     # Once done, install CakeResque, first get latest composer

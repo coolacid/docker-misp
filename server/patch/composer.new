@@ -1,0 +1,27 @@
+{
+    "prefer-stable": true,
+    "minimum-stability": "dev",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "/tmp/Cake-Resque"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-xml": "*",
+        "ext-pcre": "*",
+        "kamisama/cake-resque": "dev-dev-foreground",
+        "pear/crypt_gpg": "1.6.3",
+        "monolog/monolog": "1.24.0"
+    },
+    "suggest": {
+        "elasticsearch/elasticsearch": "For logging to elasticsearch",
+        "aws/aws-sdk-php": "To upload samples to S3"
+    },
+    "config": {
+        "vendor-dir": "Vendor"
+    }
+}

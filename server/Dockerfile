@@ -1,3 +1,11 @@
+FROM composer as composer-build
+    WORKDIR /tmp
+    COPY patch/composer.patch /tmp
+    RUN git clone --branch dev-foreground https://github.com/jeremymcjunkin/Cake-Resque.git /tmp/Cake-Resque;
+    ADD https://raw.githubusercontent.com/MISP/MISP/v2.4.118/app/composer.json /tmp
+    RUN patch composer.json composer.patch
+    RUN composer install --ignore-platform-reqs
+
 FROM debian:buster-slim as php-build
     RUN apt-get update; apt-get install -y --no-install-recommends \
         gcc \
@@ -103,16 +111,15 @@ ARG PHP_VER=20180731
 # PHP
     # Install ssdeep prebuild, latest composer, then install the app's PHP deps
     COPY --from=php-build /usr/lib/php/${PHP_VER}/ssdeep.so /usr/lib/php/${PHP_VER}/ssdeep.so
-    COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-    WORKDIR /var/www/MISP/app
-    RUN composer install \
-    # Enable CakeResque with php-redis
-        ;phpenmod redis \
-    # Enable CakeResque with php-gnupgp
+    COPY --from=composer-build /tmp/Vendor /var/www/MISP/app/Vendor
+    COPY --from=composer-build /tmp/Plugin /var/www/MISP/app/Plugin
+    # Enable php-redis
+     RUN phpenmod redis \
+    # Enable php-gnupgp
         ;phpenmod gnupg \
-    # Enable ssdeep we build earlier
+    # Enable ssdeep we built earlier
         ;phpenmod ssdeep \
-    # To use the scheduler worker for scheduled tasks, do the following:
+    # copy the CakeResque config file
         ;cp -fa /var/www/MISP/INSTALL/setup/config.php /var/www/MISP/app/Plugin/CakeResque/Config/config.php
 
 # Apache
@@ -139,7 +146,8 @@ ARG PHP_VER=20180731
     COPY files/etc/supervisor/supervisor.conf /etc/supervisor/conf.d/supervisord.conf
     COPY files/entrypoint_apache.sh /
     COPY files/entrypoint_cron.sh /
-    COPY files/entrypoint_workers.sh /
+    COPY files/entrypoint_worker.sh /
+    COPY files/entrypoint_scheduler.sh /
     COPY files/entrypoint.sh /
     ENTRYPOINT [ "/entrypoint.sh" ]
 

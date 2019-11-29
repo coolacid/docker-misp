@@ -92,6 +92,7 @@ echo "... chmod -R 0750 /var/www/MISP ..." && find /var/www/MISP -perm 550 -type
 echo "... chmod -R g+ws /var/www/MISP/app/tmp ..." && chmod -R g+ws /var/www/MISP/app/tmp
 echo "... chmod -R g+ws /var/www/MISP/app/files ..." && chmod -R g+ws /var/www/MISP/app/files
 echo "... chmod -R g+ws /var/www/MISP/app/files/scripts/tmp ..." && chmod -R g+ws /var/www/MISP/app/files/scripts/tmp
+echo "Ensure CakeResque is all stopped ..." && sudo -u www-data /var/www/MISP/app/Console/worker/stop.sh
 
 # delete pid file
 [ -f $ENTRYPOINT_PID_FILE ] && rm $ENTRYPOINT_PID_FILE

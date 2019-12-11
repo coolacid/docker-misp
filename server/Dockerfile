@@ -98,10 +98,10 @@ ARG PHP_VER
 # MISP code
     # Download MISP using git in the /var/www/ directory.
     RUN git clone --branch v${MISP_TAG} --depth 1 https://github.com/MISP/MISP.git /var/www/MISP; \
+        # We build the MISP modules outside, so we don't need to grab those submodules
         cd /var/www/MISP/app; git submodule update --init --recursive .;
 
 # Python Modules
-    RUN mkdir /wheels
     COPY --from=python-build /wheels /wheels
     RUN pip3 install --no-cache-dir /wheels/*.whl plyara pyzmq redis python-magic lief && rm -rf /wheels
 

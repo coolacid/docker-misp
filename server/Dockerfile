@@ -23,33 +23,35 @@ FROM debian:buster-slim as python-build
         ca-certificates \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
+    RUN mkdir /wheels
+
     WORKDIR /tmp
     RUN git clone --depth 1 https://github.com/CybOXProject/mixbox.git; \
-        cd mixbox; python3 setup.py bdist_wheel
+        cd mixbox; python3 setup.py bdist_wheel -d /wheels
 
     # install python-maec
     RUN git clone --depth 1 https://github.com/MAECProject/python-maec.git; \
-        cd python-maec; python3 setup.py bdist_wheel
+        cd python-maec; python3 setup.py bdist_wheel -d /wheels
 
     # install python-cybox
     RUN git clone --depth 1 https://github.com/CybOXProject/python-cybox.git; \
-        cd python-cybox; python3 setup.py bdist_wheel
+        cd python-cybox; python3 setup.py bdist_wheel -d /wheels
 
     # install python stix
     RUN git clone --depth 1 https://github.com/STIXProject/python-stix.git; \
-        cd python-stix; python3 setup.py bdist_wheel
+        cd python-stix; python3 setup.py bdist_wheel -d /wheels
 
     # install STIX2.0 library to support STIX 2.0 export:
     RUN git clone --depth 1 https://github.com/MISP/cti-python-stix2.git; \
-        cd cti-python-stix2; python3 setup.py bdist_wheel
+        cd cti-python-stix2; python3 setup.py bdist_wheel -d /wheels
 
     # install PyMISP
     RUN git clone --depth 1 https://github.com/MISP/PyMISP.git; \
-        cd PyMISP; python3 setup.py bdist_wheel
+        cd PyMISP; python3 setup.py bdist_wheel -d /wheels
 
     # install pydeep
     RUN git clone --depth 1 https://github.com/coolacid/pydeep.git; \
-        cd pydeep; python3 setup.py bdist_wheel
+        cd pydeep; python3 setup.py bdist_wheel -d /wheels
 
 FROM debian:buster-slim
 ENV DEBIAN_FRONTEND noninteractive
@@ -91,13 +93,7 @@ ARG PHP_VER=20180731
 
 # Python Modules
     RUN mkdir /wheels
-    COPY --from=python-build /tmp/PyMISP/dist/*.whl /wheels
-    COPY --from=python-build /tmp/cti-python-stix2/dist/*.whl /wheels
-    COPY --from=python-build /tmp/mixbox/dist/*.whl /wheels
-    COPY --from=python-build /tmp/python-cybox/dist/*.whl /wheels
-    COPY --from=python-build /tmp/python-maec/dist/*.whl /wheels
-    COPY --from=python-build /tmp/python-stix/dist/*.whl /wheels
-    COPY --from=python-build /tmp/pydeep/dist/*.whl /wheels
+    COPY --from=python-build /wheels /wheels
     RUN pip3 install --no-cache-dir /wheels/*.whl plyara pyzmq redis python-magic lief && rm -rf /wheels
 
 # PHP

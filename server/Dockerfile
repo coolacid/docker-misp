@@ -1,6 +1,10 @@
+ARG MISP_TAG=2.4.118
+ARG PHP_VER=20180731
+
 FROM composer as composer-build
+    ARG MISP_TAG
     WORKDIR /tmp
-    ADD https://raw.githubusercontent.com/MISP/MISP/v2.4.118/app/composer.json /tmp
+    ADD https://raw.githubusercontent.com/MISP/MISP/v${MISP_TAG}/app/composer.json /tmp
     RUN composer install --ignore-platform-reqs
 
 FROM debian:buster-slim as php-build
@@ -60,8 +64,8 @@ FROM debian:buster-slim as python-build
 
 FROM debian:buster-slim
 ENV DEBIAN_FRONTEND noninteractive
-ARG MISP_TAG=2.4.118
-ARG PHP_VER=20180731
+ARG MISP_TAG
+ARG PHP_VER
 
 # OS Packages
     RUN apt-get update; apt-get install -y --no-install-recommends \

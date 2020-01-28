@@ -4,7 +4,7 @@ services:
     image: redis:5.0.6
 
   db:
-    image: mysql
+    image: mysql:8.0.19
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
@@ -14,7 +14,7 @@ services:
       - "MYSQL_DATABASE=misp"
 
   misp:
-    image: misp
+    image: coolacid/docker-misp:core-latest
     build: server/.
     depends_on:
       - redis
@@ -34,7 +34,7 @@ services:
       - "INIT=true" # Initialze MISP, things includes, attempting to import SQL and the Files DIR
 
   misp-modules:
-    image: misp-modules
+    image: coolacid/docker-misp:modules-latest
     build: modules/.
     environment:
       - "REDIS_BACKEND=redis"

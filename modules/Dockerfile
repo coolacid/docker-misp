@@ -1,6 +1,6 @@
 FROM python:3.7-slim-buster  as builder
 ENV DEBIAN_FRONTEND noninteractive
-ARG VERSION=2.4.118
+ARG VERSION=2.4.119
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
                 git \

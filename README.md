@@ -27,14 +27,14 @@ This is based on some of the work from the DSCO docker build, nearly all of the 
 
 ## Development/Test
 
-- Pull the repository
-- Copy the "default" configs removing "default" and edit the files in `server-configs`
-  - Note: A dry run without this step will try and make a sane DEV build for docker-compose
-- Run `generate.sh` in `./ssl` to generate some fake certs
-- `docker-compose up --build`
-- Login with
-  - User: admin@admin.test
-  - Password: admin
+- Grab the `docker-compose.yml` file and the `server-configs` directory
+- [Optional] Copy the "default" configs removing "default" and edit the files in `server-configs`
+  - Note: A dry run without this step will try and make sane DEV configs
+- `docker-compose up`
+- Login to `https://localhost`
+  - User: `admin@admin.test`
+  - Password: `admin`
+- Profit
 
 ## Production
 - Use docker-compose, or some other config management tool

@@ -1,4 +1,7 @@
 # docker-misp
+
+[![Build Status](https://travis-ci.org/coolacid/docker-misp.svg?branch=master)](https://travis-ci.org/coolacid/docker-misp)
+
 A (nearly) production ready Dockered MISP
 
 This is based on some of the work from the DSCO docker build, nearly all of the details have been rewritten. 

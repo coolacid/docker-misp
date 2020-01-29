@@ -1,12 +1,8 @@
 logs/
-ssl/cert.pem
-ssl/chain.pem
-ssl/dhparams.pem
-ssl/key.pem
+files/
+ssl/
 server-configs/database.php
 server-configs/config.php
 server-configs/bootstrap.php
 server-configs/core.php
 server-configs/config.php.bk
-files/INIT
-files/[0-9]*

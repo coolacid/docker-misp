@@ -45,6 +45,18 @@ init_misp_files(){
     fi
 }
 
+init_ssl() {
+    if [[ (! -f /etc/apache2/ssl/dhparams.pem) ||
+          (! -f /etc/apache2/ssl/cert.pem) ||
+          (! -f /etc/apache2/ssl/key.pem) ||
+          (! -f /etc/apache2/ssl/chain.pem) ]]; then
+        cd /etc/apache2/ssl
+        openssl dhparam -out dhparams.pem 2048
+        openssl req -x509 -subj '/CN=localhost' -nodes -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
+        cp cert.pem chain.pem
+    fi
+}
+
 init_mysql(){
     # Test when MySQL is ready....
     # wait for Database come ready
@@ -78,6 +90,7 @@ start_apache() {
 if [[ "$INIT" == true ]]; then
     echo "Import MySQL scheme..." && init_mysql
     echo "Setup MISP files dir..." && init_misp_files
+    echo "Ensure SSL certs exist..." && init_ssl
 fi
 
 # Things we should do if we're configuring MISP via ENV

@@ -31,6 +31,7 @@ services:
       - "CRON_USER_ID=1"
       - "REDIS_FQDN=redis"
       - "MYSQL_PASSWORD=example"
+      - "HOSTNAME=https://localhost"
       - "INIT=true" # Initialze MISP, things includes, attempting to import SQL and the Files DIR
 
   misp-modules:

@@ -1,5 +1,6 @@
 FROM python:3.7-slim-buster  as builder
 ENV DEBIAN_FRONTEND noninteractive
+ARG MISP_TAG
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
                 git \

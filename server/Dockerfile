@@ -1,6 +1,3 @@
-ARG MISP_TAG=2.4.120
-ARG PHP_VER=20180731
-
 FROM composer as composer-build
     ARG MISP_TAG
     WORKDIR /tmp

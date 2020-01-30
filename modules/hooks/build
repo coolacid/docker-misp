@@ -6,7 +6,11 @@ echo "[***] Build hook running"
 
 export $(grep -v '^#' ../.env | xargs)
 
+env
+
 docker build \
+    --build-arg MISP_TAG=$MISP_TAG
+    --build-arg PHP_VER=$PHP_VER
     --build-arg BUILD_RFC3339=$(date -u +"%Y-%m-%dT%H:%M:%SZ") \
     --build-arg COMMIT=$(git rev-parse --short HEAD) \
     --build-arg VERSION=$(git describe --tags --always) \

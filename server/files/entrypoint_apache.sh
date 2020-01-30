@@ -38,7 +38,7 @@ init_misp_config(){
     sed -i "s/db\s*password/$MYSQL_PASSWORD/" $MISP_APP_CONFIG_PATH/database.php
 
     echo "Configure sane defaults"
-    sed -i "s#'baseurl'                        => ''#'baseurl'                        => '$HOSTNAME'#" $MISP_APP_CONFIG_PATH/config.php
+    /var/www/MISP/app/Console/cake Admin setSetting "MISP.baseurl" $HOSTNAME
 }
 
 init_misp_files(){

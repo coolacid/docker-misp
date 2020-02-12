@@ -31,36 +31,35 @@ This is based on some of the work from the DSCO docker build, nearly all of the 
 
 -   Grab the `docker-compose.yml` file and the `server-configs` directory
 -   \[Optional] Copy the "default" configs removing "default" and edit the files in `server-configs`
-  -   Note: A dry run without this step will try and make sane DEV configs
+    -   Note: A dry run without this step will try and make sane DEV configs
 -   `docker-compose up`
 -   Login to `https://localhost`
-  -   User: `admin@admin.test`
-  -   Password: `admin`
+    -   User: `admin@admin.test`
+    -   Password: `admin`
 -   Profit
 
 ### Production
 -   Use docker-compose, or some other config management tool
 -   Directory volume mount SSL Certs /etc/apache2/ssl/
-  -   DH Parameters: dhparams.pem
-  -   Certificate File: cert.pem
-  -   Certificate Key File: key.pem
-  -   Certificate Chain File: chain.pem
+    -   DH Parameters: dhparams.pem
+    -   Certificate File: cert.pem
+    -   Certificate Key File: key.pem
+    -   Certificate Chain File: chain.pem
 -   Directory volume mount and create configs: /var/www/MISP/app/Config/
 -   Additional directory volume mounts:
-  -   /var/www/MISP/app/files
-  -   /var/www/MISP/.gnupg
-  -   /var/www/MISP/.smime
+    -   /var/www/MISP/app/files
+    -   /var/www/MISP/.gnupg
+    -   /var/www/MISP/.smime
 
 ## Image file sizes
 
 -   Core server(Saved: 2.5GB)
-  -   Original Image: 3.17GB
-  -   First attempt: 2.24GB
-  -   Remove chown: 1.56GB
-  -   PreBuild python modules, and only pull submodules we need: 800MB
-  -   PreBuild PHP modules: 664MB
-
+    -   Original Image: 3.17GB
+    -   First attempt: 2.24GB
+    -   Remove chown: 1.56GB
+    -   PreBuild python modules, and only pull submodules we need: 800MB
+    -   PreBuild PHP modules: 664MB
 
 -   Modules (Saved: 640MB)
-  -   Original: 1.36GB
-  -   Pre-build modules: 750MB
+    -   Original: 1.36GB
+    -   Pre-build modules: 750MB

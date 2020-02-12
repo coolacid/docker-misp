@@ -30,22 +30,29 @@ This is based on some of the work from the DSCO docker build, nearly all of the 
 ### Development/Test
 
 -   Grab the `docker-compose.yml` file and the `server-configs` directory
+
 -   \[Optional] Copy the "default" configs removing "default" and edit the files in `server-configs`
     -   Note: A dry run without this step will try and make sane DEV configs
+
 -   `docker-compose up`
+
 -   Login to `https://localhost`
     -   User: `admin@admin.test`
     -   Password: `admin`
+
 -   Profit
 
 ### Production
 -   Use docker-compose, or some other config management tool
+
 -   Directory volume mount SSL Certs /etc/apache2/ssl/
     -   DH Parameters: dhparams.pem
     -   Certificate File: cert.pem
     -   Certificate Key File: key.pem
     -   Certificate Chain File: chain.pem
+
 -   Directory volume mount and create configs: /var/www/MISP/app/Config/
+
 -   Additional directory volume mounts:
     -   /var/www/MISP/app/files
     -   /var/www/MISP/.gnupg

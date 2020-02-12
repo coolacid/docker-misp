@@ -13,8 +13,9 @@ ENTRYPOINT_PID_FILE="/entrypoint_apache.install"
 [ ! -f $ENTRYPOINT_PID_FILE ] && touch $ENTRYPOINT_PID_FILE
 
 change_php_vars(){
-    for FILE in $(ls /etc/php/*/apache2/php.ini)
+    for FILE in /etc/php/*/apache2/php.ini
     do  
+        [[ -e $FILE ]] || break
         sed -i "s/memory_limit = .*/memory_limit = 2048M/" "$FILE"
         sed -i "s/max_execution_time = .*/max_execution_time = 300/" "$FILE"
         sed -i "s/upload_max_filesize = .*/upload_max_filesize = 50M/" "$FILE"

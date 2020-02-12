@@ -45,20 +45,27 @@ class EmailConfig {
 
 	// to set the return-path header, simply uncomment the line below and change you@localhost to the desired e-mail address
 	public $default = array(
-		'transport'            => 'Mail',
-		'charset'              => 'utf-8',
-		'headers'              => array('Precedence' => 'bulk'),
-		//'additionalParameters' => '-f you@localhost'
+		'transport'     => 'Smtp',
+		'from'          => array('misp-dev@admin.test' => 'Misp DEV'),
+		'host'          => 'mail',
+		'port'          => 25,
+		'timeout'       => 30,
+//		'username'      => 'user',
+//		'password'      => 'secret',
+		'client'        => null,
+		'log'           => false,
+		//'charset'       => 'utf-8',
+		//'headerCharset' => 'utf-8',
 	);
 
 	public $smtp = array(
 		'transport'     => 'Smtp',
-		'from'          => array('site@localhost' => 'My Site'),
-		'host'          => 'localhost',
+		'from'          => array('misp-dev@admin.test' => 'Misp DEV'),
+		'host'          => 'mail',
 		'port'          => 25,
 		'timeout'       => 30,
-		'username'      => 'user',
-		'password'      => 'secret',
+//		'username'      => 'user',
+//		'password'      => 'secret',
 		'client'        => null,
 		'log'           => false,
 		//'charset'       => 'utf-8',
@@ -66,7 +73,7 @@ class EmailConfig {
 	);
 
 	public $fast = array(
-		'from'          => 'you@localhost',
+		'from'          => 'misp-dev@admin.test',
 		'sender'        => null,
 		'to'            => null,
 		'cc'            => null,
@@ -85,11 +92,11 @@ class EmailConfig {
 		'attachments'   => null,
 		'emailFormat'   => null,
 		'transport'     => 'Smtp',
-		'host'          => 'localhost',
+		'host'          => 'mail',
 		'port'          => 25,
 		'timeout'       => 30,
-		'username'      => 'user',
-		'password'      => 'secret',
+//		'username'      => 'user',
+//		'password'      => 'secret',
 		'client'        => null,
 		'log'           => true,
 		//'charset'       => 'utf-8',

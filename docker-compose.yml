@@ -1,5 +1,10 @@
 version: '3'
 services:
+  # This is capible to relay via gmail, Amazon SES, or generic relays
+  # See: https://hub.docker.com/r/namshi/smtp
+  mail:
+    image: namshi/smtp
+
   redis:
     image: redis:5.0.6
 

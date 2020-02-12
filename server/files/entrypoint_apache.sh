@@ -40,6 +40,9 @@ init_misp_config(){
 
     echo "Configure sane defaults"
     /var/www/MISP/app/Console/cake Admin setSetting "MISP.baseurl" $HOSTNAME
+    /var/www/MISP/app/Console/cake Admin setSetting "MISP.python_bin" $(which python3)
+
+
 }
 
 init_misp_files(){

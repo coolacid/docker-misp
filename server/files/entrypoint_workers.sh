@@ -4,12 +4,10 @@ set -e
 NC='\033[0m' # No Color
 Light_Green='\033[1;32m'  
 echo (){
-    command echo -e $1
+    command echo -e "$1"
 }
 
 STARTMSG="${Light_Green}[ENTRYPOINT_WORKERS]${NC}"
-CAKE_CMD="/var/www/MISP/app/Console/cake CakeResque.CakeResque"
-
 
 # Wait until entrypoint apache is ready
 while (true)

@@ -39,7 +39,7 @@ init_misp_config(){
     sed -i "s/db\s*password/$MYSQL_PASSWORD/" $MISP_APP_CONFIG_PATH/database.php
 
     echo "Configure sane defaults"
-    /var/www/MISP/app/Console/cake Admin setSetting "MISP.baseurl" $HOSTNAME
+    /var/www/MISP/app/Console/cake Admin setSetting "MISP.baseurl" "$HOSTNAME"
     /var/www/MISP/app/Console/cake Admin setSetting "MISP.python_bin" $(which python3)
 
 
@@ -76,7 +76,7 @@ init_mysql(){
     until [ $(isDBup) -eq 0 ] || [ $RETRY -le 0 ] ; do
         echo "Waiting for database to come up"
         sleep 5
-        RETRY=$(( $RETRY - 1))
+        RETRY=$(( RETRY - 1))
     done
     if [ $RETRY -le 0 ]; then
         >&2 echo "Error: Could not connect to Database on $MYSQL_HOST:$MYSQL_PORT"

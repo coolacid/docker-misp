@@ -33,31 +33,31 @@ FROM debian:buster-slim as python-build
 
     WORKDIR /tmp
     RUN git clone --depth 1 https://github.com/CybOXProject/mixbox.git; \
-        cd mixbox; python3 setup.py bdist_wheel -d /wheels
+        cd mixbox || exit; python3 setup.py bdist_wheel -d /wheels
 
     # install python-maec
     RUN git clone --depth 1 https://github.com/MAECProject/python-maec.git; \
-        cd python-maec; python3 setup.py bdist_wheel -d /wheels
+        cd python-maec || exit; python3 setup.py bdist_wheel -d /wheels
 
     # install python-cybox
     RUN git clone --depth 1 https://github.com/CybOXProject/python-cybox.git; \
-        cd python-cybox; python3 setup.py bdist_wheel -d /wheels
+        cd python-cybox || exit; python3 setup.py bdist_wheel -d /wheels
 
     # install python stix
     RUN git clone --depth 1 https://github.com/STIXProject/python-stix.git; \
-        cd python-stix; python3 setup.py bdist_wheel -d /wheels
+        cd python-stix || exit; python3 setup.py bdist_wheel -d /wheels
 
     # install STIX2.0 library to support STIX 2.0 export:
     RUN git clone --depth 1 https://github.com/MISP/cti-python-stix2.git; \
-        cd cti-python-stix2; python3 setup.py bdist_wheel -d /wheels
+        cd cti-python-stix2 || exit; python3 setup.py bdist_wheel -d /wheels
 
     # install PyMISP
     RUN git clone --depth 1 https://github.com/MISP/PyMISP.git; \
-        cd PyMISP; python3 setup.py bdist_wheel -d /wheels
+        cd PyMISP || exit; python3 setup.py bdist_wheel -d /wheels
 
     # install pydeep
     RUN git clone --depth 1 https://github.com/coolacid/pydeep.git; \
-        cd pydeep; python3 setup.py bdist_wheel -d /wheels
+        cd pydeep || exit; python3 setup.py bdist_wheel -d /wheels
 
 FROM debian:buster-slim
 ENV DEBIAN_FRONTEND noninteractive
@@ -96,7 +96,7 @@ ARG PHP_VER
     # Download MISP using git in the /var/www/ directory.
     RUN git clone --branch v${MISP_TAG} --depth 1 https://github.com/MISP/MISP.git /var/www/MISP; \
         # We build the MISP modules outside, so we don't need to grab those submodules
-        cd /var/www/MISP/app; git submodule update --init --recursive .;
+        cd /var/www/MISP/app || exit; git submodule update --init --recursive .;
 
 # Python Modules
     COPY --from=python-build /wheels /wheels

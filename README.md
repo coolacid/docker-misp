@@ -42,6 +42,13 @@ This is based on some of the work from the DSCO docker build, nearly all of the 
 
 -   Profit
 
+### Using the image for development
+
+Once you have the docker container up you can access the container by running `docker-compose exec misp /bin/bash`.
+This will provide you with a root shell. You can use `apt update` and then install any tools you wish to use.
+Finally, copy any changes you make outside of the container for commiting to your branch. 
+`git diff -- [dir with changes]` could be used to reduce the number of changes in a patch file, however, becareful when using the `git diff` command.
+
 ### Production
 -   Use docker-compose, or some other config management tool
 

@@ -39,6 +39,7 @@ init_misp_config(){
     sed -i "s/db\s*password/$MYSQL_PASSWORD/" $MISP_APP_CONFIG_PATH/database.php
 
     echo "Configure sane defaults"
+    /var/www/MISP/app/Console/cake Admin setSetting "MISP.redis_host" "$REDIS_FQDN"
     /var/www/MISP/app/Console/cake Admin setSetting "MISP.baseurl" "$HOSTNAME"
     /var/www/MISP/app/Console/cake Admin setSetting "MISP.python_bin" $(which python3)
 

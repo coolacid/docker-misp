@@ -43,7 +43,19 @@ init_misp_config(){
     /var/www/MISP/app/Console/cake Admin setSetting "MISP.baseurl" "$HOSTNAME"
     /var/www/MISP/app/Console/cake Admin setSetting "MISP.python_bin" $(which python3)
 
+    /var/www/MISP/app/Console/cake Admin setSetting "Plugin.ZeroMQ_enable" true
+    /var/www/MISP/app/Console/cake Admin setSetting "Plugin.ZeroMQ_redis_host" "$REDIS_FQDN"
 
+    /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Enrichment_services_enable" true
+    /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Enrichment_services_url" "http://misp-modules"
+
+    /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Import_services_enable" true
+    /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Import_services_url" "http://misp-modules"
+
+    /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Export_services_enable" true
+    /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Export_services_url" "http://misp-modules"
+
+    /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Cortex_services_enable" false
 }
 
 init_misp_files(){

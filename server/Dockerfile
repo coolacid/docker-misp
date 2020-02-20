@@ -68,7 +68,7 @@ ARG PHP_VER
     RUN apt-get update; apt-get install -y --no-install-recommends \
         # Requirements:
         sudo \
-        apache2 \
+        nginx \
         supervisor \
         git \
         cron \
@@ -88,6 +88,7 @@ ARG PHP_VER
         php-mysql \
         php-redis \
         php-gd \
+        php-fpm \
         # Unsure we need these
         zip unzip \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
@@ -116,29 +117,16 @@ ARG PHP_VER
     # To use the scheduler worker for scheduled tasks, do the following:
         ;cp -fa /var/www/MISP/INSTALL/setup/config.php /var/www/MISP/app/Plugin/CakeResque/Config/config.php
 
-# Apache
-    # add HTTP MISP Config
-    RUN rm /etc/apache2/sites-enabled/*;
-    COPY files/etc/apache2/sites-enabled/misp.conf /etc/apache2/sites-enabled/
-    COPY files/etc/apache2/sites-enabled/misp-ssl.conf /etc/apache2/sites-enabled/
-    COPY files/etc/apache2/ports.conf /etc/apache2/ports.conf
-    RUN set -eu \
-        ;chmod 640 /etc/apache2/ports.conf \
-        ;chown root.root /etc/apache2/ports.conf \
-        ;chmod 640 /etc/apache2/sites-available/* \
-        ;chown root.root /etc/apache2/sites-available/* \
-    # Configure Apache
-        ;a2dismod status \
-        ;a2enmod ssl \
-        ;a2enmod rewrite \
-        ;a2enmod headers
+# nginx
+    RUN rm /etc/nginx/sites-enabled/*; mkdir /run/php
+    COPY files/etc/nginx/misp /etc/nginx/sites-enabled/misp
 
 # Make a copy of the file store, so we can sync from it
     RUN cp -R /var/www/MISP/app/files /var/www/MISP/app/files.dist
 
 # Entrypoints
     COPY files/etc/supervisor/supervisor.conf /etc/supervisor/conf.d/supervisord.conf
-    COPY files/entrypoint_apache.sh /
+    COPY files/entrypoint_nginx.sh /
     COPY files/entrypoint_cron.sh /
     COPY files/entrypoint_workers.sh /
     COPY files/entrypoint.sh /

@@ -13,7 +13,7 @@ ENTRYPOINT_PID_FILE="/entrypoint_apache.install"
 [ ! -f $ENTRYPOINT_PID_FILE ] && touch $ENTRYPOINT_PID_FILE
 
 change_php_vars(){
-    for FILE in /etc/php/*/apache2/php.ini
+    for FILE in /etc/php/*/fpm/php.ini
     do  
         [[ -e $FILE ]] || break
         sed -i "s/memory_limit = .*/memory_limit = 2048M/" "$FILE"
@@ -66,11 +66,11 @@ init_misp_files(){
 }
 
 init_ssl() {
-    if [[ (! -f /etc/apache2/ssl/dhparams.pem) ||
-          (! -f /etc/apache2/ssl/cert.pem) ||
-          (! -f /etc/apache2/ssl/key.pem) ||
-          (! -f /etc/apache2/ssl/chain.pem) ]]; then
-        cd /etc/apache2/ssl
+    if [[ (! -f /etc/ssl/dhparams.pem) ||
+          (! -f /etc/ssl/cert.pem) ||
+          (! -f /etc/ssl/key.pem) ||
+          (! -f /etc/ssl/chain.pem) ]]; then
+        cd /etc/ssl
         openssl dhparam -out dhparams.pem 2048
         openssl req -x509 -subj '/CN=localhost' -nodes -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
         cp cert.pem chain.pem
@@ -99,12 +99,12 @@ init_mysql(){
     $MYSQLCMD < /var/www/MISP/INSTALL/MYSQL.sql
 }
 
-start_apache() {
-    # Apache gets grumpy about PID files pre-existing
-    rm -f /run/apache2/apache2.pid
-    # execute APACHE2
-    /usr/sbin/apache2ctl -D FOREGROUND -k "$1"
-}
+#start_apache() {
+#    # Apache gets grumpy about PID files pre-existing
+#    rm -f /run/apache2/apache2.pid
+#    # execute APACHE2
+#    /usr/sbin/apache2ctl -D FOREGROUND -k "$1"
+#}
 
 # Things we should do when we have the INITIALIZE Env Flag
 if [[ "$INIT" == true ]]; then
@@ -129,5 +129,5 @@ echo "... chmod -R g+ws /var/www/MISP/app/files/scripts/tmp ..." && chmod -R g+w
 # delete pid file
 [ -f $ENTRYPOINT_PID_FILE ] && rm $ENTRYPOINT_PID_FILE
 
-# execute apache
-start_apache start
+# Start NGINX
+nginx -g 'daemon off;'

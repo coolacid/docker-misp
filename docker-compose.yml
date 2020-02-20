@@ -35,7 +35,7 @@ services:
       - "./server-configs/:/var/www/MISP/app/Config/"
       - "./logs/:/var/www/MISP/app/tmp/logs/"
       - "./files/:/var/www/MISP/app/files"
-      - "./ssl/:/etc/apache2/ssl/"
+      - "./ssl/:/etc/ssl/"
     environment:
       - "CRON_USER_ID=1"
       - "REDIS_FQDN=redis"

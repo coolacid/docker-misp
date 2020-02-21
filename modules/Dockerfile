@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Build MISP Modules
     WORKDIR /srv
-    RUN git clone --branch v${MISP_TAG} --depth 1  https://github.com/MISP/misp-modules.git
+    RUN git clone --branch ${MISP_TAG} --depth 1  https://github.com/MISP/misp-modules.git
     RUN mkdir /wheel
     WORKDIR /srv/misp-modules
     RUN sed -i 's/-e //g' REQUIREMENTS

@@ -1,7 +1,7 @@
 FROM composer:1.9 as composer-build
     ARG MISP_TAG
     WORKDIR /tmp
-    ADD https://raw.githubusercontent.com/MISP/MISP/v${MISP_TAG}/app/composer.json /tmp
+    ADD https://raw.githubusercontent.com/MISP/MISP/${MISP_TAG}/app/composer.json /tmp
     RUN composer install --ignore-platform-reqs
 
 FROM debian:buster-slim as php-build
@@ -95,7 +95,7 @@ ARG PHP_VER
 
 # MISP code
     # Download MISP using git in the /var/www/ directory.
-    RUN git clone --branch v${MISP_TAG} --depth 1 https://github.com/MISP/MISP.git /var/www/MISP; \
+    RUN git clone --branch ${MISP_TAG} --depth 1 https://github.com/MISP/MISP.git /var/www/MISP; \
         # We build the MISP modules outside, so we don't need to grab those submodules
         cd /var/www/MISP/app || exit; git submodule update --init --recursive .;
 

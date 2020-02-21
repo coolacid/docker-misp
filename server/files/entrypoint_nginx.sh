@@ -129,5 +129,11 @@ echo "... chmod -R g+ws /var/www/MISP/app/files/scripts/tmp ..." && chmod -R g+w
 # delete pid file
 [ -f $ENTRYPOINT_PID_FILE ] && rm $ENTRYPOINT_PID_FILE
 
+# Work around https://github.com/MISP/MISP/issues/5608
+if [[ ! -f /var/www/MISP/PyMISP/pymisp/data/describeTypes.json ]]; then
+    mkdir -p /var/www/MISP/PyMISP/pymisp/data/
+    ln -s /usr/local/lib/python3.7/dist-packages/pymisp/data/describeTypes.json /var/www/MISP/PyMISP/pymisp/data/describeTypes.json
+fi
+
 # Start NGINX
 nginx -g 'daemon off;'

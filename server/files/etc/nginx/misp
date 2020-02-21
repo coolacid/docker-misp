@@ -1,0 +1,32 @@
+server {
+    listen 80 default_server;
+    listen [::]:80;
+
+    server_name _;
+
+    return 301 https://$host$request_uri;
+}
+
+server {
+
+    server_name misp-server;
+    listen 443 ssl http2 spdy;
+    root /var/www/MISP/app/webroot;
+    index index.php;
+
+    ssl_certificate /etc/ssl/cert.pem;
+    ssl_certificate_key /etc/ssl/key.pem;
+
+    # enable HSTS
+    add_header Strict-Transport-Security "max-age=15768000; includeSubdomains";
+    add_header X-Frame-Options SAMEORIGIN;
+
+    location / {
+        try_files $uri $uri/ /index.php;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+    }
+}

@@ -99,13 +99,6 @@ init_mysql(){
     $MYSQLCMD < /var/www/MISP/INSTALL/MYSQL.sql
 }
 
-#start_apache() {
-#    # Apache gets grumpy about PID files pre-existing
-#    rm -f /run/apache2/apache2.pid
-#    # execute APACHE2
-#    /usr/sbin/apache2ctl -D FOREGROUND -k "$1"
-#}
-
 # Things we should do when we have the INITIALIZE Env Flag
 if [[ "$INIT" == true ]]; then
     echo "Import MySQL scheme..." && init_mysql

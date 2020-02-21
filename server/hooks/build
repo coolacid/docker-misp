@@ -6,6 +6,8 @@ echo "[***] Build hook running"
 
 export $(grep -v '^#' ../.env | xargs)
 
+docker pull $DOCKER_REPO:core-latest
+
 docker build \
     --build-arg MISP_TAG=$MISP_TAG \
     --build-arg PHP_VER=$PHP_VER \

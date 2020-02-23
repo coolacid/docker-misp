@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
                 pkg-config \
                 libpoppler-cpp-dev \
                 libfuzzy-dev \
-                cmake
+                cmake \
             && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # Build MISP Modules

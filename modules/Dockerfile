@@ -15,9 +15,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Build MISP Modules
     WORKDIR /srv
+    RUN git clone https://github.com/stricaud/faup.git
+    WORKDIR /srv/faup/build
+    RUN cmake .. && make
+    RUN sudo make install
+    RUN sudo ldconfig
+    WORKDIR /srv/faup/src/lib/bindings/python
+    RUN pip3 wheel --no-cache-dir -w /wheel/ .
     RUN git clone --branch ${MISP_TAG} --depth 1  https://github.com/MISP/misp-modules.git
     RUN mkdir /wheel
     WORKDIR /srv/misp-modules
+    RUN touch misp_modules/modules/expansion/_ransomcoindb/__init__.py
     RUN sed -i 's/-e //g' REQUIREMENTS
     RUN pip3 wheel -r REQUIREMENTS --no-cache-dir -w /wheel/
 

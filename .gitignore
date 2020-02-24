@@ -6,3 +6,4 @@ server-configs/config.php
 server-configs/bootstrap.php
 server-configs/core.php
 server-configs/config.php.bk
+server-configs/email.php

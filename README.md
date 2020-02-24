@@ -52,18 +52,16 @@ Finally, copy any changes you make outside of the container for commiting to you
 ### Production
 -   Use docker-compose, or some other config management tool
 
--   Directory volume mount SSL Certs /etc/apache2/ssl/
-    -   DH Parameters: dhparams.pem
+-   Directory volume mount SSL Certs `./ssl`: `/etc/ssl`
     -   Certificate File: cert.pem
     -   Certificate Key File: key.pem
-    -   Certificate Chain File: chain.pem
 
--   Directory volume mount and create configs: /var/www/MISP/app/Config/
+-   Directory volume mount and create configs: `/var/www/MISP/app/Config/`
 
 -   Additional directory volume mounts:
-    -   /var/www/MISP/app/files
-    -   /var/www/MISP/.gnupg
-    -   /var/www/MISP/.smime
+    -   `/var/www/MISP/app/files`
+    -   `/var/www/MISP/.gnupg`
+    -   `/var/www/MISP/.smime`
 
 ## Image file sizes
 

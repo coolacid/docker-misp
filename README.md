@@ -53,8 +53,8 @@ Finally, copy any changes you make outside of the container for commiting to you
 -   Use docker-compose, or some other config management tool
 
 -   Directory volume mount SSL Certs `./ssl`: `/etc/ssl`
-    -   Certificate File: cert.pem
-    -   Certificate Key File: key.pem
+    -   Certificate File: `cert.pem`
+    -   Certificate Key File: `key.pem`
 
 -   Directory volume mount and create configs: `/var/www/MISP/app/Config/`
 

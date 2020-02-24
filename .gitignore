@@ -1,6 +1,6 @@
-logs/
-files/
-ssl/
+/logs/
+/files/
+/ssl/
 server-configs/database.php
 server-configs/config.php
 server-configs/bootstrap.php

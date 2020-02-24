@@ -117,6 +117,11 @@ ARG PHP_VER
     # To use the scheduler worker for scheduled tasks, do the following:
         ;cp -fa /var/www/MISP/INSTALL/setup/config.php /var/www/MISP/app/Plugin/CakeResque/Config/config.php
 
+# Forward nginx request and error logs to docker log collector
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+    && ln -sf /dev/stderr /var/log/nginx/error.log
+    RUN mkdir /wheels
+
 # nginx
     RUN rm /etc/nginx/sites-enabled/*; mkdir /run/php
     COPY files/etc/nginx/misp /etc/nginx/sites-enabled/misp

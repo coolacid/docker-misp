@@ -5,7 +5,7 @@ server {
     # Disable access logs
     access_log off;
     log_not_found off;
-    error_log  /var/log/nginx/error.log error;
+    error_log  /dev/stderr error;
 
     return 301 https://$host$request_uri;
 }
@@ -19,7 +19,7 @@ server {
     # Disable access logs
     access_log off;
     log_not_found off;
-    error_log  /var/log/nginx/error.log error;
+    error_log  /dev/stderr error;
 
     ssl_certificate /etc/ssl/cert.pem;
     ssl_certificate_key /etc/ssl/key.pem;

@@ -12,17 +12,6 @@ MISP_APP_CONFIG_PATH=/var/www/MISP/app/Config
 ENTRYPOINT_PID_FILE="/entrypoint_apache.install"
 [ ! -f $ENTRYPOINT_PID_FILE ] && touch $ENTRYPOINT_PID_FILE
 
-change_php_vars(){
-    for FILE in /etc/php/*/fpm/php.ini
-    do  
-        [[ -e $FILE ]] || break
-        sed -i "s/memory_limit = .*/memory_limit = 2048M/" "$FILE"
-        sed -i "s/max_execution_time = .*/max_execution_time = 300/" "$FILE"
-        sed -i "s/upload_max_filesize = .*/upload_max_filesize = 50M/" "$FILE"
-        sed -i "s/post_max_size = .*/post_max_size = 50M/" "$FILE"
-    done
-}
-
 setup_cake_config(){
     sed -i "s/'host' => 'localhost'.*/'host' => '$REDIS_FQDN',          \/\/ Redis server hostname/" "/var/www/MISP/app/Plugin/CakeResque/Config/config.php"
 }
@@ -110,7 +99,6 @@ fi
 echo "Initialize misp base config..." && init_misp_config
 
 # Things that should ALWAYS happen
-echo "Configure PHP  | Change PHP values ..." && change_php_vars
 echo "Configure Cake | Change Redis host to $REDIS_FQDN ... " && setup_cake_config
 echo "Configure MISP | Enforce permissions ..."
 echo "... chown -R www-data.www-data /var/www/MISP ..." && find /var/www/MISP -not -user www-data -exec chown www-data.www-data {} +

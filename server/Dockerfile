@@ -126,6 +126,7 @@ ARG PHP_VER
 
 # Entrypoints
     COPY files/etc/supervisor/supervisor.conf /etc/supervisor/conf.d/supervisord.conf
+    COPY files/entrypoint_fpm.sh /
     COPY files/entrypoint_nginx.sh /
     COPY files/entrypoint_cron.sh /
     COPY files/entrypoint_workers.sh /

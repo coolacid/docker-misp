@@ -70,7 +70,6 @@ init_ssl() {
           (! -f /etc/ssl/key.pem) ]]; then
         cd /etc/ssl
         openssl req -x509 -subj '/CN=localhost' -nodes -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
-        cp cert.pem chain.pem
     fi
 }
 

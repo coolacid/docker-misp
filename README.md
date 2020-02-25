@@ -52,7 +52,7 @@ Finally, copy any changes you make outside of the container for commiting to you
 ### Production
 -   Use docker-compose, or some other config management tool
 
--   Directory volume mount SSL Certs `./ssl`: `/etc/ssl`
+-   Directory volume mount SSL Certs `./ssl`: `/etc/ssl/certs`
     -   Certificate File: `cert.pem`
     -   Certificate Key File: `key.pem`
 

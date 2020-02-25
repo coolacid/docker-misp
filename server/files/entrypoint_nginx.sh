@@ -55,9 +55,9 @@ init_misp_files(){
 }
 
 init_ssl() {
-    if [[ (! -f /etc/ssl/cert.pem) ||
-          (! -f /etc/ssl/key.pem) ]]; then
-        cd /etc/ssl
+    if [[ (! -f /etc/ssl/certs/cert.pem) || (! -f /etc/ssl/certs/key.pem) ]];
+    then
+        cd /etc/ssl/certs
         openssl req -x509 -subj '/CN=localhost' -nodes -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
     fi
 }

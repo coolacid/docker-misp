@@ -55,14 +55,10 @@ init_misp_files(){
 }
 
 init_ssl() {
-    if [[ (! -f /etc/ssl/dhparams.pem) ||
-          (! -f /etc/ssl/cert.pem) ||
-          (! -f /etc/ssl/key.pem) ||
-          (! -f /etc/ssl/chain.pem) ]]; then
+    if [[ (! -f /etc/ssl/cert.pem) ||
+          (! -f /etc/ssl/key.pem) ]]; then
         cd /etc/ssl
-        openssl dhparam -out dhparams.pem 2048
         openssl req -x509 -subj '/CN=localhost' -nodes -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
-        cp cert.pem chain.pem
     fi
 }
 

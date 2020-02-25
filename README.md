@@ -18,7 +18,7 @@ This is based on some of the work from the DSCO docker build, nearly all of the 
 
 ## Docker Tags
 
-[Docker hub](https://hub.docker.com/r/coolacid/docker-misp) builds the images automatically based on git tags. I try and tag using the following details
+[Docker hub](https://hub.docker.com/r/coolacid/misp-docker) builds the images automatically based on git tags. I try and tag using the following details
 
 ***v\[MISP Version]\[Our build version]***
 

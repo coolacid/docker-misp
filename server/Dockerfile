@@ -67,6 +67,7 @@ ARG PHP_VER
 # OS Packages
     RUN apt-get update; apt-get install -y --no-install-recommends \
         # Requirements:
+        procps \
         sudo \
         nginx \
         supervisor \

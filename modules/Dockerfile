@@ -3,6 +3,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ARG MISP_TAG
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+                cmake \
                 git \
                 python3-dev \
                 python3-pip \
@@ -14,12 +15,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
             && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # Build MISP Modules
-    WORKDIR /srv
-    RUN git clone --branch ${MISP_TAG} --depth 1  https://github.com/MISP/misp-modules.git
     RUN mkdir /wheel
-    WORKDIR /srv/misp-modules
-    RUN sed -i 's/-e //g' REQUIREMENTS
-    RUN pip3 wheel -r REQUIREMENTS --no-cache-dir -w /wheel/
+    WORKDIR /srv
+
+    RUN git clone --branch ${MISP_TAG} --depth 1  https://github.com/MISP/misp-modules.git /srv/misp-modules; \
+        cd /srv/misp-modules || exit; sed -i 's/-e //g' REQUIREMENTS; pip3 wheel -r REQUIREMENTS --no-cache-dir -w /wheel/
+
+    RUN git clone --depth 1 https://github.com/stricaud/faup.git /srv/faup; \
+        cd /srv/faup/build || exit; cmake .. && make install; \
+        cd /srv/faup/src/lib/bindings/python || exit; pip3 wheel --no-cache-dir -w /wheel/ .
 
 FROM python:3.7-slim-buster
 
@@ -32,6 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /wheel /wheel
-RUN pip install /wheel/*.whl
+COPY --from=builder /usr/local/lib/libfaupl* /usr/local/lib/
+RUN pip install /wheel/*.whl; ldconfig
 
 ENTRYPOINT [ "/usr/local/bin/misp-modules", "-l", "0.0.0.0"]

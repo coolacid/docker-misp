@@ -3,6 +3,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e9b0c08774a84b9e8e0454f3ac83651f)](https://app.codacy.com/manual/coolacid/docker-misp?utm_source=github.com&utm_medium=referral&utm_content=coolacid/docker-misp&utm_campaign=Badge_Grade_Dashboard)
 [![CodeFactor](https://www.codefactor.io/repository/github/coolacid/docker-misp/badge/master)](https://www.codefactor.io/repository/github/coolacid/docker-misp/overview/master)
 [![Build Status](https://travis-ci.org/coolacid/docker-misp.svg?branch=master)](https://travis-ci.org/coolacid/docker-misp)
+[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/MISP/Docker)
 
 A (nearly) production ready Dockered MISP
 

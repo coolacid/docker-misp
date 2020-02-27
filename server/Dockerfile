@@ -127,6 +127,9 @@ ARG PHP_VER
 # Make a copy of the file store, so we can sync from it
     RUN cp -R /var/www/MISP/app/files /var/www/MISP/app/files.dist
 
+# Make a copy of the configurations, so we can sync from it
+    RUN cp -R /var/www/MISP/app/Config /var/www/MISP/app/Config.dist
+
 # Entrypoints
     COPY files/etc/supervisor/supervisor.conf /etc/supervisor/conf.d/supervisord.conf
     COPY files/entrypoint_fpm.sh /

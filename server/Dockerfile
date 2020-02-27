@@ -121,7 +121,8 @@ ARG PHP_VER
 # nginx
     RUN rm /etc/nginx/sites-enabled/*; mkdir /run/php
     COPY files/etc/nginx/misp /etc/nginx/sites-enabled/misp
-    COPY files/etc/nginx/misp80 /etc/nginx/sites-enabled/misp80
+    COPY files/etc/nginx/misp80 /etc/nginx/sites-available/misp80
+    COPY files/etc/nginx/misp80-noredir /etc/nginx/sites-available/misp80-noredir
 
 # Make a copy of the file store, so we can sync from it
     RUN cp -R /var/www/MISP/app/files /var/www/MISP/app/files.dist

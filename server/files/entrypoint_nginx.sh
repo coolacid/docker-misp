@@ -112,5 +112,11 @@ if [[ ! -f /var/www/MISP/PyMISP/pymisp/data/describeTypes.json ]]; then
     ln -s /usr/local/lib/python3.7/dist-packages/pymisp/data/describeTypes.json /var/www/MISP/PyMISP/pymisp/data/describeTypes.json
 fi
 
+if [[ "$NOREDIR" == true ]]; then
+    ln -s /etc/nginx/sites-available/misp80-noredir /etc/nginx/sites-enabled/misp80
+else
+    ln -s /etc/nginx/sites-available/misp80 /etc/nginx/sites-enabled/misp80
+fi
+
 # Start NGINX
 nginx -g 'daemon off;'

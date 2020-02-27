@@ -34,8 +34,8 @@ init_misp_config(){
     /var/www/MISP/app/Console/cake Admin setSetting "MISP.baseurl" "$HOSTNAME"
     /var/www/MISP/app/Console/cake Admin setSetting "MISP.python_bin" $(which python3)
 
-    /var/www/MISP/app/Console/cake Admin setSetting "Plugin.ZeroMQ_enable" true
     /var/www/MISP/app/Console/cake Admin setSetting "Plugin.ZeroMQ_redis_host" "$REDIS_FQDN"
+    /var/www/MISP/app/Console/cake Admin setSetting "Plugin.ZeroMQ_enable" true
 
     /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Enrichment_services_enable" true
     /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Enrichment_services_url" "http://misp-modules"
@@ -93,11 +93,12 @@ if [[ "$INIT" == true ]]; then
     echo "Ensure SSL certs exist..." && init_ssl
 fi
 
-# Things we should do if we're configuring MISP via ENV
-echo "Initialize misp base config..." && init_misp_config
-
 # Things that should ALWAYS happen
 echo "Configure Cake | Change Redis host to $REDIS_FQDN ... " && setup_cake_config
+
+# Things we should do if we're configuring MISP via ENV
+echo "Configure MISP | Initialize misp base config..." && init_misp_config
+
 echo "Configure MISP | Enforce permissions ..."
 echo "... chown -R www-data.www-data /var/www/MISP ..." && find /var/www/MISP -not -user www-data -exec chown www-data.www-data {} +
 echo "... chmod -R 0750 /var/www/MISP ..." && find /var/www/MISP -perm 550 -type f -exec chmod 0550 {} + && find /var/www/MISP -perm 770 -type d -exec chmod 0770 {} +

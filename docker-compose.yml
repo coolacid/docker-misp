@@ -49,7 +49,7 @@ services:
     build:
         context: modules/.
         args:
-            - MISP_TAG=${MISP_TAG}
+            - MODULES_TAG=${MODULES_TAG}
     environment:
       - "REDIS_BACKEND=redis"
     depends_on:

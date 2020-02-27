@@ -1,6 +1,6 @@
 FROM python:3.7-slim-buster  as builder
 ENV DEBIAN_FRONTEND noninteractive
-ARG MISP_TAG
+ARG MODULES_TAG
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
                 cmake \
@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     RUN mkdir /wheel
     WORKDIR /srv
 
-    RUN git clone --branch ${MISP_TAG} --depth 1  https://github.com/MISP/misp-modules.git /srv/misp-modules; \
+    RUN git clone --branch ${MODULES_TAG} --depth 1  https://github.com/MISP/misp-modules.git /srv/misp-modules; \
         cd /srv/misp-modules || exit; sed -i 's/-e //g' REQUIREMENTS; pip3 wheel -r REQUIREMENTS --no-cache-dir -w /wheel/
 
     RUN git clone --depth 1 https://github.com/stricaud/faup.git /srv/faup; \

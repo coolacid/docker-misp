@@ -20,11 +20,6 @@ services:
 
   misp:
     image: coolacid/misp-docker:core-latest
-    build:
-        context: server/.
-        args:
-            - MISP_TAG=${MISP_TAG}
-            - PHP_VER=${PHP_VER}
     depends_on:
       - redis
       - db
@@ -46,10 +41,6 @@ services:
 
   misp-modules:
     image: coolacid/misp-docker:modules-latest
-    build:
-        context: modules/.
-        args:
-            - MODULES_TAG=${MODULES_TAG}
     environment:
       - "REDIS_BACKEND=redis"
     depends_on:

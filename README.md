@@ -30,10 +30,9 @@ This is based on some of the work from the DSCO docker build, nearly all of the 
 
 ### Development/Test
 
--   Grab the `docker-compose.yml` file and the `server-configs` directory
+-   Grab the `docker-compose.yml` and `server-configs/email.php` files (Keep directory structure)
 
--   \[Optional] Copy the "default" configs removing "default" and edit the files in `server-configs`
-    -   Note: A dry run without this step will try and make sane DEV configs
+-   A dry run will create sane default configurations
 
 -   `docker-compose up`
 
@@ -44,6 +43,8 @@ This is based on some of the work from the DSCO docker build, nearly all of the 
 -   Profit
 
 ### Using the image for development
+
+Pull the entire repository, you can build the images using `docker-compose -f docker-compose.yml -f build-docker-compose.yml build`
 
 Once you have the docker container up you can access the container by running `docker-compose exec misp /bin/bash`.
 This will provide you with a root shell. You can use `apt update` and then install any tools you wish to use.

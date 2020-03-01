@@ -25,6 +25,7 @@ This is based on some of the work from the DSCO docker build, nearly all of the 
 
 -   MISP version is the MISP tag we're building
 -   Our build version is the iteration for our changes with the same MISP version
+-   Core and modules are split into \[core]-version and \[modules]-version respectively
 
 ## Getting Started
 
@@ -51,7 +52,13 @@ This will provide you with a root shell. You can use `apt update` and then insta
 Finally, copy any changes you make outside of the container for commiting to your branch. 
 `git diff -- [dir with changes]` could be used to reduce the number of changes in a patch file, however, becareful when using the `git diff` command.
 
+### Updating
+
+Updating the images should be as simple as `docker-compose pull` which, unless changed in the `docker-compose.yml` file will pull the latest built images.
+
 ### Production
+-   It is recommended to specify which build you want to be running, and modify that version number when you would like to upgrade
+
 -   Use docker-compose, or some other config management tool
 
 -   Directory volume mount SSL Certs `./ssl`: `/etc/ssl/certs`

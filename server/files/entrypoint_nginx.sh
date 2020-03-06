@@ -106,9 +106,6 @@ echo "... chmod -R g+ws /var/www/MISP/app/tmp ..." && chmod -R g+ws /var/www/MIS
 echo "... chmod -R g+ws /var/www/MISP/app/files ..." && chmod -R g+ws /var/www/MISP/app/files
 echo "... chmod -R g+ws /var/www/MISP/app/files/scripts/tmp ..." && chmod -R g+ws /var/www/MISP/app/files/scripts/tmp
 
-# delete pid file
-[ -f $ENTRYPOINT_PID_FILE ] && rm $ENTRYPOINT_PID_FILE
-
 # Work around https://github.com/MISP/MISP/issues/5608
 if [[ ! -f /var/www/MISP/PyMISP/pymisp/data/describeTypes.json ]]; then
     mkdir -p /var/www/MISP/PyMISP/pymisp/data/
@@ -120,6 +117,13 @@ if [[ "$NOREDIR" == true ]]; then
 else
     ln -s /etc/nginx/sites-available/misp80 /etc/nginx/sites-enabled/misp80
 fi
+
+if [[ -x /custom-entrypoint.sh ]]; then
+    /custom-entrypoint.sh
+fi
+
+# delete pid file
+[ -f $ENTRYPOINT_PID_FILE ] && rm $ENTRYPOINT_PID_FILE
 
 # Start NGINX
 nginx -g 'daemon off;'

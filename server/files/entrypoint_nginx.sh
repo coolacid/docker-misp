@@ -113,9 +113,16 @@ if [[ ! -f /var/www/MISP/PyMISP/pymisp/data/describeTypes.json ]]; then
 fi
 
 if [[ "$NOREDIR" == true ]]; then
+    echo "Configure NGINX | Disabling Port 80 Redirect"
     ln -s /etc/nginx/sites-available/misp80-noredir /etc/nginx/sites-enabled/misp80
 else
     ln -s /etc/nginx/sites-available/misp80 /etc/nginx/sites-enabled/misp80
+fi
+
+if [[ "$DISIPV6" == true ]]; then
+    echo "Configure NGINX | Disabling IPv6"
+    sed -i "s/listen \[\:\:\]/\#listen \[\:\:\]/" /etc/nginx/sites-enabled/misp80
+    sed -i "s/listen \[\:\:\]/\#listen \[\:\:\]/" /etc/nginx/sites-enabled/misp
 fi
 
 if [[ -x /custom-entrypoint.sh ]]; then

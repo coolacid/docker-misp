@@ -40,6 +40,7 @@ services:
       - "INIT=true" # Initialze MISP, things includes, attempting to import SQL and the Files DIR
 #      - "NOREDIR=true" #Do not redirect port 80
 #      - "SYNCSERVERS=1 2 3 4"
+#      - "DISIPV6=true"
 
   misp-modules:
     image: coolacid/misp-docker:modules-latest

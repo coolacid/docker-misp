@@ -12,6 +12,8 @@ services:
     image: mysql:8.0.19
     command: --default-authentication-plugin=mysql_native_password
     restart: always
+    volumes:
+      - "./mysql:/var/lib/mysql"
     environment:
       - "MYSQL_USER=misp"
       - "MYSQL_PASSWORD=example"

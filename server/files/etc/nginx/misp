@@ -4,6 +4,8 @@ server {
     root /var/www/MISP/app/webroot;
     index index.php;
 
+    client_max_body_size 50M;
+
     # Disable access logs
     access_log off;
     log_not_found off;

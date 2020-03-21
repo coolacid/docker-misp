@@ -112,11 +112,14 @@ if [[ ! -f /var/www/MISP/PyMISP/pymisp/data/describeTypes.json ]]; then
     ln -s /usr/local/lib/python3.7/dist-packages/pymisp/data/describeTypes.json /var/www/MISP/PyMISP/pymisp/data/describeTypes.json
 fi
 
-if [[ "$NOREDIR" == true ]]; then
+if [[ ! -L "/etc/nginx/sites-enabled/misp80" && "$NOREDIR" == true ]]; then
     echo "Configure NGINX | Disabling Port 80 Redirect"
     ln -s /etc/nginx/sites-available/misp80-noredir /etc/nginx/sites-enabled/misp80
-else
+elif [[ ! -L "/etc/nginx/sites-enabled/misp80" ]]; then
+    echo "Configure NGINX | Enable Port 80 Redirect"
     ln -s /etc/nginx/sites-available/misp80 /etc/nginx/sites-enabled/misp80
+else
+    echo "Configure NGINX | Port 80 already configured"
 fi
 
 if [[ "$DISIPV6" == true ]]; then

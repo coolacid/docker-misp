@@ -92,7 +92,7 @@ ARG PHP_VER
         php-fpm \
         # Unsure we need these
         zip unzip \
-        && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+        && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* && update-ca-certificates
 
 # MISP code
     # Download MISP using git in the /var/www/ directory.

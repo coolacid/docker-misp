@@ -89,7 +89,7 @@ init_mysql(){
 
 sync_files(){
     for DIR in $(ls /var/www/MISP/app/files.dist); do
-        rsync -azh --delete /var/www/MISP/app/files.dist/$DIR /var/www/MISP/app/files/
+        rsync -azh --delete "/var/www/MISP/app/files.dist/$DIR" "/var/www/MISP/app/files/"
     done
 }
 

@@ -87,6 +87,9 @@ init_mysql(){
     $MYSQLCMD < /var/www/MISP/INSTALL/MYSQL.sql
 }
 
+sync_files(){
+}
+
 # Things we should do when we have the INITIALIZE Env Flag
 if [[ "$INIT" == true ]]; then
     echo "Import MySQL scheme..." && init_mysql

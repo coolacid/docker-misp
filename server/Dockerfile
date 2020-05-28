@@ -78,6 +78,7 @@ ARG PHP_VER
         ssdeep \
         libfuzzy2 \
         mariadb-client \
+        rsync \
         # Python Requirements
         python3 \
         python3-setuptools \

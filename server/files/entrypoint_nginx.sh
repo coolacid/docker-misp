@@ -88,6 +88,9 @@ init_mysql(){
 }
 
 sync_files(){
+    for DIR in $(ls /var/www/MISP/app/files.dist); do
+        rsync -azh --delete /var/www/MISP/app/files.dist/$DIR /var/www/MISP/app/files/
+    done
 }
 
 # Things we should do when we have the INITIALIZE Env Flag
@@ -102,6 +105,8 @@ echo "Configure Cake | Change Redis host to $REDIS_FQDN ... " && setup_cake_conf
 
 # Things we should do if we're configuring MISP via ENV
 echo "Configure MISP | Initialize misp base config..." && init_misp_config
+
+echo "Configure MISP | Sync app files..." && sync_files
 
 echo "Configure MISP | Enforce permissions ..."
 echo "... chown -R www-data.www-data /var/www/MISP ..." && find /var/www/MISP -not -user www-data -exec chown www-data.www-data {} +

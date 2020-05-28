@@ -120,7 +120,8 @@ ARG PHP_VER
 
 # nginx
     RUN rm /etc/nginx/sites-enabled/*; mkdir /run/php
-    COPY files/etc/nginx/misp /etc/nginx/sites-enabled/misp
+    COPY files/etc/nginx/misp /etc/nginx/sites-available/misp
+    COPY files/etc/nginx/misp-secure /etc/nginx/sites-available/misp-secure
     COPY files/etc/nginx/misp80 /etc/nginx/sites-available/misp80
     COPY files/etc/nginx/misp80-noredir /etc/nginx/sites-available/misp80-noredir
 

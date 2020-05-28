@@ -123,6 +123,21 @@ else
     echo "Configure NGINX | Port 80 already configured"
 fi
 
+if [[ ! -L "/etc/nginx/sites-enabled/misp" && "$SECURESSL" == true ]]; then
+    echo "Configure NGINX | Using Secure SSL"
+    ln -s /etc/nginx/sites-available/misp-secure /etc/nginx/sites-enabled/misp
+elif [[ ! -L "/etc/nginx/sites-enabled/misp" ]]; then
+    echo "Configure NGINX | Using Standard SSL"
+    ln -s /etc/nginx/sites-available/misp /etc/nginx/sites-enabled/misp
+    if [[ ! -f /etc/ssl/certs/dhparams.pem ]]; then
+        echo "Configure NGINX | Building dhparams.pem"
+        openssl dhparam -out /etc/ssl/certs/dhparams.pem 2048
+    fi
+else
+    echo "Configure NGINX | SSL already configured"
+fi
+
+
 if [[ "$DISIPV6" == true ]]; then
     echo "Configure NGINX | Disabling IPv6"
     sed -i "s/listen \[\:\:\]/\#listen \[\:\:\]/" /etc/nginx/sites-enabled/misp80

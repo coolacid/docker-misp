@@ -48,7 +48,7 @@ services:
       # Optional Settings
 #      - "NOREDIR=true" # Do not redirect port 80
 #      - "DISIPV6=true" # Disable IPV6 in nginx
-
+#      - "SECURESSL=true" # Enable higher security SSL in nginx
   misp-modules:
     image: coolacid/misp-docker:modules-latest
     environment:

@@ -32,7 +32,7 @@ services:
       - "./server-configs/:/var/www/MISP/app/Config/"
       - "./logs/:/var/www/MISP/app/tmp/logs/"
       - "./files/:/var/www/MISP/app/files"
-      - "./ssl/:/etc/ssl/certs"
+      - "./ssl/:/etc/nginx/certs"
 #      - "./examples/custom-entrypoint.sh:/custom-entrypoint.sh" # Use the example custom-entrypoint.sh
     environment:
       - "HOSTNAME=https://localhost"

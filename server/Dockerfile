@@ -120,7 +120,7 @@ ARG PHP_VER
         ;cp -fa /var/www/MISP/INSTALL/setup/config.php /var/www/MISP/app/Plugin/CakeResque/Config/config.php
 
 # nginx
-    RUN rm /etc/nginx/sites-enabled/*; mkdir /run/php
+    RUN rm /etc/nginx/sites-enabled/*; mkdir /run/php /etc/nginx/certs
     COPY files/etc/nginx/misp /etc/nginx/sites-available/misp
     COPY files/etc/nginx/misp-secure /etc/nginx/sites-available/misp-secure
     COPY files/etc/nginx/misp80 /etc/nginx/sites-available/misp80

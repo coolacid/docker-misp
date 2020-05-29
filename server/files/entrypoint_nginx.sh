@@ -58,9 +58,9 @@ init_misp_files(){
 }
 
 init_ssl() {
-    if [[ (! -f /etc/ssl/certs/cert.pem) || (! -f /etc/ssl/certs/key.pem) ]];
+    if [[ (! -f /etc/nginx/certs/cert.pem) || (! -f /etc/nginx/certs/key.pem) ]];
     then
-        cd /etc/ssl/certs
+        cd /etc/nginx/certs
         openssl req -x509 -subj '/CN=localhost' -nodes -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
     fi
 }
@@ -92,6 +92,15 @@ sync_files(){
         rsync -azh --delete "/var/www/MISP/app/files.dist/$DIR" "/var/www/MISP/app/files/"
     done
 }
+
+# Ensure SSL certs are where we expect them, for backward comparibility See issue #53
+for CERT in cert.pem dhparams.pem key.pem; do
+    echo "/etc/nginx/certs/$CERT /etc/ssl/certs/$CERT"
+    if [[ ! -f "/etc/nginx/certs/$CERT" && -f "/etc/ssl/certs/$CERT" ]]; then
+        WARNING53=true
+        cp /etc/ssl/certs/$CERT /etc/nginx/certs/$CERT
+    fi
+done
 
 # Things we should do when we have the INITIALIZE Env Flag
 if [[ "$INIT" == true ]]; then
@@ -137,14 +146,14 @@ if [[ ! -L "/etc/nginx/sites-enabled/misp" && "$SECURESSL" == true ]]; then
 elif [[ ! -L "/etc/nginx/sites-enabled/misp" ]]; then
     echo "Configure NGINX | Using Standard SSL"
     ln -s /etc/nginx/sites-available/misp /etc/nginx/sites-enabled/misp
-    if [[ ! -f /etc/ssl/certs/dhparams.pem ]]; then
-        echo "Configure NGINX | Building dhparams.pem"
-        openssl dhparam -out /etc/ssl/certs/dhparams.pem 2048
-    fi
 else
     echo "Configure NGINX | SSL already configured"
 fi
 
+if [[ ! "$SECURESSL" == true && ! -f /etc/nginx/certs/dhparams.pem ]]; then
+    echo "Configure NGINX | Building dhparams.pem"
+    openssl dhparam -out /etc/nginx/certs/dhparams.pem 2048
+fi
 
 if [[ "$DISIPV6" == true ]]; then
     echo "Configure NGINX | Disabling IPv6"
@@ -158,6 +167,14 @@ fi
 
 # delete pid file
 [ -f $ENTRYPOINT_PID_FILE ] && rm $ENTRYPOINT_PID_FILE
+
+if [[ "$WARNING53" == true ]]; then
+    echo "WARNING - WARNING - WARNING"
+    echo "The SSL certs have moved. You currently have them mounted to /etc/ssl/certs."
+    echo "This needs to be changed to /etc/nginx/certs."
+    echo "See: https://github.com/coolacid/docker-misp/issues/53"
+    echo "WARNING - WARNING - WARNING"
+fi 
 
 # Start NGINX
 nginx -g 'daemon off;'

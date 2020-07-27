@@ -43,7 +43,7 @@ services:
       # Database Configuration (And their defaults)
 #      - "MYSQL_HOST=db"
 #      - "MYSQL_USER=misp"
-#      - "MYSQL_PASSWORD=example"
+#      - "MYSQL_PASSWORD=example" # NOTE: This should be AlphaNum with no Special Chars. Otherwise, edit config files after first run. 
 #      - "MYSQL_DATABASE=misp"
       # Optional Settings
 #      - "NOREDIR=true" # Do not redirect port 80

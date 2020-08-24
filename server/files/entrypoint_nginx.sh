@@ -73,6 +73,12 @@ init_mysql(){
         echo $?
     }
 
+    isDBinitDone () {
+        # Table attributes has existed since at least v2.1
+        echo "DESCRIBE attributes" | $MYSQLCMD 1>/dev/null
+        echo $?
+    }
+
     RETRY=100
     until [ $(isDBup) -eq 0 ] || [ $RETRY -le 0 ] ; do
         echo "Waiting for database to come up"
@@ -84,7 +90,12 @@ init_mysql(){
         exit 1
     fi
 
-    $MYSQLCMD < /var/www/MISP/INSTALL/MYSQL.sql
+    if [ $(isDBinitDone) -eq 0 ]; then
+        echo "Database has already been initialized"
+    else
+        echo "Database has not been initialized, importing MySQL scheme..."
+        $MYSQLCMD < /var/www/MISP/INSTALL/MYSQL.sql
+    fi
 }
 
 sync_files(){
@@ -104,7 +115,7 @@ done
 
 # Things we should do when we have the INITIALIZE Env Flag
 if [[ "$INIT" == true ]]; then
-    echo "Import MySQL scheme..." && init_mysql
+    echo "Setup MySQL..." && init_mysql
     echo "Setup MISP files dir..." && init_misp_files
     echo "Ensure SSL certs exist..." && init_ssl
 fi

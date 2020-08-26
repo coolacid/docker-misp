@@ -7,6 +7,7 @@ MISP_APP_CONFIG_PATH=/var/www/MISP/app/Config
 [ -z "$MYSQL_PASSWORD" ] && MYSQL_PASSWORD=example
 [ -z "$MYSQL_DATABASE" ] && MYSQL_DATABASE=misp
 [ -z "$REDIS_FQDN" ] && REDIS_FQDN=redis
+[ -z "$MISP_MODULES_FQDN" ] && MISP_MODULES_FQDN="http://misp-modules"
 [ -z "$MYSQLCMD" ] && MYSQLCMD="mysql -u $MYSQL_USER -p$MYSQL_PASSWORD -P $MYSQL_PORT -h $MYSQL_HOST -r -N  $MYSQL_DATABASE"
 
 ENTRYPOINT_PID_FILE="/entrypoint_apache.install"
@@ -39,13 +40,13 @@ init_misp_config(){
     /var/www/MISP/app/Console/cake Admin setSetting "Plugin.ZeroMQ_enable" true
 
     /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Enrichment_services_enable" true
-    /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Enrichment_services_url" "http://misp-modules"
+    /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Enrichment_services_url" "$MISP_MODULES_FQDN"
 
     /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Import_services_enable" true
-    /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Import_services_url" "http://misp-modules"
+    /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Import_services_url" "$MISP_MODULES_FQDN"
 
     /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Export_services_enable" true
-    /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Export_services_url" "http://misp-modules"
+    /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Export_services_url" "$MISP_MODULES_FQDN"
 
     /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Cortex_services_enable" false
 }

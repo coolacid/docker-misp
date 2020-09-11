@@ -91,6 +91,7 @@ ARG PHP_VER
         php-redis \
         php-gd \
         php-fpm \
+        php-zip \
         # Unsure we need these
         zip unzip \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*

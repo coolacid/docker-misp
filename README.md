@@ -72,6 +72,10 @@ Updating the images should be as simple as `docker-compose pull` which, unless c
     -   `/var/www/MISP/.gnupg`
     -   `/var/www/MISP/.smime`
 
+### Building
+
+If you are interested in building the project from scratch - `git clone` or download the entire repo and run `docker-compose -f build-docker-compose.yml build` 
+
 ## Image file sizes
 
 -   Core server(Saved: 2.5GB)

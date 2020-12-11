@@ -19,6 +19,8 @@ services:
       - "MYSQL_DATABASE=misp"
     volumes:
       - mysql_data:/var/lib/mysql
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE Prevent runaway mysql log
 
   misp:
     image: coolacid/misp-docker:core-latest

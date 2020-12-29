@@ -15,6 +15,7 @@ ENTRYPOINT_PID_FILE="/entrypoint_apache.install"
 
 setup_cake_config(){
     sed -i "s/'host' => 'localhost'.*/'host' => '$REDIS_FQDN',          \/\/ Redis server hostname/" "/var/www/MISP/app/Plugin/CakeResque/Config/config.php"
+    sed -i "s/'host' => '127.0.0.1'.*/'host' => '$REDIS_FQDN',          \/\/ Redis server hostname/" "/var/www/MISP/app/Plugin/CakeResque/Config/config.php"
 }
 
 init_misp_config(){
@@ -186,7 +187,7 @@ if [[ "$WARNING53" == true ]]; then
     echo "This needs to be changed to /etc/nginx/certs."
     echo "See: https://github.com/coolacid/docker-misp/issues/53"
     echo "WARNING - WARNING - WARNING"
-fi 
+fi
 
 # Start NGINX
 nginx -g 'daemon off;'

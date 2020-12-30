@@ -9,6 +9,7 @@ MISP_APP_CONFIG_PATH=/var/www/MISP/app/Config
 [ -z "$REDIS_FQDN" ] && REDIS_FQDN=redis
 [ -z "$MISP_MODULES_FQDN" ] && MISP_MODULES_FQDN="http://misp-modules"
 [ -z "$MYSQLCMD" ] && MYSQLCMD="mysql -u $MYSQL_USER -p$MYSQL_PASSWORD -P $MYSQL_PORT -h $MYSQL_HOST -r -N  $MYSQL_DATABASE"
+[ -z "$MYSQLROOTCMD" ] && MYSQLROOTCMD="mysql -u root -p$MYSQL_ROOT_PASSWORD -P $MYSQL_PORT -h $MYSQL_HOST -r -N  $MYSQL_DATABASE"
 
 ENTRYPOINT_PID_FILE="/entrypoint_apache.install"
 [ ! -f $ENTRYPOINT_PID_FILE ] && touch $ENTRYPOINT_PID_FILE
@@ -90,6 +91,19 @@ init_mysql(){
     if [ $RETRY -le 0 ]; then
         >&2 echo "Error: Could not connect to Database on $MYSQL_HOST:$MYSQL_PORT"
         exit 1
+    fi
+
+    # If we're given the root password, disable the default sql_mode ONLY_FULL_GROUP_BY
+    # in MySQL. Required until https://github.com/MISP/MISP/issues/1894 is fixed
+    if [ -n "$MYSQL_ROOT_PASSWORD" ]; then
+        echo -n "Checking if ONLY_FULL_GROUP_BY mode is enabled..."
+        sql_mode=$(echo "SELECT @@sql_mode" | $MYSQLROOTCMD | grep "ONLY_FULL_GROUP_BY")
+        if [ -n "$sql_mode" ]; then
+            echo -e "\nDisabling MySQL default ONLY_FULL_GROUP_BY"
+            echo "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));" | $MYSQLROOTCMD 1>/dev/null
+        else
+        echo " OK"
+        fi
     fi
 
     if [ $(isDBinitDone) -eq 0 ]; then

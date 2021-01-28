@@ -198,6 +198,12 @@ update_misp_submodules() {
   curl -s http://localhost/users/login > /dev/null
   curl -s --insecure https://localhost/users/login > /dev/null
 
+  # only on init and admin password variable not blank
+  if [ -n "$ADMIN_PASSWORD" ]; then
+    echo "setting new admin password"
+    /var/www/MISP/app/Console/cake Password admin@admin.test "$ADMIN_PASSWORD"
+  fi
+
   echo "Update Taxonomies"
   /var/www/MISP/app/Console/cake Admin updateTaxonomies
   echo "Update WarningLists"

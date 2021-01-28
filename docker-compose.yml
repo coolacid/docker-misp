@@ -45,13 +45,15 @@ services:
       # Database Configuration (And their defaults)
 #      - "MYSQL_HOST=db"
 #      - "MYSQL_USER=misp"
-#      - "MYSQL_PASSWORD=example" # NOTE: This should be AlphaNum with no Special Chars. Otherwise, edit config files after first run. 
+#      - "MYSQL_PASSWORD=example" # NOTE: This should be AlphaNum with no Special Chars. Otherwise, edit config files after first run.
 #      - "MYSQL_DATABASE=misp"
       # Optional Settings
 #      - "NOREDIR=true" # Do not redirect port 80
 #      - "DISIPV6=true" # Disable IPV6 in nginx
 #      - "SECURESSL=true" # Enable higher security SSL in nginx
 #      - "MISP_MODULES_FQDN=http://misp-modules" # Set the MISP Modules FQDN, used for Enrichment_services_url/Import_services_url/Export_services_url
+#      - "M_S_MISP.live=true"
+#      - "M_S_Plugin.CustomAuth_enable=true"
   misp-modules:
     image: coolacid/misp-docker:modules-latest
     environment:

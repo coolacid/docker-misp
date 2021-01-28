@@ -35,6 +35,8 @@ services:
       - "./logs/:/var/www/MISP/app/tmp/logs/"
       - "./files/:/var/www/MISP/app/files"
       - "./ssl/:/etc/nginx/certs"
+      - "custom_org_images:/var/www/MISP/app/webroot/img/orgs"
+      - "custom_images:/var/www/MISP/app/webroot/img/custom"
 #      - "./examples/custom-entrypoint.sh:/custom-entrypoint.sh" # Use the example custom-entrypoint.sh
     environment:
       - "HOSTNAME=https://localhost"
@@ -63,3 +65,5 @@ services:
 
 volumes:
     mysql_data:
+    custom_org_images:
+    custom_images:

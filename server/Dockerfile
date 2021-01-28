@@ -134,6 +134,9 @@ ARG PHP_VER
 # Make a copy of the configurations, so we can sync from it
     RUN cp -R /var/www/MISP/app/Config /var/www/MISP/app/Config.dist
 
+# Make a copy of the default images of orgs, so we can sync from it
+    RUN cp -R /var/www/MISP/app/webroot/img/orgs /var/www/MISP/app/webroot/img/orgs.dist
+
 # Entrypoints
     COPY files/etc/supervisor/supervisor.conf /etc/supervisor/conf.d/supervisord.conf
     COPY files/entrypoint_fpm.sh /

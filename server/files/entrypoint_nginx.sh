@@ -189,5 +189,32 @@ if [[ "$WARNING53" == true ]]; then
     echo "WARNING - WARNING - WARNING"
 fi
 
-# Start NGINX
+# can run fine in the background
+update_misp_submodules() {
+  echo "updating submodules. The first time will take a while."
+  # wait 5 seconds for nginx start up
+  sleep 5s
+  # request is needed because misp will not update itself without request
+  curl -s http://localhost/users/login > /dev/null
+  curl -s --insecure https://localhost/users/login > /dev/null
+
+  echo "Update Taxonomies"
+  /var/www/MISP/app/Console/cake Admin updateTaxonomies
+  echo "Update WarningLists"
+  /var/www/MISP/app/Console/cake Admin updateWarningLists
+  echo "Update NoticeLists"
+  /var/www/MISP/app/Console/cake Admin updateNoticeLists
+  echo "Update ObjectTemplates"
+  /var/www/MISP/app/Console/cake Admin updateObjectTemplates
+  echo "Update Galaxies"
+  # bug issue (https://github.com/MISP/MISP/issues/6921) | only succeeds after loading the webpage once
+  /var/www/MISP/app/Console/cake Admin updateGalaxies
+  echo "done updating"
+}
+
+if [[ "$INIT" == true ]]; then
+  update_misp_submodules &
+fi
+
+echo "starting nginx"
 nginx -g 'daemon off;'

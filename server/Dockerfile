@@ -23,6 +23,7 @@ FROM debian:buster-slim as python-build
         git \
         python3 \
         python3-dev \
+        python3-pip \
         python3-setuptools \
         python3-wheel \
         libfuzzy-dev \
@@ -32,8 +33,10 @@ FROM debian:buster-slim as python-build
     RUN mkdir /wheels
 
     WORKDIR /tmp
+
     RUN git clone --depth 1 https://github.com/CybOXProject/mixbox.git; \
-        cd mixbox || exit; python3 setup.py bdist_wheel -d /wheels
+        cd mixbox || exit; python3 setup.py bdist_wheel -d /wheels; \
+        sed -i 's/-e //g' requirements.txt; pip3 wheel -r requirements.txt --no-cache-dir -w /wheels/
 
     # install python-maec
     RUN git clone --depth 1 https://github.com/MAECProject/python-maec.git; \
@@ -41,15 +44,18 @@ FROM debian:buster-slim as python-build
 
     # install python-cybox
     RUN git clone --depth 1 https://github.com/CybOXProject/python-cybox.git; \
-        cd python-cybox || exit; python3 setup.py bdist_wheel -d /wheels
+        cd python-cybox || exit; python3 setup.py bdist_wheel -d /wheels; \
+        sed -i 's/-e //g' requirements.txt; pip3 wheel -r requirements.txt --no-cache-dir -w /wheels/
 
     # install python stix
     RUN git clone --depth 1 https://github.com/STIXProject/python-stix.git; \
-        cd python-stix || exit; python3 setup.py bdist_wheel -d /wheels
+        cd python-stix || exit; python3 setup.py bdist_wheel -d /wheels; \
+        sed -i 's/-e //g' requirements.txt; pip3 wheel -r requirements.txt --no-cache-dir -w /wheels/
 
     # install STIX2.0 library to support STIX 2.0 export:
     RUN git clone --depth 1 https://github.com/MISP/cti-python-stix2.git; \
-        cd cti-python-stix2 || exit; python3 setup.py bdist_wheel -d /wheels
+        cd cti-python-stix2 || exit; python3 setup.py bdist_wheel -d /wheels; \
+        sed -i 's/-e //g' requirements.txt; pip3 wheel -r requirements.txt --no-cache-dir -w /wheels/
 
     # install PyMISP
     RUN git clone --depth 1 https://github.com/MISP/PyMISP.git; \
@@ -58,6 +64,19 @@ FROM debian:buster-slim as python-build
     # install pydeep
     RUN git clone --depth 1 https://github.com/coolacid/pydeep.git; \
         cd pydeep || exit; python3 setup.py bdist_wheel -d /wheels
+
+    # Grab other modules we need
+    RUN pip3 wheel --no-cache-dir -w /wheels/ plyara pyzmq redis python-magic lief
+
+    # Temp workaround for cryptography library
+    RUN pip3 wheel 'cryptography>=3.3.0,<3.4.0' --no-cache-dir -w /wheels/
+
+    # Remove extra packages due to incompatible requirements.txt files
+    WORKDIR /wheels
+    RUN rm Sphinx-1.5.5-py2.py3-none-any.whl \
+           Sphinx-1.3.6-py2.py3-none-any.whl \
+           tox-3.22.0-py2.py3-none-any.whl
+
 
 FROM debian:buster-slim
 ENV DEBIAN_FRONTEND noninteractive
@@ -104,7 +123,7 @@ ARG PHP_VER
 
 # Python Modules
     COPY --from=python-build /wheels /wheels
-    RUN pip3 install --no-cache-dir /wheels/*.whl plyara pyzmq redis python-magic lief && rm -rf /wheels
+    RUN pip3 install --no-cache-dir /wheels/*.whl && rm -rf /wheels
 
 # PHP
     # Install ssdeep prebuild, latest composer, then install the app's PHP deps

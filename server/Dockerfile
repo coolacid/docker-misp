@@ -105,6 +105,8 @@ ARG PHP_VER
         # PHP Requirements
         php \
         php-xml \
+        php-intl \
+        php-bcmath \
         php-mbstring \
         php-mysql \
         php-redis \

@@ -36,7 +36,7 @@ services:
       - "./files/:/var/www/MISP/app/files"
       - "./ssl/:/etc/nginx/certs"
       - "./org_img/:/var/www/MISP/app/webroot/img/orgs"
-      - "./custom_img/: /var/www/MISP/app/webroot/img/custom"
+      - "./custom_img/:/var/www/MISP/app/webroot/img/custom"
 #      - "./examples/custom-entrypoint.sh:/custom-entrypoint.sh" # Use the example custom-entrypoint.sh
     environment:
       - "HOSTNAME=https://localhost"

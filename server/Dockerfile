@@ -73,9 +73,8 @@ FROM debian:buster-slim as python-build
 
     # Remove extra packages due to incompatible requirements.txt files
     WORKDIR /wheels
-    RUN rm Sphinx-1.5.5-py2.py3-none-any.whl \
-           Sphinx-1.3.6-py2.py3-none-any.whl \
-           tox-3.22.0-py2.py3-none-any.whl
+    RUN find . -name "tox*" | grep -v "tox-2.7.0" | xargs rm -f
+    RUN find . -name "Sphinx*" | grep -v "Sphinx-1.8.5" | xargs rm -f
 
 
 FROM debian:buster-slim

@@ -2,7 +2,8 @@ FROM composer:1.9 as composer-build
     ARG MISP_TAG
     WORKDIR /tmp
     ADD https://raw.githubusercontent.com/MISP/MISP/${MISP_TAG}/app/composer.json /tmp
-    RUN composer install --ignore-platform-reqs
+    RUN composer install --ignore-platform-reqs && \
+     composer require jumbojett/openid-connect-php --ignore-platform-reqs
 
 FROM debian:buster-slim as php-build
     RUN apt-get update; apt-get install -y --no-install-recommends \
@@ -153,9 +154,6 @@ ARG PHP_VER
 
 # Make a copy of the configurations, so we can sync from it
     RUN cp -R /var/www/MISP/app/Config /var/www/MISP/app/Config.dist
-
-    # Intall Open ID Connect dependency
-    RUN cd /var/www/MISP/app && php composer.phar require jumbojett/openid-connect-php
 
 # Entrypoints
     COPY files/etc/supervisor/supervisor.conf /etc/supervisor/conf.d/supervisord.conf

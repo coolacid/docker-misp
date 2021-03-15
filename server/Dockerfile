@@ -103,6 +103,7 @@ ARG PHP_VER
         python3-pip \
         # PHP Requirements
         php \
+        php-curl \
         php-xml \
         php-intl \
         php-bcmath \
@@ -152,6 +153,9 @@ ARG PHP_VER
 
 # Make a copy of the configurations, so we can sync from it
     RUN cp -R /var/www/MISP/app/Config /var/www/MISP/app/Config.dist
+
+    # Intall Open ID Connect dependency
+    RUN cd /var/www/MISP/app && php composer.phar require jumbojett/openid-connect-php
 
 # Entrypoints
     COPY files/etc/supervisor/supervisor.conf /etc/supervisor/conf.d/supervisord.conf

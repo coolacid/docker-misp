@@ -1,5 +1,7 @@
 #!/bin/bash
 
+[ -z "$REDIS_FQDN" ] && REDIS_FQDN=redis
+
 change_php_vars(){
     for FILE in /etc/php/*/fpm/php.ini
     do

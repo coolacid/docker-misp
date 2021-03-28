@@ -7,6 +7,29 @@
 # This file will used in the entrypoint.sh.
 #
 
+
+#### LEGACY ENV
+#
+#    This area is added until 2022, to support the legacy variants of environment variables.
+#
+# For the following environment variable a extra check must be done, because it will be set always.
+# https://linuxize.com/post/how-to-check-if-string-contains-substring-in-bash/
+# echo "$1" | grep -q "$2"
+[ $(echo "$HOSTNAME"|grep -q "http") ] || MISP_MISP_BASEURL=${HOSTNAME}
+MISP_REDIS_HOST=${REDIS_FQDN}
+MISP_ENTRYPOINT_NGINX_INIT=${INIT}
+MISP_CRON_USER_ID=${CRON_USER_ID}
+MISP_CRON_SYNCSERVERS=${SYNCSERVERS}
+MISP_MYSQL_HOST=${MYSQL_HOST}
+MISP_MYSQL_USER=${MYSQL_USER}
+MISP_MYSQL_PASSWORD=${MYSQL_PASSWORD}
+MISP_MYSQL_DB=${MYSQL_DATABASE}
+MISP_ENTRYPOINT_NGINX_NOREDIRECT=${NOREDIR}
+MISP_ENTRYPOINT_NGINX_DISABLEIPV6=${DISIPV6}
+MISP_ENTRYPOINT_NGINX_SECURESSL=${SECURESSL}
+MISP_MISPMODULES_FQDN=${MISP_MODULES_FQDN}
+#### LEGACY END
+
 # Entrypoint NGINX
 ## Set PID file:
 MISP_ENTRYPOINT_NGINX_PID_FILE=${MISP_ENTRYPOINT_NGINX_PID_FILE:-"/entrypoint_apache.install"}
@@ -68,9 +91,9 @@ MISP_MYSQL_HOST=${MISP_MYSQL_HOST:-"db"}
 ## Set MySQL Port:
 MISP_MYSQL_PORT=${MISP_MYSQL_PORT:-"3306"}
 ## Set MySQL username:
-MISP_MYSQL_USER=${MISP_MYSQL_USER:-"misp"}
+MISP_MYSQL_USER=${MISP_MYSQL_USER:-"dbuser"}
 ## Set MySQL user password:
-MISP_MYSQL_PASSWORD=${MISP_MYSQL_PASSWORD:-""}
+MISP_MYSQL_PASSWORD=${MISP_MYSQL_PASSWORD:-"ChangeMe!"}
 ## Set MySQL database:
 MISP_MYSQL_DB=${MISP_MYSQL_DB:-"misp"}
 ## Set Default MySQL CMD:

@@ -21,10 +21,10 @@ init_misp_config(){
     [ -f "$MISP_MISP_APP_CONFIG_PATH/routes.php" ] || cp "$MISP_MISP_APP_CONFIG_PATH.dist/routes.php" "$MISP_MISP_APP_CONFIG_PATH/routes.php"
 
     echo "Configure MISP | Set DB User, Password and Host in database.php"
-    sed -i "s/localhost/$MISP_MYSQL_HOST/" $MISP_MISP_APP_CONFIG_PATH/database.php
-    sed -i "s/db\s*login/$MISP_MYSQL_USER/" $MISP_MISP_APP_CONFIG_PATH/database.php
-    sed -i "s/db\s*password/$MISP_MYSQL_PASSWORD/" $MISP_MISP_APP_CONFIG_PATH/database.php
-    sed -i "s/'database' => 'misp'/'database' => '$MISP_MYSQL_DATABASE'/" $MISP_MISP_APP_CONFIG_PATH/database.php
+    sed -i "s/localhost/$MISP_MYSQL_HOST/" "$MISP_MISP_APP_CONFIG_PATH/database.php"
+    sed -i "s/db\s*login/$MISP_MYSQL_USER/" "$MISP_MISP_APP_CONFIG_PATH/database.php"
+    sed -i "s/db\s*password/$MISP_MYSQL_PASSWORD/" "$MISP_MISP_APP_CONFIG_PATH/database.php"
+    sed -i "s/'database' => 'misp'/'database' => '$MISP_MYSQL_DATABASE'/" "$MISP_MISP_APP_CONFIG_PATH/database.php"
 
     echo "Configure sane defaults"
     $MISP_MISP_CAKE_FILE Admin setSetting "MISP.redis_host" "$MISP_REDIS_HOST"

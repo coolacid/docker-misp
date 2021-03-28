@@ -13,10 +13,10 @@ services:
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
-      - "MYSQL_USER=misp"
-      - "MYSQL_PASSWORD=example"
-      - "MYSQL_ROOT_PASSWORD=password"
-      - "MYSQL_DATABASE=misp"
+      - MYSQL_USER=${MISP_MYSQL_USER:-dbuser}
+      - MYSQL_PASSWORD=${MISP_MYSQL_PASSWORD:-ChangeMe!}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-ChangeMe!}
+      - MYSQL_DATABASE=${MISP_MYSQL_DB:-misp}
     volumes:
       - mysql_data:/var/lib/mysql
     cap_add:
@@ -27,35 +27,80 @@ services:
     depends_on:
       - redis
       - db
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - "./server-configs/:/var/www/MISP/app/Config/"
-      - "./logs/:/var/www/MISP/app/tmp/logs/"
-      - "./files/:/var/www/MISP/app/files"
-      - "./ssl/:/etc/nginx/certs"
+    expose:
+      - "80"
+      - "443"
+    # volumes:
+      # Per default no volumes will be mounted, so that you as user has the change to choose
+      # your wanted mountpoint or volume.
+      # - "./server-configs/:/var/www/MISP/app/Config/"
+      # - "./logs/:/var/www/MISP/app/tmp/logs/"
+      # - "./files/:/var/www/MISP/app/files"
+      # - "./ssl/:/etc/nginx/certs"
 #      - "./examples/custom-entrypoint.sh:/custom-entrypoint.sh" # Use the example custom-entrypoint.sh
     environment:
-      - "HOSTNAME=https://localhost"
-      - "REDIS_FQDN=redis"
-      - "INIT=true"             # Initialze MISP, things includes, attempting to import SQL and the Files DIR
-      - "CRON_USER_ID=1"        # The MISP user ID to run cron jobs as
-#      - "SYNCSERVERS=1 2 3 4"  # The MISP Feed servers to sync in the cron job
-      # Database Configuration (And their defaults)
-#      - "MYSQL_HOST=db"
-#      - "MYSQL_USER=misp"
-#      - "MYSQL_PASSWORD=example" # NOTE: This should be AlphaNum with no Special Chars. Otherwise, edit config files after first run. 
-#      - "MYSQL_DATABASE=misp"
-      # Optional Settings
-#      - "NOREDIR=true" # Do not redirect port 80
-#      - "DISIPV6=true" # Disable IPV6 in nginx
-#      - "SECURESSL=true" # Enable higher security SSL in nginx
-#      - "MISP_MODULES_FQDN=http://misp-modules" # Set the MISP Modules FQDN, used for Enrichment_services_url/Import_services_url/Export_services_url
+      #
+      # Please check server/files/devault_vars.sh to see the default values.
+      # Thses default values will be set if you do override it 
+      # via .env, docker-compose.override.yml or your own docker-compose.yml file.
+      #
+      # NGINX
+      - MISP_ENTRYPOINT_NGINX_HOSTNAME=${MISP_ENTRYPOINT_NGINX_HOSTNAME}
+      - MISP_ENTRYPOINT_NGINX_NOREDIRECT=${MISP_ENTRYPOINT_NGINX_NOREDIRECT}
+      - MISP_ENTRYPOINT_NGINX_DISABLEIPV6=${MISP_ENTRYPOINT_NGINX_DISABLEIPV6}
+      - MISP_ENTRYPOINT_NGINX_SECURESSL=${MISP_ENTRYPOINT_NGINX_SECURESSL}
+      - MISP_ENTRYPOINT_NGINX_INIT=${MISP_ENTRYPOINT_NGINX_INIT}
+      # PHP-FPM
+      - ENTRYPOINT_FPM_PHP_MEMORY_LIMIT=${ENTRYPOINT_FPM_PHP_MEMORY_LIMIT}
+      - ENTRYPOINT_FPM_PHP_MAX_EXECUTION_TIME=${ENTRYPOINT_FPM_PHP_MAX_EXECUTION_TIME}
+      - ENTRYPOINT_FPM_PHP_UPLOAD_MAX_FILESIZE=${ENTRYPOINT_FPM_PHP_UPLOAD_MAX_FILESIZE}
+      - ENTRYPOINT_FPM_PHP_POST_MAX_SIZE=${ENTRYPOINT_FPM_PHP_POST_MAX_SIZE}
+      # Cron
+      - MISP_CRON_USER_ID=${MISP_CRON_USER_ID}
+      - MISP_CRON_SYNCSERVERS=${MISP_CRON_SYNCSERVERS}
+      # Redis
+      - MISP_REDIS_HOST=${MISP_REDIS_HOST}
+      - MISP_REDIS_PORT=${MISP_REDIS_PORT}
+      - MISP_REDIS_DB=${MISP_REDIS_DB}
+      - MISP_REDIS_PASSWORD=${MISP_REDIS_PASSWORD}
+      #MISP-Modules
+      - MISP_MISPMODULES_HOST=${MISP_MISPMODULES_HOST}
+      - MISP_MISPMODULES_PORT=${MISP_MISPMODULES_PORT}
+      - MISP_MISPMODULES_FQDN=${MISP_MISPMODULES_FQDN}
+      # MySQL
+      - MISP_MYSQL_HOST=${MISP_MYSQL_HOST}
+      - MISP_MYSQL_PORT=${MISP_MYSQL_PORT}
+      - MISP_MYSQL_USER=${MISP_MYSQL_USER}
+      - MISP_MYSQL_PASSWORD=${MISP_MYSQL_PASSWORD}
+      - MISP_MYSQL_DB=${MISP_MYSQL_DB}
+      - MISP_MYSQL_MYSQLCMD=${MISP_MYSQL_MYSQLCMD}
+      # MISP Settings
+      - MISP_MISP_BASEURL=${MISP_MISP_BASEURL}
+      - MISP_MISP_Base_LIVE=${MISP_MISP_Base_LIVE}
+      - MISP_MISP_PLUGIN_CUSTOMAUTH_ENABLE=${MISP_MISP_PLUGIN_CUSTOMAUTH_ENABLE}
+      #
+      # Add additional misp settings via MISP_MISP_NAME=value
+      #
+      ### Legacy vars:
+    #   - "HOSTNAME=https://localhost"
+    #   - "REDIS_FQDN=redis"
+    #   - "INIT=true"             # Initialze MISP, things includes, attempting to import SQL and the Files DIR
+    #   - "CRON_USER_ID=1"        # The MISP user ID to run cron jobs as
+    #  - "SYNCSERVERS=1 2 3 4"  # The MISP Feed servers to sync in the cron job
+    #   Database Configuration (And their defaults)
+    #  - "MYSQL_HOST=db"
+    #  - "MYSQL_USER=misp"
+    #  - "MYSQL_PASSWORD=example" # NOTE: This should be AlphaNum with no Special Chars. Otherwise, edit config files after first run. 
+    #  - "MYSQL_DATABASE=misp"
+    #   Optional Settings
+    #  - "NOREDIR=true" # Do not redirect port 80
+    #  - "DISIPV6=true" # Disable IPV6 in nginx
+    #  - "SECURESSL=true" # Enable higher security SSL in nginx
+    #  - "MISP_MODULES_FQDN=http://misp-modules" # Set the MISP Modules FQDN, used for Enrichment_services_url/Import_services_url/Export_services_url
   misp-modules:
     image: coolacid/misp-docker:modules-latest
     environment:
-      - "REDIS_BACKEND=redis"
+      - REDIS_BACKEND=${MISP_REDIS_HOST:-redis}
     depends_on:
       - redis
       - db

@@ -22,7 +22,7 @@ This is based on some of the work from the DSCO docker build, nearly all of the 
 
    1. [Docker Tags](#docker-tags)
    1. [Getting Started](#getting-started)
-      1. [Evironment Variables](#evironment-variables)
+      1. [Environment Variables](#environment-variables)
       1. [Development/Test](#development/test)
       1. [Using the image for development](#using-the-image-for-development)
       1. [Updating](#updating)

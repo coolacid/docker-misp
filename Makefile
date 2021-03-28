@@ -1,6 +1,12 @@
 # https://www.mkdocs.org/user-guide/deploying-your-docs/
 
-.PHONY: update-readme-toc add-remote-url update-from-origin
+.PHONY: build-docker-misp build-docker-misp-module update-readme-toc add-remote-url update-from-origin
+
+build-docker-misp:
+	docker-compose -f docker-compose.yml -f build-docker-compose.yml build misp
+
+build-docker-misp-module:
+	docker-compose -f docker-compose.yml -f build-docker-compose.yml build misp-module
 
 # DEV only
 update-readme-toc:

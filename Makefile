@@ -3,14 +3,22 @@
 .PHONY: build-docker-misp build-docker-misp-module update-readme-toc add-remote-url update-from-origin
 
 build-docker-misp:
-	docker-compose -f docker-compose.yml -f build-docker-compose.yml build misp
+	cp build-docker-compose.yml docker-compose.override.yml
+	docker-compose build misp
 
 build-docker-misp-module:
-	docker-compose -f docker-compose.yml -f build-docker-compose.yml build misp-module
+	cp build-docker-compose.yml docker-compose.override.yml
+	docker-compose -fbuild misp-module
 
 # DEV only
 update-readme-toc:
 	docker run -v $(shell pwd)":/app" -w /app --rm -it sebdah/markdown-toc README.md --skip-headers 2 --replace --inline --header "## Table of Contents"
+
+docker-remove-build-run-logs-misp:
+	docker-compose down -v
+	$(MAKE) build-docker-misp
+	docker-compose up -d misp
+	docker-compose logs -f
 
 # For Git forks
 ## Add remote url for mainstream

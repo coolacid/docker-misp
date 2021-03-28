@@ -15,6 +15,7 @@
 # For the following environment variable a extra check must be done, because it will be set always.
 # https://linuxize.com/post/how-to-check-if-string-contains-substring-in-bash/
 # echo "$1" | grep -q "$2"
+# shellcheck disable=SC2039
 [ $(echo "$HOSTNAME"|grep -q "http") ] || MISP_MISP_BASEURL=${HOSTNAME}
 MISP_REDIS_HOST=${REDIS_FQDN}
 MISP_ENTRYPOINT_NGINX_INIT=${INIT}
@@ -34,6 +35,7 @@ MISP_MISPMODULES_FQDN=${MISP_MODULES_FQDN}
 ## Set PID file:
 MISP_ENTRYPOINT_NGINX_PID_FILE=${MISP_ENTRYPOINT_NGINX_PID_FILE:-"/entrypoint_apache.install"}
 ## Set Hostname for selfsigned certificate
+# shellcheck disable=SC2039
 MISP_ENTRYPOINT_NGINX_HOSTNAME=${MISP_ENTRYPOINT_NGINX_HOSTNAME:-"$HOSTNAME"}
 ## Do not redirect port 80:
 MISP_ENTRYPOINT_NGINX_NOREDIRECT=${MISP_ENTRYPOINT_NGINX_NOREDIRECT:-"true"}

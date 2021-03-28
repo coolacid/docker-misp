@@ -41,7 +41,7 @@ services:
     environment:
       #
       # Please check server/files/devault_vars.sh to see the default values.
-      # Thses default values will be set if you do override it 
+      # Thses default values will be set if you do override it
       # via .env, docker-compose.override.yml or your own docker-compose.yml file.
       #
       # NGINX

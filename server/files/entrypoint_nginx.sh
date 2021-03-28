@@ -27,23 +27,23 @@ init_misp_config(){
     sed -i "s/'database' => 'misp'/'database' => '$MISP_MYSQL_DATABASE'/" "$MISP_MISP_APP_CONFIG_PATH/database.php"
 
     echo "Configure sane defaults"
-    $MISP_MISP_CAKE_FILE Admin setSetting "MISP.redis_host" "$MISP_REDIS_HOST"
-    $MISP_MISP_CAKE_FILE Admin setSetting "MISP.baseurl" "$MISP_MISP_BASEURL"
-    $MISP_MISP_CAKE_FILE Admin setSetting "MISP.python_bin" $(which python3)
+    $MISP_CAKE_FILE Admin setSetting "MISP.redis_host" "$MISP_REDIS_HOST"
+    $MISP_CAKE_FILE Admin setSetting "MISP.baseurl" "$MISP_MISP_BASEURL"
+    $MISP_CAKE_FILE Admin setSetting "MISP.python_bin" $(which python3)
 
-    $MISP_MISP_CAKE_FILE Admin setSetting "Plugin.ZeroMQ_redis_host" "$MISP_REDIS_HOST"
-    $MISP_MISP_CAKE_FILE Admin setSetting "Plugin.ZeroMQ_enable" true
+    $MISP_CAKE_FILE Admin setSetting "Plugin.ZeroMQ_redis_host" "$MISP_REDIS_HOST"
+    $MISP_CAKE_FILE Admin setSetting "Plugin.ZeroMQ_enable" true
 
-    $MISP_MISP_CAKE_FILE Admin setSetting "Plugin.Enrichment_services_enable" true
-    $MISP_MISP_CAKE_FILE Admin setSetting "Plugin.Enrichment_services_url" "$MISP_MISPMODULES_FQDN"
+    $MISP_CAKE_FILE Admin setSetting "Plugin.Enrichment_services_enable" true
+    $MISP_CAKE_FILE Admin setSetting "Plugin.Enrichment_services_url" "$MISP_MISPMODULES_FQDN"
 
-    $MISP_MISP_CAKE_FILE Admin setSetting "Plugin.Import_services_enable" true
-    $MISP_MISP_CAKE_FILE Admin setSetting "Plugin.Import_services_url" "$MISP_MISPMODULES_FQDN"
+    $MISP_CAKE_FILE Admin setSetting "Plugin.Import_services_enable" true
+    $MISP_CAKE_FILE Admin setSetting "Plugin.Import_services_url" "$MISP_MISPMODULES_FQDN"
 
-    $MISP_MISP_CAKE_FILE Admin setSetting "Plugin.Export_services_enable" true
-    $MISP_MISP_CAKE_FILE Admin setSetting "Plugin.Export_services_url" "$MISP_MISPMODULES_FQDN"
+    $MISP_CAKE_FILE Admin setSetting "Plugin.Export_services_enable" true
+    $MISP_CAKE_FILE Admin setSetting "Plugin.Export_services_url" "$MISP_MISPMODULES_FQDN"
 
-    $MISP_MISP_CAKE_FILE Admin setSetting "Plugin.Cortex_services_enable" false
+    $MISP_CAKE_FILE Admin setSetting "Plugin.Cortex_services_enable" false
 }
 
 init_misp_files(){

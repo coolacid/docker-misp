@@ -24,7 +24,7 @@ init_misp_config(){
     sed -i "s/localhost/$MISP_MYSQL_HOST/" "$MISP_MISP_APP_CONFIG_PATH/database.php"
     sed -i "s/db\s*login/$MISP_MYSQL_USER/" "$MISP_MISP_APP_CONFIG_PATH/database.php"
     sed -i "s/db\s*password/$MISP_MYSQL_PASSWORD/" "$MISP_MISP_APP_CONFIG_PATH/database.php"
-    sed -i "s/'database' => 'misp'/'database' => '$MISP_MYSQL_DATABASE'/" "$MISP_MISP_APP_CONFIG_PATH/database.php"
+    sed -i "s/'database' => */'database' => '$MISP_MYSQL_DB',/" "$MISP_MISP_APP_CONFIG_PATH/database.php"
 
     echo "Configure sane defaults"
     $MISP_CAKE_FILE Admin setSetting "MISP.redis_host" "$MISP_REDIS_HOST"

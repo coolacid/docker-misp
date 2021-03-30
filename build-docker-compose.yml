@@ -7,7 +7,21 @@ services:
         args:
             - MISP_TAG=${MISP_TAG}
             - PHP_VER=${PHP_VER}
-
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./server-configs/:/var/www/MISP/app/Config/"
+      - "./logs/:/var/www/MISP/app/tmp/logs/"
+      - "./files/:/var/www/MISP/app/files"
+      - "./ssl/:/etc/nginx/certs"
+#      - "./examples/custom-entrypoint.sh:/custom-entrypoint.sh" # Use the example custom-entrypoint.sh
+    environment:
+      - "INIT=true"             # Initialze MISP, things includes, attempting to import SQL and the Files DIR
+      - "HOSTNAME=https://localhost"
+      - "REDIS_FQDN=redis"
+      - "CRON_USER_ID=1"        # The MISP user ID to run cron jobs as
+      - "SYNCSERVERS=1 2 3 4"  # The MISP Feed servers to sync in the cron job
   misp-modules:
     image: coolacid/misp-docker:modules-latest
     build:

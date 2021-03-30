@@ -17,6 +17,20 @@ This is based on some of the work from the DSCO docker build, nearly all of the 
 -   Images directly from docker hub, no build required
 -   Slimmed down images by using build stages and slim parent image, removes unnecessary files from images
 
+<!-- ToC start -->
+## Table of Contents
+
+   1. [Docker Tags](#docker-tags)
+   1. [Getting Started](#getting-started)
+      1. [Environment Variables](#environment-variables)
+      1. [Development/Test](#development/test)
+      1. [Using the image for development](#using-the-image-for-development)
+      1. [Updating](#updating)
+      1. [Production](#production)
+      1. [Building](#building)
+   1. [Image file sizes](#image-file-sizes)
+<!-- ToC end -->
+
 ## Docker Tags
 
 [Docker hub](https://hub.docker.com/r/coolacid/misp-docker) builds the images automatically based on git tags. I try and tag using the following details
@@ -28,6 +42,28 @@ This is based on some of the work from the DSCO docker build, nearly all of the 
 -   Core and modules are split into \[core]-version and \[modules]-version respectively
 
 ## Getting Started
+
+### Environment Variables
+To modify settings a lot of different environment variables are used.
+For this we use the file [default_vars.sh](server/files/default_vars.sh). On this file are all existing environment variables registered, described and can be set via Docker, docker-compose, Swarm or Kubernetes.
+
+Example for docker:
+```bash
+docker run -ti \
+    -e MISP_ENTRYPOINT_NGINX_INIT=true \
+    -e MISP_ENTRYPOINT_NGINX_SECURESSL=false \
+        coolacid/misp-docker:core-latest 
+```
+
+Example for docker-compose:
+```bash
+services:
+    misp:
+    image: coolacid/misp-docker:core-latest
+    environment:
+      - "MISP_ENTRYPOINT_NGINX_INIT=true"
+      - "MISP_ENTRYPOINT_NGINX_SECURESSL=false"
+```
 
 ### Development/Test
 

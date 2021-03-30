@@ -160,6 +160,7 @@ ARG PHP_VER
     COPY files/entrypoint_cron.sh /
     COPY files/entrypoint_workers.sh /
     COPY files/entrypoint.sh /
+    COPY files/default_vars.sh /
     ENTRYPOINT [ "/entrypoint.sh" ]
 
 # Change Workdirectory

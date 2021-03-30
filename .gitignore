@@ -2,3 +2,4 @@
 /files/
 /ssl/
 /server-configs/
+docker-compose.override.yml

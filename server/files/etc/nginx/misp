@@ -45,6 +45,8 @@ server {
 
     location ~ \.php$ {
         include snippets/fastcgi-php.conf;
+        fastcgi_param SSL_CLIENT_I_DN $ssl_client_i_dn;
+        fastcgi_param SSL_CLIENT_S_DN $ssl_client_s_dn;
         fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
         fastcgi_read_timeout 300;
     }

@@ -172,8 +172,8 @@ if [[ $CERTAUTH = @(optional|on) ]]; then
     echo "Configure NGINX | Enabling SSL Cert Authentication"
     grep -qF "fastcgi_param SSL_CLIENT_I_DN \$ssl_client_i_dn;" /etc/nginx/snippets/fastcgi-php.conf || echo "fastcgi_param SSL_CLIENT_I_DN \$ssl_client_i_dn;" >> /etc/nginx/snippets/fastcgi-php.conf
     grep -qF "fastcgi_param SSL_CLIENT_S_DN \$ssl_client_s_dn;" /etc/nginx/snippets/fastcgi-php.conf || echo "fastcgi_param SSL_CLIENT_S_DN \$ssl_client_s_dn;" >> /etc/nginx/snippets/fastcgi-php.conf
-    grep -qF 'ssl_client_certificate' /etc/nginx/sites-enabled/misp || sed -i '/ssl_prefer_server_ciphers/a ssl_client_certificate /etc/nginx/certs/ca.pem;' /etc/nginx/sites-enabled/misp
-    grep -qF 'ssl_verify_client' /etc/nginx/sites-enabled/misp || sed -i "/ssl_prefer_server_ciphers/a ssl_verify_client $CERTAUTH;" /etc/nginx/sites-enabled/misp 
+    grep -qF 'ssl_client_certificate' /etc/nginx/sites-enabled/misp || sed -i '/ssl_prefer_server_ciphers/a \\    ssl_client_certificate /etc/nginx/certs/ca.pem;' /etc/nginx/sites-enabled/misp
+    grep -qF 'ssl_verify_client' /etc/nginx/sites-enabled/misp || sed -i "/ssl_prefer_server_ciphers/a \\    ssl_verify_client $CERTAUTH;" /etc/nginx/sites-enabled/misp 
 
     echo "Configure bootstrap | Enabling Cert Auth Plugin - Don't forget to configure it https://github.com/MISP/MISP/tree/2.4/app/Plugin/CertAuth (Step 2)" 
     sed -i "s/\/\/ CakePlugin::load('CertAuth');/CakePlugin::load('CertAuth');/" $MISP_APP_CONFIG_PATH/bootstrap.php

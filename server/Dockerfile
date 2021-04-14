@@ -137,12 +137,11 @@ ARG PHP_VER
     COPY --from=composer-build /tmp/Vendor /var/www/MISP/app/Vendor
     COPY --from=composer-build /tmp/Plugin /var/www/MISP/app/Plugin
     
-    RUN for dir in /etc/php/*; do echo "extension=rdkafka.so" > "$dir/mods-available/rdkafka.ini"; done\
-        phpenmod rdkafka
+    RUN for dir in /etc/php/*; do echo "extension=rdkafka.so" > "$dir/mods-available/rdkafka.ini"; done; phpenmod rdkafka
+    
 
     RUN for dir in /etc/php/*; do echo "extension=ssdeep.so" > "$dir/mods-available/ssdeep.ini"; done \
-    RUN for dir in /etc/php/*; do echo "extension=rdkafka.so" > "$dir/mods-available/rdkafka.ini"; done
-        ;phpenmod redis \
+            ;phpenmod redis \
     # Enable CakeResque with php-gnupgp
         ;phpenmod gnupg \
     # Enable ssdeep we build earlier

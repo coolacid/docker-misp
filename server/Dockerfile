@@ -14,6 +14,7 @@ FROM debian:buster-slim as php-build
         php-dev \
         php-pear \
         librdkafka-dev \
+        git \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
         
         RUN pecl channel-update pecl.php.net
@@ -117,6 +118,7 @@ ARG PHP_VER
         php-fpm \
         php-zip \
         librdkafka1 \
+        libbrotli1 \
         # Unsure we need these
         zip unzip \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*

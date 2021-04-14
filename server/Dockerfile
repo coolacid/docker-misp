@@ -13,9 +13,12 @@ FROM debian:buster-slim as php-build
         php \
         php-dev \
         php-pear \
+        librdkafka-dev \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
-
+        
+        RUN pecl channel-update pecl.php.net
         RUN cp /usr/lib/x86_64-linux-gnu/libfuzzy.* /usr/lib; pecl install ssdeep
+        RUN pecl install rdkafka
 
 FROM debian:buster-slim as python-build
     RUN apt-get update; apt-get install -y --no-install-recommends \
@@ -129,9 +132,16 @@ ARG PHP_VER
 # PHP
     # Install ssdeep prebuild, latest composer, then install the app's PHP deps
     COPY --from=php-build /usr/lib/php/${PHP_VER}/ssdeep.so /usr/lib/php/${PHP_VER}/ssdeep.so
+    COPY --from=php-build /usr/lib/php/${PHP_VER}/rdkafka.so /usr/lib/php/${PHP_VER}/rdkafka.so
+
     COPY --from=composer-build /tmp/Vendor /var/www/MISP/app/Vendor
     COPY --from=composer-build /tmp/Plugin /var/www/MISP/app/Plugin
+    
+    RUN for dir in /etc/php/*; do echo "extension=rdkafka.so" > "$dir/mods-available/rdkafka.ini"; done\
+        phpenmod rdkafka
+
     RUN for dir in /etc/php/*; do echo "extension=ssdeep.so" > "$dir/mods-available/ssdeep.ini"; done \
+    RUN for dir in /etc/php/*; do echo "extension=rdkafka.so" > "$dir/mods-available/rdkafka.ini"; done
         ;phpenmod redis \
     # Enable CakeResque with php-gnupgp
         ;phpenmod gnupg \

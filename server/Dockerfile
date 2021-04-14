@@ -115,6 +115,7 @@ ARG PHP_VER
         php-gd \
         php-fpm \
         php-zip \
+        librdkafka1 \
         # Unsure we need these
         zip unzip \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*

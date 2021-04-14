@@ -19,7 +19,7 @@ FROM debian:buster-slim as php-build
         
         RUN pecl channel-update pecl.php.net
         RUN cp /usr/lib/x86_64-linux-gnu/libfuzzy.* /usr/lib; pecl install ssdeep && pecl install rdkafka
-        RUN git clone --recursive --depth=1 https://github.com/kjdev/php-ext-brotli.git && cd php-ext-brotli && phpize && ./config && ./configure && make && make install
+        RUN git clone --recursive --depth=1 https://github.com/kjdev/php-ext-brotli.git && cd php-ext-brotli && phpize && ./configure && make && make install
         
 
 FROM debian:buster-slim as python-build

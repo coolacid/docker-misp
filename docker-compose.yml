@@ -45,7 +45,7 @@ services:
       # Database Configuration (And their defaults)
 #      - "MYSQL_HOST=db"
 #      - "MYSQL_USER=misp"
-#      - "MYSQL_PASSWORD=example" # NOTE: This should be AlphaNum with no Special Chars. Otherwise, edit config files after first run. 
+#      - "MYSQL_PASSWORD=example" # NOTE: This should be AlphaNum with no Special Chars. Otherwise, edit config files after first run.
 #      - "MYSQL_DATABASE=misp"
       # Optional Settings
 #      - "NOREDIR=true" # Do not redirect port 80
@@ -53,6 +53,7 @@ services:
 #      - "CERTAUTH=optional" # Can be set to optional or on - Step 2 of https://github.com/MISP/MISP/tree/2.4/app/Plugin/CertAuth is still required
 #      - "SECURESSL=true" # Enable higher security SSL in nginx
 #      - "MISP_MODULES_FQDN=http://misp-modules" # Set the MISP Modules FQDN, used for Enrichment_services_url/Import_services_url/Export_services_url
+#      - "ADMIN_PASSWORD=xxx" set temp password for the default user admin@admin.test only if INIT=true. Must comply with the password requirements in MISP.
   misp-modules:
     image: coolacid/misp-docker:modules-latest
     environment:

@@ -96,6 +96,7 @@ ARG PHP_VER
         supervisor \
         git \
         cron \
+        curl \
         openssl \
         gpg-agent gpg \
         ssdeep \

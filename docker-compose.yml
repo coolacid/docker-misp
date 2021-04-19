@@ -50,6 +50,7 @@ services:
       # Optional Settings
 #      - "NOREDIR=true" # Do not redirect port 80
 #      - "DISIPV6=true" # Disable IPV6 in nginx
+#      - "CERTAUTH=optional" # Can be set to optional or on - Step 2 of https://github.com/MISP/MISP/tree/2.4/app/Plugin/CertAuth is still required
 #      - "SECURESSL=true" # Enable higher security SSL in nginx
 #      - "MISP_MODULES_FQDN=http://misp-modules" # Set the MISP Modules FQDN, used for Enrichment_services_url/Import_services_url/Export_services_url
   misp-modules:

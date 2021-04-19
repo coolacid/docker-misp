@@ -136,6 +136,7 @@ echo "... chmod -R 0750 /var/www/MISP ..." && find /var/www/MISP -perm 550 -type
 echo "... chmod -R g+ws /var/www/MISP/app/tmp ..." && chmod -R g+ws /var/www/MISP/app/tmp
 echo "... chmod -R g+ws /var/www/MISP/app/files ..." && chmod -R g+ws /var/www/MISP/app/files
 echo "... chmod -R g+ws /var/www/MISP/app/files/scripts/tmp ..." && chmod -R g+ws /var/www/MISP/app/files/scripts/tmp
+echo "... chmod 600 /var/www/MISP/app/Config/config.php /var/www/MISP/app/Config/database.php /var/www/MISP/app/Config/email.php ... " && chmod 600 /var/www/MISP/app/Config/config.php /var/www/MISP/app/Config/database.php /var/www/MISP/app/Config/email.php
 
 # Work around https://github.com/MISP/MISP/issues/5608
 if [[ ! -f /var/www/MISP/PyMISP/pymisp/data/describeTypes.json ]]; then

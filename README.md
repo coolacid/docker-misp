@@ -64,6 +64,7 @@ Updating the images should be as simple as `docker-compose pull` which, unless c
 -   Directory volume mount SSL Certs `./ssl`: `/etc/ssl/certs`
     -   Certificate File: `cert.pem`
     -   Certificate Key File: `key.pem`
+    -   CA File for Cert Authentication (optional) `ca.pem`
 
 -   Directory volume mount and create configs: `/var/www/MISP/app/Config/`
 

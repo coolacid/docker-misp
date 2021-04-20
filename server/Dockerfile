@@ -13,9 +13,14 @@ FROM debian:buster-slim as php-build
         php \
         php-dev \
         php-pear \
+        librdkafka-dev \
+        git \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
-
-        RUN cp /usr/lib/x86_64-linux-gnu/libfuzzy.* /usr/lib; pecl install ssdeep
+        
+        RUN pecl channel-update pecl.php.net
+        RUN cp /usr/lib/x86_64-linux-gnu/libfuzzy.* /usr/lib; pecl install ssdeep && pecl install rdkafka
+        RUN git clone --recursive --depth=1 https://github.com/kjdev/php-ext-brotli.git && cd php-ext-brotli && phpize && ./configure && make && make install
+        
 
 FROM debian:buster-slim as python-build
     RUN apt-get update; apt-get install -y --no-install-recommends \
@@ -112,6 +117,8 @@ ARG PHP_VER
         php-gd \
         php-fpm \
         php-zip \
+        librdkafka1 \
+        libbrotli1 \
         # Unsure we need these
         zip unzip \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
@@ -129,10 +136,17 @@ ARG PHP_VER
 # PHP
     # Install ssdeep prebuild, latest composer, then install the app's PHP deps
     COPY --from=php-build /usr/lib/php/${PHP_VER}/ssdeep.so /usr/lib/php/${PHP_VER}/ssdeep.so
+    COPY --from=php-build /usr/lib/php/${PHP_VER}/rdkafka.so /usr/lib/php/${PHP_VER}/rdkafka.so
+    COPY --from=php-build /usr/lib/php/${PHP_VER}/brotli.so /usr/lib/php/${PHP_VER}/brotli.so
+
     COPY --from=composer-build /tmp/Vendor /var/www/MISP/app/Vendor
     COPY --from=composer-build /tmp/Plugin /var/www/MISP/app/Plugin
+    
+    RUN for dir in /etc/php/*; do echo "extension=rdkafka.so" > "$dir/mods-available/rdkafka.ini"; done; phpenmod rdkafka
+    RUN for dir in /etc/php/*; do echo "extension=brotli.so" > "$dir/mods-available/brotli.ini"; done; phpenmod brotli
+
     RUN for dir in /etc/php/*; do echo "extension=ssdeep.so" > "$dir/mods-available/ssdeep.ini"; done \
-        ;phpenmod redis \
+            ;phpenmod redis \
     # Enable CakeResque with php-gnupgp
         ;phpenmod gnupg \
     # Enable ssdeep we build earlier

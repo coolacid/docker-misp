@@ -50,6 +50,11 @@ init_misp_config(){
     /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Export_services_url" "$MISP_MODULES_FQDN"
 
     /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Cortex_services_enable" false
+
+    echo Change number of workers
+    if [ ! -z "$WORKERS" ] && [ "$WORKERS" -gt "1" ]; then
+        sed -i "s/start --interval/start -n $WORKERS --interval/" /var/www/MISP/app/Console/worker/start.sh
+    fi
 }
 
 init_misp_files(){

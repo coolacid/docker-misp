@@ -4,10 +4,8 @@ env:
   - DOCKER_COMPOSE_VERSION=1.25.3
 
 before_install:
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` | sudo tee /usr/local/bin/docker-compose >/dev/null
+  - chmod +x /usr/local/bin/docker-compose
 
 script:
   - docker-compose -f docker-compose.yml -f build-docker-compose.yml build

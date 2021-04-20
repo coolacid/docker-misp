@@ -50,6 +50,13 @@ init_misp_config(){
     /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Export_services_url" "$MISP_MODULES_FQDN"
 
     /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Cortex_services_enable" false
+
+    # iterate over every environment variable starting with "M_S_" and parsing it to key value pair to execute cake setting
+    for var in $(env | grep M_S_); do
+      setting_name="$(echo "$var" | sed "s/^M_S_//g" | sed "s/=.*$//g")"
+      setting_value="$(echo "$var" | sed "s/^M_S_.*=//g")"
+      /var/www/MISP/app/Console/cake Admin setSetting "${setting_name}" "${setting_value}"
+    done
 }
 
 init_misp_files(){

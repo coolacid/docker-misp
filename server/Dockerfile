@@ -2,7 +2,8 @@ FROM composer:1.9 as composer-build
     ARG MISP_TAG
     WORKDIR /tmp
     ADD https://raw.githubusercontent.com/MISP/MISP/${MISP_TAG}/app/composer.json /tmp
-    RUN composer install --ignore-platform-reqs
+    RUN composer install --ignore-platform-reqs && \
+     composer require jumbojett/openid-connect-php --ignore-platform-reqs
 
 FROM debian:buster-slim as php-build
     RUN apt-get update; apt-get install -y --no-install-recommends \
@@ -108,6 +109,7 @@ ARG PHP_VER
         python3-pip \
         # PHP Requirements
         php \
+        php-curl \
         php-xml \
         php-intl \
         php-bcmath \

@@ -25,6 +25,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         cd /srv/faup/build || exit; cmake .. && make install; \
         cd /srv/faup/src/lib/bindings/python || exit; pip3 wheel --no-cache-dir -w /wheel/ .
 
+    # Remove extra packages due to incompatible requirements.txt files
+    WORKDIR /wheel
+    RUN find . -name "chardet*" | grep -v "chardet-4.0.0" | xargs rm -f
+
+
 FROM python:3.7-slim-buster
 
 RUN apt-get update && apt-get install -y --no-install-recommends \

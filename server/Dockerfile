@@ -93,6 +93,7 @@ ARG PHP_VER
         # Requirements:
         procps \
         sudo \
+        curl \
         nginx \
         supervisor \
         git \
@@ -100,6 +101,7 @@ ARG PHP_VER
         openssl \
         gpg-agent gpg \
         ssdeep \
+        jq \
         libfuzzy2 \
         mariadb-client \
         rsync \

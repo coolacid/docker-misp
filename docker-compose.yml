@@ -4,9 +4,13 @@ services:
   # See: https://hub.docker.com/r/namshi/smtp
   mail:
     image: namshi/smtp
+    ports:
+      - "25:25"
 
   redis:
     image: redis:5.0.6
+    ports:
+      - "6379:6379"
 
   db:
     image: mysql:8.0.19
@@ -21,6 +25,8 @@ services:
       - mysql_data:/var/lib/mysql
     cap_add:
       - SYS_NICE  # CAP_SYS_NICE Prevent runaway mysql log
+    ports:
+      - "3306:3306"
 
   misp:
     image: coolacid/misp-docker:core-latest

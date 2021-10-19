@@ -1,4 +1,4 @@
-FROM composer:1.9 as composer-build
+FROM composer:2.1 as composer-build
     ARG MISP_TAG
     WORKDIR /tmp
     ADD https://raw.githubusercontent.com/MISP/MISP/${MISP_TAG}/app/composer.json /tmp

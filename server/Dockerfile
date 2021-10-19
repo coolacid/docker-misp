@@ -1,4 +1,4 @@
-FROM composer:1.9 as composer-build
+FROM composer:2.1 as composer-build
     ARG MISP_TAG
     WORKDIR /tmp
     ADD https://raw.githubusercontent.com/MISP/MISP/${MISP_TAG}/app/composer.json /tmp
@@ -33,6 +33,7 @@ FROM debian:buster-slim as python-build
         python3-setuptools \
         python3-wheel \
         libfuzzy-dev \
+        libffi-dev \
         ca-certificates \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 

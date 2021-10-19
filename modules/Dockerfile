@@ -19,7 +19,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     WORKDIR /srv
 
     RUN git clone --branch ${MODULES_TAG} --depth 1  https://github.com/MISP/misp-modules.git /srv/misp-modules; \
-        cd /srv/misp-modules || exit; sed -i 's/-e //g' REQUIREMENTS; pip3 wheel -r REQUIREMENTS --no-cache-dir -w /wheel/
+        cd /srv/misp-modules || exit; \
+        sed -i 's/-e //g' -e 's/sigmatools==0.20/sigmatools==0.19.1/' REQUIREMENTS; \
+        pip3 wheel -r REQUIREMENTS --no-cache-dir -w /wheel/
 
     RUN git clone --depth 1 https://github.com/stricaud/faup.git /srv/faup; \
         cd /srv/faup/build || exit; cmake .. && make install; \

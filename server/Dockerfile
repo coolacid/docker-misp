@@ -80,6 +80,7 @@ FROM debian:buster-slim as python-build
 
     # Remove extra packages due to incompatible requirements.txt files
     WORKDIR /wheels
+    RUN find . -name "pluggy*" | grep -v "pluggy-0.13.1" | xargs rm -f
     RUN find . -name "tox*" | grep -v "tox-2.7.0" | xargs rm -f
     RUN find . -name "Sphinx*" | grep -v "Sphinx-1.8.5" | xargs rm -f
 

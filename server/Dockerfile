@@ -78,10 +78,7 @@ FROM debian:bullseye-slim as python-build
 
     # Remove extra packages due to incompatible requirements.txt files
     WORKDIR /wheels
-    RUN find . -name "pluggy*" | tee /dev/stderr | grep -v "pluggy-1.0.0" | xargs rm -f
-    RUN find . -name "tox*" | tee /dev/stderr | grep -v "tox-3.24.5" | xargs rm -f
-    RUN find . -name "Sphinx*" | tee /dev/stderr | grep -v "Sphinx-1.8.6" | xargs rm -f
-    RUN find . -name "docutils*" | tee /dev/stderr | grep -v "docutils-0.17.1" | xargs rm -f
+    RUN find . -name "Sphinx*" | tee /dev/stderr | grep -v "Sphinx-1.5.5" | xargs rm -f
 
 
 FROM debian:bullseye-slim

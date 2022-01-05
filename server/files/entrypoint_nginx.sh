@@ -34,7 +34,7 @@ init_misp_config(){
 
     echo "Configure sane defaults"
     /var/www/MISP/app/Console/cake Admin setSetting "MISP.redis_host" "$REDIS_FQDN"
-    /var/www/MISP/app/Console/cake Admin setSetting "MISP.baseurl" "$HOSTNAME"
+    /var/www/MISP/app/Console/cake Admin setSetting "MISP.baseurl" "$BASEURL"
     /var/www/MISP/app/Console/cake Admin setSetting "MISP.python_bin" $(which python3)
 
     /var/www/MISP/app/Console/cake Admin setSetting "Plugin.ZeroMQ_redis_host" "$REDIS_FQDN"
@@ -120,6 +120,12 @@ for CERT in cert.pem dhparams.pem key.pem; do
     fi
 done
 
+# Keep backward compatibility after change from HOSTNAME to BASEURL. See issue #151
+if [ -z "$BASEURL" ]; then
+    WARNING151=true
+    BASEURL="$HOSTNAME"
+fi
+
 # Things we should do when we have the INITIALIZE Env Flag
 if [[ "$INIT" == true ]]; then
     echo "Setup MySQL..." && init_mysql
@@ -203,6 +209,12 @@ if [[ "$WARNING53" == true ]]; then
     echo "The SSL certs have moved. You currently have them mounted to /etc/ssl/certs."
     echo "This needs to be changed to /etc/nginx/certs."
     echo "See: https://github.com/coolacid/docker-misp/issues/53"
+    echo "WARNING - WARNING - WARNING"
+fi
+
+if [[ "$WARNING151" == true ]]; then
+    echo "WARNING - WARNING - WARNING"
+    echo "HOSTNAME environment variable is deprecated. Use BASEURL instead."
     echo "WARNING - WARNING - WARNING"
 fi
 

@@ -14,4 +14,4 @@ change_php_vars(){
 echo "Configure PHP  | Change PHP values ..." && change_php_vars
 echo "Starting PHP FPM"
 
-/usr/sbin/php-fpm7.3 -R -F
+/usr/sbin/php-fpm7.4 -R -F

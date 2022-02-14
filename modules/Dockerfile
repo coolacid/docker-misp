@@ -1,4 +1,4 @@
-FROM python:3.7-slim-buster  as builder
+FROM python:3.9-slim-bullseye  as builder
 ENV DEBIAN_FRONTEND noninteractive
 ARG MODULES_TAG
 
@@ -18,11 +18,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     RUN mkdir /wheel
     WORKDIR /srv
 
-    # TODO: remove downgrade of sigmatools when we have Python 3.8 ref #128 and #143
     RUN git clone --branch ${MODULES_TAG} --depth 1  https://github.com/MISP/misp-modules.git /srv/misp-modules; \
-        cd /srv/misp-modules || exit; \
-        sed -i -e 's/-e //g' -e 's/sigmatools==0.20/sigmatools==0.19.1/' REQUIREMENTS; \
-        pip3 wheel -r REQUIREMENTS --no-cache-dir -w /wheel/
+        cd /srv/misp-modules || exit; sed -i 's/-e //g' REQUIREMENTS; pip3 wheel -r REQUIREMENTS --no-cache-dir -w /wheel/
 
     RUN git clone --depth 1 https://github.com/stricaud/faup.git /srv/faup; \
         cd /srv/faup/build || exit; cmake .. && make install; \
@@ -33,7 +30,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     RUN find . -name "chardet*" | grep -v "chardet-4.0.0" | xargs rm -f
 
 
-FROM python:3.7-slim-buster
+FROM python:3.9-slim-bullseye
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
             libglib2.0-0 \

@@ -1,11 +1,11 @@
-FROM composer:2.1 as composer-build
+FROM composer:2.2 as composer-build
     ARG MISP_TAG
     WORKDIR /tmp
     ADD https://raw.githubusercontent.com/MISP/MISP/${MISP_TAG}/app/composer.json /tmp
     RUN composer install --ignore-platform-reqs && \
      composer require jumbojett/openid-connect-php --ignore-platform-reqs
 
-FROM debian:buster-slim as php-build
+FROM debian:bullseye-slim as php-build
     RUN apt-get update; apt-get install -y --no-install-recommends \
         gcc \
         make \
@@ -23,7 +23,7 @@ FROM debian:buster-slim as php-build
         RUN git clone --recursive --depth=1 https://github.com/kjdev/php-ext-brotli.git && cd php-ext-brotli && phpize && ./configure && make && make install
         
 
-FROM debian:buster-slim as python-build
+FROM debian:bullseye-slim as python-build
     RUN apt-get update; apt-get install -y --no-install-recommends \
         gcc \
         git \
@@ -60,9 +60,10 @@ FROM debian:buster-slim as python-build
         sed -i 's/-e //g' requirements.txt; pip3 wheel -r requirements.txt --no-cache-dir -w /wheels/
 
     # install STIX2.0 library to support STIX 2.0 export:
+    # Original Requirements has a bunch of non-required pacakges, force it to only grab wheels for deps from setup.py
     RUN git clone --depth 1 https://github.com/MISP/cti-python-stix2.git; \
         cd cti-python-stix2 || exit; python3 setup.py bdist_wheel -d /wheels; \
-        sed -i 's/-e //g' requirements.txt; pip3 wheel -r requirements.txt --no-cache-dir -w /wheels/
+        echo "-e ." > requirements.txt; pip3 wheel -r requirements.txt --no-cache-dir -w /wheels/
 
     # install PyMISP
     RUN git clone --depth 1 https://github.com/MISP/PyMISP.git; \
@@ -75,17 +76,12 @@ FROM debian:buster-slim as python-build
     # Grab other modules we need
     RUN pip3 wheel --no-cache-dir -w /wheels/ plyara pyzmq redis python-magic lief
 
-    # Temp workaround for cryptography library
-    RUN pip3 wheel 'cryptography>=3.3.0,<3.4.0' --no-cache-dir -w /wheels/
-
     # Remove extra packages due to incompatible requirements.txt files
     WORKDIR /wheels
-    RUN find . -name "pluggy*" | grep -v "pluggy-0.13.1" | xargs rm -f
-    RUN find . -name "tox*" | grep -v "tox-2.7.0" | xargs rm -f
-    RUN find . -name "Sphinx*" | grep -v "Sphinx-1.8.5" | xargs rm -f
+    RUN find . -name "Sphinx*" | tee /dev/stderr | grep -v "Sphinx-1.5.5" | xargs rm -f
 
 
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 ENV DEBIAN_FRONTEND noninteractive
 ARG MISP_TAG
 ARG PHP_VER
@@ -111,6 +107,7 @@ ARG PHP_VER
         python3-pip \
         # PHP Requirements
         php \
+        php-apcu \
         php-curl \
         php-xml \
         php-intl \

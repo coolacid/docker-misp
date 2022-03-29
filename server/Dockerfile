@@ -3,7 +3,7 @@ FROM composer:2.2 as composer-build
     WORKDIR /tmp
     ADD https://raw.githubusercontent.com/MISP/MISP/${MISP_TAG}/app/composer.json /tmp
     RUN composer install --ignore-platform-reqs && \
-     composer require jumbojett/openid-connect-php --ignore-platform-reqs
+     composer require jakub-onderka/openid-connect-php:1.0.0-rc1 --ignore-platform-reqs
 
 FROM debian:bullseye-slim as php-build
     RUN apt-get update; apt-get install -y --no-install-recommends \

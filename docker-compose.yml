@@ -1,66 +1,33 @@
-version: '3'
+version: '2.4'
 services:
-  # This is capible to relay via gmail, Amazon SES, or generic relays
-  # See: https://hub.docker.com/r/namshi/smtp
-  mail:
-    image: namshi/smtp
-
   redis:
     image: redis:5.0.6
-
-  db:
-    image: mysql:8.0.19
-    command: --default-authentication-plugin=mysql_native_password
+    container_name: redis
     restart: always
-    environment:
-      - "MYSQL_USER=misp"
-      - "MYSQL_PASSWORD=example"
-      - "MYSQL_ROOT_PASSWORD=password"
-      - "MYSQL_DATABASE=misp"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    cap_add:
-      - SYS_NICE  # CAP_SYS_NICE Prevent runaway mysql log
+    read_only: false
+    mem_limit: 50M
+    cpus: 0.5
+    cpu_shares: 128
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 10s
+      retries: 5
 
-  misp:
-    image: coolacid/misp-docker:core-latest
-    depends_on:
-      - redis
-      - db
+  mail:
+    image: catatnight/postfix
+    restart: always
+    container_name: mail
+    read_only: false
+    build:
+      context: ./
+      dockerfile: mail-Dockerfile
+    volumes:
+      - "./postfix/main.cf:/etc/postfix/main.cf"
     ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - "./server-configs/:/var/www/MISP/app/Config/"
-      - "./logs/:/var/www/MISP/app/tmp/logs/"
-      - "./files/:/var/www/MISP/app/files"
-      - "./ssl/:/etc/nginx/certs"
-#      - "./examples/custom-entrypoint.sh:/custom-entrypoint.sh" # Use the example custom-entrypoint.sh
-    environment:
-      - "HOSTNAME=https://localhost"
-      - "REDIS_FQDN=redis"
-      - "INIT=true"             # Initialze MISP, things includes, attempting to import SQL and the Files DIR
-      - "CRON_USER_ID=1"        # The MISP user ID to run cron jobs as
-#      - "SYNCSERVERS=1 2 3 4"  # The MISP Feed servers to sync in the cron job
-      # Database Configuration (And their defaults)
-#      - "MYSQL_HOST=db"
-#      - "MYSQL_USER=misp"
-#      - "MYSQL_PASSWORD=example" # NOTE: This should be AlphaNum with no Special Chars. Otherwise, edit config files after first run. 
-#      - "MYSQL_DATABASE=misp"
-      # Optional Settings
-#      - "NOREDIR=true" # Do not redirect port 80
-#      - "DISIPV6=true" # Disable IPV6 in nginx
-#      - "CERTAUTH=optional" # Can be set to optional or on - Step 2 of https://github.com/MISP/MISP/tree/2.4/app/Plugin/CertAuth is still required
-#      - "SECURESSL=true" # Enable higher security SSL in nginx
-#      - "MISP_MODULES_FQDN=http://misp-modules" # Set the MISP Modules FQDN, used for Enrichment_services_url/Import_services_url/Export_services_url
-#      - "WORKERS=1" #If set to a value larger than 1 this will increase the number of parallel worker processes
-  misp-modules:
-    image: coolacid/misp-docker:modules-latest
-    environment:
-      - "REDIS_BACKEND=redis"
-    depends_on:
-      - redis
-      - db
+      - "127.0.0.1:25:25"
+    healthcheck:
+      test: ["CMD", "nc", "-v", "-w1", "127.0.0.1", "25"]
+      timeout: 10s
+      retries: 5
 
-volumes:
-    mysql_data:
+

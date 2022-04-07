@@ -54,6 +54,52 @@ services:
       timeout: 10s
       retries: 5
 
+  misp:
+    image: coolacid/misp-docker:core-latest
+    restart: always
+    container_name: misp-web
+    read_only: false
+    depends_on:
+      - redis
+      - db
+    ports:
+      - "${SERVER_NAME}:80:80"
+      - "${SERVER_NAME}:443:443"
+    volumes:
+      - "./server-configs/:/var/www/MISP/app/Config/"
+      - "./logs/:/var/www/MISP/app/tmp/logs/"
+      - "./files/:/var/www/MISP/app/files"
+      - "./ssl/:/etc/nginx/certs"
+      - "./nginx/misp80:/etc/nginx/sites-available/misp80"
+      - "./nginx/misp:/etc/nginx/sites-available/misp"
+    environment:
+      - "HOSTNAME=https://${SERVER_NAME}"
+      - "REDIS_FQDN=redis"
+      - "INIT=true"
+      - "CRON_USER_ID=1"
+    healthcheck:
+      test: ["CMD", "nc", "-v", "-w1", "127.0.0.1", "443"]
+      timeout: 10s
+      retries: 5
+
+
+  misp-modules:
+    image: coolacid/misp-docker:modules-latest
+    restart: always
+    read_only: true
+    build:
+      context: ./
+      dockerfile: misp-modules-Dockerfile
+    environment:
+      - "REDIS_BACKEND=redis"
+    depends_on:
+      - redis
+      - db
+    healthcheck:
+      test: ["CMD", "nc", "-v", "-w1", "127.0.0.1", "6666"]
+      timeout: 10s
+      retries: 5
+
 volumes:
     mysql_data:
 

@@ -92,6 +92,48 @@ services:
       timeout: 10s
       retries: 5
 
+  misp:
+    image: coolacid/misp-docker:core-latest
+    restart: always
+    container_name: misp-web
+    read_only: true
+    mem_limit: 1024M
+    cpu_shares: 512
+    build:
+      context: ./
+      dockerfile: misp-Dockerfile
+    depends_on:
+      - redis
+      - db
+    ports:
+      - "${SERVER_NAME}:80:80"
+      - "${SERVER_NAME}:443:443"
+    volumes:
+      - "./server-configs/:/var/www/MISP/app/Config/"
+      - "./logs/:/var/www/MISP/app/tmp/logs/"
+      - "./files/:/var/www/MISP/app/files"
+      - "./ssl/:/etc/nginx/certs"
+      - "./nginx/misp80:/etc/nginx/sites-available/misp80"
+      - "./nginx/misp:/etc/nginx/sites-available/misp"
+      - "misp_tmp:/tmp:rw"
+      - "misp_var_tmp:/var/tmp:rw"
+      - "misp_usr_tmp:/usr/tmp:rw"
+      - "misp_var_www_misp:/var/www/MISP:rw"
+      - "misp_etc:/etc:rw"
+      - "misp_run:/run:rw"
+      - "misp_var_run:/var/run:rw"
+      - "misp_var_log:/var/log:rw"
+      - "misp_var_lib:/var/lib:rw"
+    environment:
+      - "HOSTNAME=https://${SERVER_NAME}"
+      - "REDIS_FQDN=redis"
+      - "INIT=true"
+      - "CRON_USER_ID=1"
+    healthcheck:
+      test: ["CMD", "nc", "-v", "-w1", "127.0.0.1", "443"]
+      timeout: 10s
+      retries: 5
+
 
 volumes:
   redis_data:
@@ -114,4 +156,15 @@ volumes:
   mysql_etc:
   mysql_tmp:
   mysql_var_tmp:
+
+  misp_tmp:
+  misp_var_tmp:
+  misp_var_log:
+  misp_var_lib:
+  misp_usr_tmp:
+  misp_var_www_misp:
+  misp_etc:
+  misp_run:
+  misp_var_run:
+  misp_dev:
 

@@ -1,6 +1,0 @@
-
-Start-Date: 2022-04-14  07:58:58
-Commandline: apt install vim
-Install: libpython2.7:amd64 (2.7.6-8ubuntu0.5, automatic), vim:amd64 (7.4.052-1ubuntu3.1), vim-runtime:amd64 (7.4.052-1ubuntu3.1, automatic), libgpm2:amd64 (1.20.4-6.1, automatic)
-Upgrade: libpython2.7-stdlib:amd64 (2.7.6-8, 2.7.6-8ubuntu0.5), vim-common:amd64 (7.4.052-1ubuntu3, 7.4.052-1ubuntu3.1), python2.7:amd64 (2.7.6-8, 2.7.6-8ubuntu0.5), vim-tiny:amd64 (7.4.052-1ubuntu3, 7.4.052-1ubuntu3.1), python2.7-minimal:amd64 (2.7.6-8, 2.7.6-8ubuntu0.5), libpython2.7-minimal:amd64 (2.7.6-8, 2.7.6-8ubuntu0.5)
-End-Date: 2022-04-14  07:59:06

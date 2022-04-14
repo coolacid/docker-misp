@@ -1,2 +1,0 @@
-# Default behaviour of shutdown -h / halt. Set to "halt" or "poweroff".
-HALT=poweroff

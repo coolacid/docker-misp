@@ -11,7 +11,7 @@ services:
       context: ./
       dockerfile: mail-Dockerfile
     volumes:
-      - "./postfix/etc/postfix/main.cf:/etc/postfix/main.cf:rw"
+      - "./postfix_data/main.cf:/etc/postfix/main.cf:rw"
       - "postfix_etc:/etc:rw"
       - "postfix_var_tmp:/var/tmp:rw"
       - "postfix_var_log:/var/log:rw"

@@ -1,3 +1,0 @@
-# This file has been deprecated. Please add custom options for cron to
-# /etc/init/cron.conf and/or /etc/init/cron.override directly. See
-# the init(5) man page for more information.

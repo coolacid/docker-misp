@@ -1,0 +1,33 @@
+#!/bin/sh
+#
+# PPP up hook script for resolvconf
+#
+# Reconfigures resolver to take into account
+# the appearance of the ppp interface.
+#
+# This file is part of the resolvconf package.
+#
+
+[ -x /sbin/resolvconf ] || exit 0
+
+[ "$USEPEERDNS" ] || exit 0
+
+case "$6" in
+  nm-pptp-service-*|/org/freedesktop/NetworkManager/PPP/*)
+	# NetworkManager handles it
+	exit 0
+	;;
+esac
+
+R=""
+if [ "$DNS1" ] ; then
+	R="${R}nameserver $DNS1
+"
+fi
+if [ "$DNS2" ] ; then
+	R="${R}nameserver $DNS2
+"
+fi
+
+echo -n "$R" | /sbin/resolvconf -a "${PPP_IFACE}.pppd"
+

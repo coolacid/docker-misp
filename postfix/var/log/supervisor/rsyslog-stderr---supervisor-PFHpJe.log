@@ -1,0 +1,4 @@
+rsyslogd: error: option -c is no longer supported - ignored
+rsyslogd: imklog: cannot open kernel log(/proc/kmsg): Operation not permitted.
+rsyslogd: activation of module imklog failed [try http://www.rsyslog.com/e/2145 ]
+rsyslogd: Could no open output pipe '/dev/xconsole': No such file or directory [try http://www.rsyslog.com/e/2039 ]

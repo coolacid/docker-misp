@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# PPP down hook script for resolvconf
+#
+# Reconfigures resolver to take into account
+# the disappearance of the ppp interface.
+#
+# This file is part of the resolvconf package.
+#
+
+[ -x /sbin/resolvconf ] || exit 0
+
+/sbin/resolvconf -d "$PPP_IFACE" # Old name. Remove this line after next upgrade horizon.
+
+case "$6" in
+  nm-pptp-service-*|/org/freedesktop/NetworkManager/PPP/*)
+    # NetworkManager handles it
+    exit 0
+    ;;
+esac
+
+/sbin/resolvconf -d "${PPP_IFACE}.pppd"
+

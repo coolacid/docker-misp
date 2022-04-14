@@ -1,0 +1,17 @@
+version: '2.4'
+services:
+  redis:
+    image: redis:5.0.6
+    container_name: redis
+    restart: always
+    read_only: true
+    mem_limit: 50M
+    cpus: 0.5
+    cpu_shares: 128
+    volumes:
+      - "./redis/data/:/data/:rw"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 10s
+      retries: 5
+

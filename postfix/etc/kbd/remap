@@ -1,0 +1,5 @@
+# This sed script is run across the dumpkeys output to remap keys on the console
+
+# This turns caps lock into control
+#s/keycode  58 = Caps_Lock/keycode  58 = Control/;
+

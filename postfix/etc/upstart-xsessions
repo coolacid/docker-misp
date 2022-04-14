@@ -1,0 +1,15 @@
+# xsessions listed below are run inside an Upstart user session.
+gnome
+gnome-classic
+gnome-fallback
+gnome-fallback-compiz
+kde-plasma
+Lubuntu
+Lubuntu-Netbook
+lubuntu-nexus7
+lxgames
+qlubuntu
+ubuntu
+ubuntustudio
+xfce
+xubuntu

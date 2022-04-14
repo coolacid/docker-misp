@@ -1,0 +1,178 @@
+2022-04-14 07:31:56,794 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:31:56,794 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:31:56,821 INFO RPC interface 'supervisor' initialized
+2022-04-14 07:31:56,822 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2022-04-14 07:31:56,822 INFO supervisord started with pid 8
+2022-04-14 07:31:57,823 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 07:31:57,824 INFO spawned: 'rsyslog' with pid 11
+2022-04-14 07:31:58,836 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 07:31:58,837 INFO success: rsyslog entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2022-04-14 07:32:00,840 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 07:32:03,844 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 07:32:03,844 INFO gave up: postfix entered FATAL state, too many start retries too quickly
+2022-04-14 07:41:24,232 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:41:24,232 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:41:24,983 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:41:24,983 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:41:25,747 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:41:25,748 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:41:26,675 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:41:26,675 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:41:28,128 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:41:28,129 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:41:30,265 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:41:30,265 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:41:34,110 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:41:34,110 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:41:41,094 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:41:41,094 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:41:54,465 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:41:54,465 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:43:07,564 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:43:07,565 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:43:07,597 INFO RPC interface 'supervisor' initialized
+2022-04-14 07:43:07,597 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2022-04-14 07:43:07,597 INFO supervisord started with pid 9
+2022-04-14 07:43:08,599 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 07:43:08,600 INFO spawned: 'rsyslog' with pid 12
+2022-04-14 07:43:09,614 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 07:43:09,614 INFO success: rsyslog entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2022-04-14 07:43:11,617 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 07:43:14,622 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 07:43:14,622 INFO gave up: postfix entered FATAL state, too many start retries too quickly
+2022-04-14 07:55:45,357 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:55:45,358 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:55:45,390 INFO RPC interface 'supervisor' initialized
+2022-04-14 07:55:45,390 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2022-04-14 07:55:45,390 INFO supervisord started with pid 8
+2022-04-14 07:55:46,392 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 07:55:46,394 INFO spawned: 'rsyslog' with pid 11
+2022-04-14 07:55:47,404 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 07:55:47,405 INFO success: rsyslog entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2022-04-14 07:55:49,408 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 07:55:52,413 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 07:55:52,413 INFO gave up: postfix entered FATAL state, too many start retries too quickly
+2022-04-14 07:56:38,983 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:56:38,983 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:56:39,718 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:56:39,718 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:56:40,453 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:56:40,453 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:56:41,353 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:56:41,353 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:56:42,675 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:56:42,675 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:56:44,820 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:56:44,820 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:56:48,537 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:56:48,537 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:56:55,460 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:56:55,460 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:57:08,821 CRIT Supervisor running as root (no user in config file)
+2022-04-14 07:57:08,822 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 07:57:08,854 INFO RPC interface 'supervisor' initialized
+2022-04-14 07:57:08,855 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2022-04-14 07:57:08,855 INFO supervisord started with pid 10
+2022-04-14 07:57:09,857 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 07:57:09,859 INFO spawned: 'rsyslog' with pid 13
+2022-04-14 07:57:10,874 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 07:57:10,874 INFO success: rsyslog entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2022-04-14 07:57:12,877 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 07:57:15,882 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 07:57:15,882 INFO gave up: postfix entered FATAL state, too many start retries too quickly
+2022-04-14 08:27:48,720 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:27:48,720 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:27:49,472 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:27:49,472 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:27:50,219 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:27:50,219 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:27:51,160 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:27:51,160 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:27:52,462 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:27:52,462 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:27:54,700 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:27:54,700 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:27:58,414 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:27:58,414 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:28:05,443 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:28:05,443 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:29:22,239 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:29:22,239 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:29:22,842 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:29:22,842 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:29:23,593 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:29:23,593 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:29:24,455 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:29:24,455 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:29:25,861 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:29:25,861 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:29:27,927 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:29:27,927 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:29:31,802 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:29:31,802 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:29:38,963 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:29:38,964 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:29:52,394 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:29:52,394 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:30:18,640 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:30:18,640 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:32:20,006 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:32:20,006 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:32:20,031 INFO RPC interface 'supervisor' initialized
+2022-04-14 08:32:20,031 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2022-04-14 08:32:20,031 INFO supervisord started with pid 9
+2022-04-14 08:32:21,033 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:32:21,034 INFO spawned: 'rsyslog' with pid 12
+2022-04-14 08:32:22,044 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:32:22,044 INFO success: rsyslog entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2022-04-14 08:32:24,047 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:32:27,052 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:32:27,052 INFO gave up: postfix entered FATAL state, too many start retries too quickly
+2022-04-14 08:40:08,101 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:40:08,102 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:40:08,134 INFO RPC interface 'supervisor' initialized
+2022-04-14 08:40:08,134 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2022-04-14 08:40:08,134 INFO supervisord started with pid 8
+2022-04-14 08:40:09,135 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:40:09,137 INFO spawned: 'rsyslog' with pid 11
+2022-04-14 08:40:10,148 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:40:10,148 INFO success: rsyslog entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2022-04-14 08:40:12,151 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:40:15,155 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:40:15,155 INFO gave up: postfix entered FATAL state, too many start retries too quickly
+2022-04-14 08:45:47,150 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:45:47,150 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:45:47,483 INFO RPC interface 'supervisor' initialized
+2022-04-14 08:45:47,483 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2022-04-14 08:45:47,484 INFO supervisord started with pid 8
+2022-04-14 08:45:48,486 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:45:48,489 INFO spawned: 'rsyslog' with pid 11
+2022-04-14 08:45:49,499 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:45:49,500 INFO success: rsyslog entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2022-04-14 08:45:51,503 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:45:54,507 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:45:54,507 INFO gave up: postfix entered FATAL state, too many start retries too quickly
+2022-04-14 08:49:52,828 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:49:52,828 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:49:53,154 INFO RPC interface 'supervisor' initialized
+2022-04-14 08:49:53,154 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2022-04-14 08:49:53,155 INFO supervisord started with pid 9
+2022-04-14 08:49:54,156 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:49:54,157 INFO spawned: 'rsyslog' with pid 12
+2022-04-14 08:49:55,166 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:49:55,166 INFO success: rsyslog entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2022-04-14 08:49:57,169 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:50:00,173 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:50:00,173 INFO gave up: postfix entered FATAL state, too many start retries too quickly
+2022-04-14 08:51:00,591 CRIT Supervisor running as root (no user in config file)
+2022-04-14 08:51:00,591 WARN Included extra file "/etc/supervisor/conf.d/supervisord.conf" during parsing
+2022-04-14 08:51:00,920 INFO RPC interface 'supervisor' initialized
+2022-04-14 08:51:00,921 CRIT Server 'unix_http_server' running without any HTTP authentication checking
+2022-04-14 08:51:00,921 INFO supervisord started with pid 8
+2022-04-14 08:51:01,922 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:51:01,924 INFO spawned: 'rsyslog' with pid 11
+2022-04-14 08:51:02,933 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:51:02,933 INFO success: rsyslog entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2022-04-14 08:51:04,937 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:51:07,941 INFO spawnerr: can't find command '/opt/postfix.sh'
+2022-04-14 08:51:07,941 INFO gave up: postfix entered FATAL state, too many start retries too quickly

@@ -1,0 +1,44 @@
+version: '2.4'
+services:
+  mail:
+    image: catatnight/postfix
+    restart: always
+    container_name: mail
+    read_only: true
+    mem_limit: 256M
+    cpu_shares: 256
+    build:
+      context: ./
+      dockerfile: mail-Dockerfile
+    volumes:
+      - "./postfix/etc/postfix/main.cf:/etc/postfix/main.cf:rw"
+      - "postfix_etc:/etc:rw"
+      - "postfix_var_tmp:/var/tmp:rw"
+      - "postfix_var_log:/var/log:rw"
+      - "postfix_usr_tmp:/usr/tmp:rw"
+      - "postfix_var_mail:/var/mail:rw"
+      - "postfix_var_spool:/var/spool:rw"
+      - "postfix_var_run:/var/run:rw"
+      - "postfix_run:/run:rw"
+      - "postfix_opt:/opt:rw"
+      - "postfix_var_lib:/var/lib:rw"
+    ports:
+      - "127.0.0.1:25:25"
+    healthcheck:
+      test: ["CMD", "nc", "-v", "-w1", "127.0.0.1", "25"]
+      timeout: 10s
+      retries: 5
+
+volumes:
+  postfix_etc:
+  postfix_var_tmp:
+  postfix_var_log:
+  postfix_usr_tmp:
+  postfix_var_mail:
+  postfix_var_spool:
+  postfix_var_run:
+  postfix_run:
+  postfix_opt:
+  postfix_var_lib:
+  
+

@@ -1,0 +1,15 @@
+The scripts in this directory are executed each time the system enters
+this runlevel.
+
+The scripts are all symbolic links whose targets are located in
+/etc/init.d/ .
+
+To disable a service in this runlevel, rename its script in this
+directory so that the new name begins with a 'K' and a two-digit
+number, and run 'update-rc.d script defaults' to reorder the scripts
+according to dependencies.  A warning about the current runlevels
+being enabled not matching the LSB header in the init.d script will be
+printed.  To re-enable the service, rename the script back to its
+original name beginning with 'S' and run update-rc.d again.
+
+For a more information see /etc/init.d/README.

@@ -1,0 +1,250 @@
+#!/bin/sh -e
+### BEGIN INIT INFO
+# Provides:          udev
+# Required-Start:    mountkernfs 
+# Required-Stop:     
+# Default-Start:     S
+# Default-Stop:
+# Short-Description: Start udevd, populate /dev and load drivers.
+### END INIT INFO
+
+# we need to unmount /dev/pts/ and remount it later over the devtmpfs
+unmount_devpts() {
+  if mountpoint -q /dev/pts/; then
+    umount -n -l /dev/pts/
+  fi
+
+  if mountpoint -q /dev/shm/; then
+    umount -n -l /dev/shm/
+  fi
+}
+
+# mount a devtmpfs over /dev, if somebody did not already do it
+mount_devtmpfs() {
+  if grep -E -q "^[^[:space:]]+ /dev devtmpfs" /proc/mounts; then
+    mount -n -o remount,size=$tmpfs_size,mode=0755 -t devtmpfs devtmpfs /dev
+    return
+  fi
+
+  if ! mount -n -o size=$tmpfs_size,mode=0755 -t devtmpfs devtmpfs /dev; then
+    log_failure_msg "udev requires devtmpfs support, not started"
+    log_end_msg 1
+  fi
+
+  return 0
+}
+
+create_dev_makedev() {
+  if [ -e /sbin/MAKEDEV ]; then
+    ln -sf /sbin/MAKEDEV /dev/MAKEDEV
+  else
+    ln -sf /bin/true /dev/MAKEDEV
+  fi
+}
+
+# If the initramfs does not have /run, the initramfs udev database must
+# be migrated from /dev/.udev/ to /run/udev/.
+move_udev_database() {
+  [ -e "/dev/.udev/" ] || return 0
+  [ ! -e /run/udev/ ] || return 0
+  [ -e /run/ ] || return 0
+  mountpoint -q /run/ || return 0
+
+  mv /dev/.udev/ /run/udev/ || true
+}
+
+supported_kernel() {
+  case "$(uname -r)" in
+    2.[012345].*|2.6.[0-9]|2.6.[0-9][!0-9]*) return 1 ;;
+    2.6.[12][0-9]|2.6.[12][0-9][!0-9]*) return 1 ;;
+    2.6.3[0-1]|2.6.3[0-1][!0-9]*) return 1 ;;
+  esac
+  return 0
+}
+
+# shell version of /usr/bin/tty
+my_tty() {
+  [ -x /bin/readlink ] || return 0
+  [ -e /proc/self/fd/0 ] || return 0
+  readlink --silent /proc/self/fd/0 || true
+}
+
+warn_if_interactive() {
+  if [ "$RUNLEVEL" = "S" -a "$PREVLEVEL" = "N" ]; then
+    return
+  fi
+
+  TTY=$(my_tty)
+  if [ -z "$TTY" -o "$TTY" = "/dev/console" -o "$TTY" = "/dev/null" ]; then
+    return
+  fi
+
+  printf "\n\n\nIt has been detected that the command\n\n\t$0 $*\n\n"
+  printf "has been run from an interactive shell.\n"
+  printf "It will probably not do what you expect, so this script will wait\n"
+  printf "60 seconds before continuing. Press ^C to stop it.\n"
+  printf "RUNNING THIS COMMAND IS HIGHLY DISCOURAGED!\n\n\n\n"
+  sleep 60
+}
+
+##############################################################################
+
+[ -x /sbin/udevd ] || exit 0
+
+PATH="/sbin:/bin"
+
+# defaults
+tmpfs_size="10M"
+
+if [ -e /etc/udev/udev.conf ]; then
+  . /etc/udev/udev.conf
+fi
+
+. /lib/lsb/init-functions
+
+if ! supported_kernel; then
+  log_failure_msg "udev requires a kernel >= 2.6.32, not started"
+  log_end_msg 1
+fi
+
+if [ ! -e /proc/filesystems ]; then
+  log_failure_msg "udev requires a mounted procfs, not started"
+  log_end_msg 1
+fi
+
+if ! grep -q '[[:space:]]devtmpfs$' /proc/filesystems; then
+  log_failure_msg "udev requires devtmpfs support, not started"
+  log_end_msg 1
+fi
+
+if [ ! -d /sys/class/ ]; then
+  log_failure_msg "udev requires a mounted sysfs, not started"
+  log_end_msg 1
+fi
+
+if [ ! -e /sys/kernel/uevent_helper ]; then
+  log_failure_msg "udev requires hotplug support, not started"
+  log_end_msg 1
+fi
+
+if ! ps --no-headers --format args ax | egrep -q '^\['; then
+  log_warning_msg "udev does not support containers, not started"
+  exit 0
+fi
+
+if [ -d /sys/class/mem/null -a ! -L /sys/class/mem/null ] || \
+   [ -e /sys/block -a ! -e /sys/class/block ]; then
+  log_warning_msg "CONFIG_SYSFS_DEPRECATED must not be selected"
+  log_warning_msg "Booting will continue in 30 seconds but many things will be broken"
+  sleep 30
+fi
+
+# When modifying this script, do not forget that between the time that the
+# new /dev has been mounted and udevadm trigger has been run there will be
+# no /dev/null. This also means that you cannot use the "&" shell command.
+
+case "$1" in
+    start)
+    if init_is_upstart 2>/dev/null; then
+	exit 1
+    fi
+    if mountpoint -q /dev/; then
+	TMPFS_MOUNTED=1
+    elif [ -e "/dev/.udev/" ]; then
+	log_warning_msg ".udev/ already exists on the static /dev"
+    fi
+
+    if [ ! -e "/dev/.udev/" -a ! -e "/run/udev/" ]; then
+	warn_if_interactive
+    fi
+
+    echo > /sys/kernel/uevent_helper
+
+    move_udev_database
+
+    if [ -z "$TMPFS_MOUNTED" ]; then
+	unmount_devpts
+	mount_devtmpfs
+	[ -d /proc/1 ] || mount -n /proc
+    fi
+
+    # clean up parts of the database created by the initramfs udev
+    udevadm info --cleanup-db
+
+    # set the SELinux context for devices created in the initramfs
+    [ -x /sbin/restorecon ] && /sbin/restorecon -R /dev
+
+    # /dev/null must be created before udevd is started
+    /lib/udev/create_static_nodes || true
+
+    log_daemon_msg "Starting the hotplug events dispatcher" "udevd"
+    if udevd --daemon; then
+	log_end_msg $?
+    else
+	log_warning_msg $?
+	log_warning_msg "Waiting 15 seconds and trying to continue anyway"
+	sleep 15
+    fi
+
+    log_action_begin_msg "Synthesizing the initial hotplug events"
+    if udevadm trigger --action=add; then
+	log_action_end_msg $?
+    else
+	log_action_end_msg $?
+    fi
+
+    create_dev_makedev
+
+    # wait for the udevd childs to finish
+    log_action_begin_msg "Waiting for /dev to be fully populated"
+    if udevadm settle; then
+	log_action_end_msg 0
+    else
+	log_action_end_msg 0 'timeout'
+    fi
+    ;;
+
+    stop)
+    log_daemon_msg "Stopping the hotplug events dispatcher" "udevd"
+    if start-stop-daemon --stop --name udevd --user root --quiet --oknodo --retry 5; then
+	log_end_msg $?
+    else
+	log_end_msg $?
+    fi
+    ;;
+
+    restart)
+    if init_is_upstart 2>/dev/null; then
+	exit 1
+    fi
+    log_daemon_msg "Stopping the hotplug events dispatcher" "udevd"
+    if start-stop-daemon --stop --name udevd --user root --quiet --oknodo --retry 5; then
+	log_end_msg $?
+    else
+	log_end_msg $? || true
+    fi
+
+    log_daemon_msg "Starting the hotplug events dispatcher" "udevd"
+    if udevd --daemon; then
+	log_end_msg $?
+    else
+	log_end_msg $?
+    fi
+    ;;
+
+    reload|force-reload)
+    udevadm control --reload-rules
+    ;;
+
+    status)
+    status_of_proc /sbin/udevd udevd && exit 0 || exit $?
+    ;;
+
+    *)
+    echo "Usage: /etc/init.d/udev {start|stop|restart|reload|force-reload|status}" >&2
+    exit 1
+    ;;
+esac
+
+exit 0
+

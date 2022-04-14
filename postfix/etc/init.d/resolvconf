@@ -1,0 +1,93 @@
+#!/bin/sh
+#
+### BEGIN INIT INFO
+# Provides:          resolvconf
+# Required-Start:    $local_fs
+# Required-Stop:     $local_fs
+# X-Start-Before:    networking ifupdown
+# Default-Start:     S
+# Default-Stop:      0 6
+# Short-Description: Nameserver information manager
+# Description:       This service manages the list of nameserver addresses
+#                    used by the libc resolver and name service caches
+### END INIT INFO
+#
+# This file is part of the resolvconf package.
+#
+# We really need "X-Stop-Before: networking ifupdown" too because
+# terminal ifdowns shouldn't update resolv.conf;
+# however there is unfortunately no such thing as "X-Stop-Before".
+#
+# This file is not used in Ubuntu.
+#
+
+# Don't use set -e; check return status instead.
+
+[ -x /sbin/resolvconf ] || exit 0
+
+PATH=/sbin:/bin
+
+. /lib/lsb/init-functions
+
+# $1 EXITSTATUS
+# [$2 MESSAGE]
+log_action_end_msg_and_exit()
+{
+	log_action_end_msg "$1" ${2:+"$2"}
+	exit $1
+}
+
+case "$1" in
+  start)
+	# The "start" method should only be used at boot time.
+	# Don't run this on package upgrade, for example.
+	log_action_begin_msg "Setting up resolvconf"
+	# Wipe runtime directories in case they aren't on a tmpfs
+	resolvconf --wipe-runtime-directories || log_action_end_msg_and_exit 1 "failed to delete the old contents of run-time directories"
+	# Create runtime directories in case they are on a tmpfs
+	resolvconf --create-runtime-directories || log_action_end_msg_and_exit 1 "failed to create run-time directories"
+	# Request a postponed update (needed in case the base file has content).
+	resolvconf -u || log_action_end_msg_and_exit 1 "failed requesting update"
+	# Enable updates and perform the postponed update.
+	resolvconf --enable-updates || log_action_end_msg_and_exit 1 "failed to enable updates"
+	log_action_end_msg_and_exit 0
+	;;
+  stop)
+	# The "stop" method should only be used at shutdown time.
+	log_action_begin_msg "Stopping resolvconf"
+	resolvconf --disable-updates || log_action_end_msg_and_exit 1 "failed to disable updates"
+	log_action_end_msg_and_exit 0
+	;;
+  restart)
+	log_action_begin_msg "Restarting resolvconf"
+	resolvconf --enable-updates || log_action_end_msg_and_exit 1 "failed to enable updates"
+	log_action_end_msg_and_exit 0
+	;;
+  reload|force-reload)
+	resolvconf -u || log_action_end_msg_and_exit 1 "failed to update"
+	exit 0
+	;;
+  enable-updates)
+	resolvconf --enable-updates || log_action_end_msg_and_exit 1 "failed to enable updates"
+	exit 0
+	;;
+  disable-updates)
+	resolvconf --disable-updates || log_action_end_msg_and_exit 1 "failed to disable updates"
+	exit 0
+	;;
+  status)
+	if resolvconf --updates-are-enabled ; then
+		log_success_msg "resolvconf updates are enabled"
+	else
+		log_failure_msg "resolvconf updates are disabled"
+	fi
+	exit 0
+	;;
+  *)
+	echo "Usage: /etc/init.d/resolvconf {start|stop|restart|reload|force-reload|enable-updates|disable-updates|status}" >&2
+	exit 3
+	;;
+esac
+
+# Don't reach here
+exit 99

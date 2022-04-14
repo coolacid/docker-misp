@@ -1,0 +1,77 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          umountroot
+# Required-Start:
+# Required-Stop:
+# Should-Stop:       halt reboot kexec
+# Default-Start:
+# Default-Stop:      0 6
+# Short-Description: Mount the root filesystem read-only.
+### END INIT INFO
+
+PATH=/sbin:/bin
+. /lib/init/vars.sh
+
+. /lib/lsb/init-functions
+
+do_stop () {
+	[ "$VERBOSE" = no ] || log_action_begin_msg "Mounting root filesystem read-only"
+	# Ask init to re-exec itself before we go down if it has been
+	# upgraded this cycle.  It'll lose all its state, but at least
+	# it won't hold open files on the root filesystem (lp:#672177).
+	if [ -f /var/run/init.upgraded ]
+	then
+		old_map=$( cat /proc/1/maps )
+		map=$old_map
+		telinit u || :
+		i=0
+		timeout=5
+		while [ "$map" = "$old_map" ]
+		do
+			sleep 1
+			map=$( cat /proc/1/maps )
+			/usr/bin/logger "waiting for init to respawn"
+			i=$((i+1))
+			if [ $i -eq $timeout ] ; then
+				break
+			fi
+		done
+
+		if [ "$map" = "$old_map" ] ; then
+			/usr/bin/logger "FAIL: init failed to respawn in $timeout seconds - unmounting anyway"
+		else
+			/usr/bin/logger "SUCCESS: init respawned after $i seconds (within $timeout seconds timeout)"
+		fi
+	fi
+
+	MOUNT_FORCE_OPT=
+	[ "$(uname -s)" = "GNU/kFreeBSD" ] && MOUNT_FORCE_OPT=-f
+	# This:
+	#     mount -n -o remount,ro /
+	# will act on a bind mount of / if there is one.
+	# See #339023 and the comment in checkroot.sh
+	mount    $MOUNT_FORCE_OPT -n -o remount,ro -t dummytype dummydev / 2>/dev/null \
+	|| mount $MOUNT_FORCE_OPT -n -o remount,ro              dummydev / 2>/dev/null \
+	|| mount $MOUNT_FORCE_OPT -n -o remount,ro                       /
+	ES=$?
+	[ "$VERBOSE" = no ] || log_action_end_msg $ES
+}
+
+case "$1" in
+  start)
+	# No-op
+	;;
+  restart|reload|force-reload)
+	echo "Error: argument '$1' not supported" >&2
+	exit 3
+	;;
+  stop)
+	do_stop
+	;;
+  *)
+	echo "Usage: $0 start|stop" >&2
+	exit 3
+	;;
+esac
+
+:

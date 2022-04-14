@@ -1,0 +1,20 @@
+#!/bin/sh -e
+
+if [ -e /lib/lsb/init-functions ]; then
+    . /lib/lsb/init-functions
+fi
+
+if ! init_is_upstart; then
+    exit 0
+fi
+
+# Let's ignore meta entries (ifdown -a)
+if [ "$ADDRFAM" = "meta" ]; then
+    exit 0
+fi
+
+initctl emit -n net-device-down \
+	"IFACE=$IFACE" \
+	"LOGICAL=$LOGICAL" \
+	"ADDRFAM=$ADDRFAM" \
+	"METHOD=$METHOD"

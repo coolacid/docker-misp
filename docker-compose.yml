@@ -72,6 +72,26 @@ services:
       timeout: 10s
       retries: 5
 
+  misp-modules:
+    image: coolacid/misp-docker:modules-latest
+    restart: always
+    read_only: true
+    mem_limit: 256M
+    cpu_shares: 256
+    container_name: misp-modules
+    build:
+      context: ./
+      dockerfile: misp-modules-Dockerfile
+    environment:
+      - "REDIS_BACKEND=redis"
+    depends_on:
+      - redis
+      - db
+    healthcheck:
+      test: ["CMD", "nc", "-v", "-w1", "127.0.0.1", "6666"]
+      timeout: 10s
+      retries: 5
+
 
 volumes:
   redis_data:

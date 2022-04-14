@@ -9,9 +9,12 @@ services:
     cpus: 0.5
     cpu_shares: 128
     volumes:
-      - "./redis/data/:/data/:rw"
+      - "redis_data:/data:rw"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       timeout: 10s
       retries: 5
+
+volumes:
+  redis_data:
 

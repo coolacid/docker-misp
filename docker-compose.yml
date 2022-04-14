@@ -1,0 +1,97 @@
+version: '2.4'
+services:
+  redis:
+    image: redis:5.0.6
+    container_name: redis
+    restart: always
+    read_only: true
+    mem_limit: 50M
+    cpus: 0.5
+    cpu_shares: 128
+    volumes:
+      - "redis_data:/data:rw"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 10s
+      retries: 5
+
+  mail:
+    image: catatnight/postfix
+    restart: always
+    container_name: mail
+    read_only: true
+    mem_limit: 256M
+    cpu_shares: 256
+    build:
+      context: ./
+      dockerfile: mail-Dockerfile
+    volumes:
+      - "./postfix_data/main.cf:/etc/postfix/main.cf:rw"
+      - "postfix_etc:/etc:rw"
+      - "postfix_var_tmp:/var/tmp:rw"
+      - "postfix_var_log:/var/log:rw"
+      - "postfix_usr_tmp:/usr/tmp:rw"
+      - "postfix_var_mail:/var/mail:rw"
+      - "postfix_var_spool:/var/spool:rw"
+      - "postfix_var_run:/var/run:rw"
+      - "postfix_run:/run:rw"
+      - "postfix_opt:/opt:rw"
+      - "postfix_var_lib:/var/lib:rw"
+    ports:
+      - "127.0.0.1:25:25"
+    healthcheck:
+      test: ["CMD", "nc", "-v", "-w1", "127.0.0.1", "25"]
+      timeout: 10s
+      retries: 5
+
+  db:
+    image: mysql:8.0.19
+    container_name: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    read_only: true
+    mem_limit: 2048M
+    cpu_shares: 512
+    environment:
+      - "MYSQL_USER=${MYSQLUSER}"
+      - "MYSQL_PASSWORD=${MYSQLPASSWORD}"
+      - "MYSQL_ROOT_PASSWORD=${MYSQLROOTPASSWORD}"
+      - "MYSQL_DATABASE=${MYSQLDATABASE}"
+    volumes:
+      - "mysql_var_lib:/var/lib:rw"
+      - "mysql_var_run:/var/run:rw"
+      - "mysql_run:/run:rw"
+      - "mysql_var_log:/var/log:rw"
+      - "mysql_etc:/etc:rw"
+      - "mysql_tmp:/tmp:rw"
+      - "mysql_var_tmp:/var/tmp:rw"
+    cap_add:
+      - SYS_NICE
+    healthcheck:
+      test: ["CMD", "mysqladmin", "-uroot", "-ppassword", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 5
+
+
+volumes:
+  redis_data:
+
+  postfix_etc:
+  postfix_var_tmp:
+  postfix_var_log:
+  postfix_usr_tmp:
+  postfix_var_mail:
+  postfix_var_spool:
+  postfix_var_run:
+  postfix_run:
+  postfix_opt:
+  postfix_var_lib:
+
+  mysql_var_lib:
+  mysql_var_run:
+  mysql_run:
+  mysql_var_log:
+  mysql_etc:
+  mysql_tmp:
+  mysql_var_tmp:
+

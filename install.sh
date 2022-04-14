@@ -17,12 +17,6 @@ if [ "$server_name" == "" ]; then
 	sed -i "s/SERVER_NAME=/SERVER_NAME=$server_main_ip/" .env
 fi
 
-#creating redis database dir
-if [ ! -d redis/data ]; then
-	mkdir -p redis/data
-fi
-docker-compose -f test_scripts/redis-compose.yml up -d
-
 #checking if server listens on 25 tcp port
 status_25_port=`ss -ntpl | grep 25 | grep -v docker |wc -l`
 if [ $status_25_port -gt 0 ]; then
@@ -36,4 +30,5 @@ if [ $status_25_port -gt 0 ]; then
 		exit
 	fi
 fi
-docker-compose -f mail-compose.yml up -d
+
+docker-compose -f docker-compose.yml up -d

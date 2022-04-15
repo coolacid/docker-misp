@@ -118,6 +118,7 @@ services:
       - /usr/tmp
       - /run
       - /var/run
+      - /var/run/php
     volumes:
       - "./server-configs/:/var/www/MISP/app/Config/:rw"
       - "./logs/:/var/www/MISP/app/tmp/logs/:rw"

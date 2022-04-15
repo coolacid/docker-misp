@@ -25,16 +25,18 @@ services:
     build:
       context: ./
       dockerfile: mail-Dockerfile
+    tmpfs:
+      - /tmp
+      - /var/tmp
+      - /usr/tmp
+      - /run
+      - /var/run
     volumes:
       - "./postfix_data/main.cf:/etc/postfix/main.cf:rw"
       - "postfix_etc:/etc:rw"
-      - "postfix_var_tmp:/var/tmp:rw"
       - "postfix_var_log:/var/log:rw"
-      - "postfix_usr_tmp:/usr/tmp:rw"
       - "postfix_var_mail:/var/mail:rw"
       - "postfix_var_spool:/var/spool:rw"
-      - "postfix_var_run:/var/run:rw"
-      - "postfix_run:/run:rw"
       - "postfix_opt:/opt:rw"
       - "postfix_var_lib:/var/lib:rw"
     ports:
@@ -49,7 +51,7 @@ services:
     container_name: mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
-    read_only: true
+    read_only: false
     mem_limit: 2048M
     cpu_shares: 512
     environment:
@@ -57,14 +59,16 @@ services:
       - "MYSQL_PASSWORD=${MYSQLPASSWORD}"
       - "MYSQL_ROOT_PASSWORD=${MYSQLROOTPASSWORD}"
       - "MYSQL_DATABASE=${MYSQLDATABASE}"
+    tmpfs:
+      - /tmp
+      - /var/tmp
+      - /run
+      - /var/run
+      - /var/run/mysqld
     volumes:
       - "mysql_var_lib:/var/lib:rw"
-      - "mysql_var_run:/var/run:rw"
-      - "mysql_run:/run:rw"
       - "mysql_var_log:/var/log:rw"
       - "mysql_etc:/etc:rw"
-      - "mysql_tmp:/tmp:rw"
-      - "mysql_var_tmp:/var/tmp:rw"
     cap_add:
       - SYS_NICE
     healthcheck:
@@ -108,6 +112,12 @@ services:
     ports:
       - "${SERVER_NAME}:80:80"
       - "${SERVER_NAME}:443:443"
+    tmpfs:
+      - /tmp
+      - /var/tmp
+      - /usr/tmp
+      - /run
+      - /var/run
     volumes:
       - "./server-configs/:/var/www/MISP/app/Config/:rw"
       - "./logs/:/var/www/MISP/app/tmp/logs/:rw"
@@ -115,15 +125,10 @@ services:
       - "./ssl/:/etc/nginx/certs:rw"
       - "./nginx/misp80:/etc/nginx/sites-available/misp80"
       - "./nginx/misp:/etc/nginx/sites-available/misp"
-      - "misp_tmp:/tmp:rw"
-      - "misp_var_tmp:/var/tmp:rw"
-      - "misp_usr_tmp:/usr/tmp:rw"
       - "misp_var_www_misp:/var/www"
-      - "misp_etc:/etc:rw"
-      - "misp_run:/run:rw"
-      - "misp_var_run:/var/run:rw"
       - "misp_var_log:/var/log:rw"
       - "misp_var_lib:/var/lib:rw"
+      - "misp_etc:/etc:rw"
     environment:
       - "HOSTNAME=https://${SERVER_NAME}"
       - "REDIS_FQDN=redis"
@@ -138,33 +143,19 @@ services:
 volumes:
   redis_data:
 
-  postfix_etc:
-  postfix_var_tmp:
   postfix_var_log:
-  postfix_usr_tmp:
   postfix_var_mail:
   postfix_var_spool:
-  postfix_var_run:
-  postfix_run:
-  postfix_opt:
   postfix_var_lib:
+  postfix_opt:
+  postfix_etc:
 
   mysql_var_lib:
-  mysql_var_run:
-  mysql_run:
   mysql_var_log:
   mysql_etc:
-  mysql_tmp:
-  mysql_var_tmp:
 
-  misp_tmp:
-  misp_var_tmp:
   misp_var_log:
   misp_var_lib:
-  misp_usr_tmp:
   misp_var_www_misp:
   misp_etc:
-  misp_run:
-  misp_var_run:
-  misp_dev:
 

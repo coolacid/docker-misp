@@ -5,7 +5,7 @@ services:
     container_name: redis
     restart: always
     read_only: true
-    mem_limit: 50M
+    mem_limit: 128M
     cpus: 0.5
     cpu_shares: 128
     volumes:
@@ -20,7 +20,7 @@ services:
     restart: always
     container_name: mail
     read_only: true
-    mem_limit: 256M
+    mem_limit: 128M
     cpu_shares: 256
     build:
       context: ./
@@ -159,4 +159,5 @@ volumes:
   misp_var_lib:
   misp_var_www_misp:
   misp_etc:
+
 

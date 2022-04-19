@@ -8,6 +8,7 @@ services:
     mem_limit: ${REDISMEMLIMIT}
     cpus: ${REDISCPUS}
     cpu_shares: 128
+    pids_limit: 15 
     volumes:
       - "redis_data:/data:rw"
     healthcheck:
@@ -23,6 +24,7 @@ services:
     mem_limit: ${MAILMEMLIMIT}
     cpu_shares: 128
     cpus: ${MAILCPUS}
+    pids_limit: 30
     build:
       context: ./
       dockerfile: mail-Dockerfile
@@ -56,6 +58,7 @@ services:
     mem_limit: ${MYSQLMEMLIMIT}
     cpu_shares: 512
     cpus: ${MYSQLCPUS}
+    pids_limit: 70 
     environment:
       - "MYSQL_USER=${MYSQLUSER}"
       - "MYSQL_PASSWORD=${MYSQLPASSWORD}"
@@ -86,6 +89,7 @@ services:
     cpu_shares: 128
     cpus: ${MISPMODCPUS}
     container_name: misp-modules
+    pids_limit: 5 
     build:
       context: ./
       dockerfile: misp-modules-Dockerfile
@@ -107,6 +111,7 @@ services:
     mem_limit: ${MISPMEMLIMIT}
     cpu_shares: 512
     cpus: ${MISPCPUS}
+    pids_limit: 70
     build:
       context: ./
       dockerfile: misp-Dockerfile

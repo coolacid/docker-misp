@@ -7,7 +7,7 @@ MISP_APP_CONFIG_PATH=/var/www/MISP/app/Config
 [ -z "$MYSQL_PASSWORD" ] && MYSQL_PASSWORD=example
 [ -z "$MYSQL_DATABASE" ] && MYSQL_DATABASE=misp
 [ -z "$REDIS_FQDN" ] && REDIS_FQDN=redis
-[ -z "$MISP_MODULES_FQDN" ] && MISP_MODULES_FQDN="http://misp-modules"
+[ -z "$MISP_MODULES_FQDN" ] && MISP_MODULES_FQDN="http://modules"
 [ -z "$MYSQLCMD" ] && MYSQLCMD="mysql -u $MYSQL_USER -p$MYSQL_PASSWORD -P $MYSQL_PORT -h $MYSQL_HOST -r -N  $MYSQL_DATABASE"
 
 ENTRYPOINT_PID_FILE="/entrypoint_apache.install"
@@ -111,7 +111,7 @@ sync_files(){
     done
 }
 
-# Ensure SSL certs are where we expect them, for backward comparibility See issue #53
+# Ensure SSL certs are where we expect them, for backward compatibility See issue #53
 for CERT in cert.pem dhparams.pem key.pem; do
     echo "/etc/nginx/certs/$CERT /etc/ssl/certs/$CERT"
     if [[ ! -f "/etc/nginx/certs/$CERT" && -f "/etc/ssl/certs/$CERT" ]]; then

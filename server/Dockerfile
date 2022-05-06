@@ -1,4 +1,4 @@
-FROM composer:2.1.14 as composer-build
+FROM composer:2.2 as composer-build
     ARG MISP_TAG
     WORKDIR /tmp
     ADD https://raw.githubusercontent.com/MISP/MISP/${MISP_TAG}/app/composer.json /tmp
@@ -60,7 +60,7 @@ FROM debian:bullseye-slim as python-build
         sed -i 's/-e //g' requirements.txt; pip3 wheel -r requirements.txt --no-cache-dir -w /wheels/
 
     # install STIX2.0 library to support STIX 2.0 export:
-    # Original Requirements has a bunch of non-required pacakges, force it to only grab wheels for deps from setup.py
+    # Original Requirements has a bunch of non-required packages, force it to only grab wheels for deps from setup.py
     RUN git clone --depth 1 https://github.com/MISP/cti-python-stix2.git; \
         cd cti-python-stix2 || exit; python3 setup.py bdist_wheel -d /wheels; \
         echo "-e ." > requirements.txt; pip3 wheel -r requirements.txt --no-cache-dir -w /wheels/
@@ -79,6 +79,28 @@ FROM debian:bullseye-slim as python-build
     # Remove extra packages due to incompatible requirements.txt files
     WORKDIR /wheels
     RUN find . -name "Sphinx*" | tee /dev/stderr | grep -v "Sphinx-1.5.5" | xargs rm -f
+
+
+FROM debian:bullseye-slim as misp-pull
+ENV DEBIAN_FRONTEND noninteractive
+ARG MISP_TAG
+WORKDIR /tmp
+
+    RUN apt-get update && apt-get install -y --no-install-recommends \
+        git \
+        ca-certificates  \
+        && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
+
+    RUN git clone --branch ${MISP_TAG} --depth 1 https://github.com/MISP/MISP.git /tmp/MISP && ls /tmp && \
+        # We build the MISP modules outside, so we don't need to grab those submodules
+        cd /tmp/MISP/app || exit; git submodule update --init --recursive --depth 1 .
+
+    # Make a copy of the file store, so we can sync from it \
+    RUN cp -R /tmp/MISP/app/files /tmp/MISP/app/files.dist
+    # Make a copy of the configurations, so we can sync from it
+    RUN cp -R /tmp/MISP/app/Config /tmp/MISP/app/Config.dist
+
+    RUN rm -r /tmp/MISP/.git
 
 
 FROM debian:bullseye-slim
@@ -101,6 +123,7 @@ ARG PHP_VER
         libfuzzy2 \
         mariadb-client \
         rsync \
+        ca-certificates \
         # Python Requirements
         python3 \
         python3-setuptools \
@@ -124,12 +147,6 @@ ARG PHP_VER
         zip unzip \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-# MISP code
-    # Download MISP using git in the /var/www/ directory.
-    RUN git clone --branch ${MISP_TAG} --depth 1 https://github.com/MISP/MISP.git /var/www/MISP; \
-        # We build the MISP modules outside, so we don't need to grab those submodules
-        cd /var/www/MISP/app || exit; git submodule update --init --recursive .;
-
 # Python Modules
     COPY --from=python-build /wheels /wheels
     RUN pip3 install --no-cache-dir /wheels/*.whl && rm -rf /wheels
@@ -140,27 +157,28 @@ ARG PHP_VER
     COPY --from=php-build /usr/lib/php/${PHP_VER}/rdkafka.so /usr/lib/php/${PHP_VER}/rdkafka.so
     COPY --from=php-build /usr/lib/php/${PHP_VER}/brotli.so /usr/lib/php/${PHP_VER}/brotli.so
 
-    COPY --from=composer-build /tmp/Vendor /var/www/MISP/app/Vendor
-    COPY --from=composer-build /tmp/Plugin /var/www/MISP/app/Plugin
-    
-    RUN for dir in /etc/php/*; do echo "extension=rdkafka.so" > "$dir/mods-available/rdkafka.ini"; done; phpenmod rdkafka
-    RUN for dir in /etc/php/*; do echo "extension=brotli.so" > "$dir/mods-available/brotli.ini"; done; phpenmod brotli
+# MISP code
+# Move MISP into the /var/www/ directory.
+    COPY --chown=www-data:www-data --from=misp-pull /tmp/MISP /var/www/MISP
+    COPY --chown=www-data:www-data --from=composer-build /tmp/Vendor /var/www/MISP/app/Vendor
+    COPY --chown=www-data:www-data --from=composer-build /tmp/Plugin /var/www/MISP/app/Plugin
 
-    RUN for dir in /etc/php/*; do echo "extension=ssdeep.so" > "$dir/mods-available/ssdeep.ini"; done \
-            ;phpenmod redis \
-    # Enable CakeResque with php-gnupgp
-        ;phpenmod gnupg \
-    # Enable ssdeep we build earlier
-        ;phpenmod ssdeep \
-    # To use the scheduler worker for scheduled tasks, do the following:
-        ;cp -fa /var/www/MISP/INSTALL/setup/config.php /var/www/MISP/app/Plugin/CakeResque/Config/config.php
+    RUN for dir in /etc/php/*; do echo "extension=rdkafka.so" > "$dir/mods-available/rdkafka.ini"; done && phpenmod rdkafka && \
+        for dir in /etc/php/*; do echo "extension=brotli.so" > "$dir/mods-available/brotli.ini"; done && phpenmod brotli && \
+# Enable ssdeep we built earlier
+    for dir in /etc/php/*; do echo "extension=ssdeep.so" > "$dir/mods-available/ssdeep.ini"; done && phpenmod ssdeep && \
+    phpenmod redis && \
+# Enable CakeResque with php-gnupgp
+    phpenmod gnupg && \
+# To use the scheduler worker for scheduled tasks, do the following:
+    cp -fa /var/www/MISP/INSTALL/setup/config.php /var/www/MISP/app/Plugin/CakeResque/Config/config.php
 
 # nginx
-    RUN rm /etc/nginx/sites-enabled/*; mkdir /run/php /etc/nginx/certs
-    COPY files/etc/nginx/misp /etc/nginx/sites-available/misp
-    COPY files/etc/nginx/misp-secure /etc/nginx/sites-available/misp-secure
-    COPY files/etc/nginx/misp80 /etc/nginx/sites-available/misp80
-    COPY files/etc/nginx/misp80-noredir /etc/nginx/sites-available/misp80-noredir
+RUN rm /etc/nginx/sites-enabled/* && mkdir /run/php /etc/nginx/certs
+COPY files/etc/nginx/misp /etc/nginx/sites-available/misp
+COPY files/etc/nginx/misp-secure /etc/nginx/sites-available/misp-secure
+COPY files/etc/nginx/misp80 /etc/nginx/sites-available/misp80
+COPY files/etc/nginx/misp80-noredir /etc/nginx/sites-available/misp80-noredir
 
 # Make a copy of the file store, so we can sync from it
     RUN cp -R /var/www/MISP/app/files /var/www/MISP/app/files.dist

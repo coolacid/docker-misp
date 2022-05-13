@@ -6,25 +6,21 @@ services:
     image: namshi/smtp
 
   redis:
-    image: redis:5.0.6
+    image: redis:5.0.14
 
   db:
-    image: mysql:8.0.19
+    image: mysql:8.0.29
     command: --default-authentication-plugin=mysql_native_password
     restart: always
-    environment:
-       # NOTE: This should be set in .env as AlphaNum with no Special Chars. Otherwise, edit config after first run.
-      - "MYSQL_USER=${MYSQL_USER}"
-      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
-      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
-      - "MYSQL_DATABASE=${MYSQL_DATABASE}"
+    env_file:
+      - .env
     volumes:
       - mysql_data:/var/lib/mysql
     cap_add:
       - SYS_NICE  # CAP_SYS_NICE Prevent runaway mysql log
 
   core:
-    image: coolacid/misp-docker:core-latest
+    image: coolacid/misp-docker:core-${MISP_TAG:-latest}
     depends_on:
       - redis
       - db
@@ -38,28 +34,11 @@ services:
       - "./files/:/var/www/MISP/app/files"
       - "./ssl/:/etc/nginx/certs"
 #      - "./examples/custom-entrypoint.sh:/custom-entrypoint.sh" # Use the example custom-entrypoint.sh
-    environment:
-      - "HOSTNAME=https://${FQDN}"
-      - "REDIS_FQDN=redis"
-      - "INIT=true"             # Initialize MISP, things includes, attempting to import SQL and the Files DIR
-      - "CRON_USER_ID=1"        # The MISP user ID to run cron jobs as
-#      - "SYNCSERVERS=1 2 3 4"  # The MISP Feed servers to sync in the cron job
-      ## Database Configuration (And their defaults)
-      ## NOTE: This should be set in .env as AlphaNum with no Special Chars. Otherwise, edit config files after first run.
-      - "MYSQL_HOST=${MYSQL_HOST}"
-      - "MYSQL_USER=${MYSQL_USER}"
-      - "MYSQL_PASSWORD=${MYSQL_PASSWORD}"
-      - "MYSQL_DATABASE=${MYSQL_DATABASE}"
-      ## Optional Settings
-#      - "NOREDIR=true" # Do not redirect port 80
-#      - "DISIPV6=true" # Disable IPV6 in nginx
-#      - "CERTAUTH=optional" # Can be set to optional or on - Step 2 of https://github.com/MISP/MISP/tree/2.4/app/Plugin/CertAuth is still required
-#      - "SECURESSL=true" # Enable higher security SSL in nginx
-#      - "MISP_MODULES_FQDN=http://modules" # Set the MISP Modules FQDN, used for Enrichment_services_url/Import_services_url/Export_services_url
-#      - "WORKERS=1" #If set to a value larger than 1 this will increase the number of parallel worker processes
+    env_file:
+      - .env
 
   modules:
-    image: coolacid/misp-docker:modules-latest
+    image: coolacid/misp-docker:modules-${MODULES_TAG:-latest}
     environment:
       - "REDIS_BACKEND=redis"
     depends_on:

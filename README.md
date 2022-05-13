@@ -31,19 +31,19 @@ This is based on some of the work from the DSCO docker build, nearly all of the 
 
 ### Development/Test
 
-- Grab the `docker-compose.yml`, `template.env`, and `server-configs/email.php` files (Keep directory structure)
+-   Grab the `docker-compose.yml`, `template.env`, and `server-configs/email.php` files (Keep directory structure)
 
-- Copy `template.env` to `.env`
+-   Copy `template.env` to `.env`
 
-- A dry run will create sane default configurations
+-   A dry run will create sane default configurations
 
-- `docker-compose up -d`
+-   `docker-compose up -d`
 
-- Login to `https://localhost`
-    -   User: `admin@admin.test`
-    -   Password: `admin`
+-   Login to `https://localhost`
+  -   User: `admin@admin.test`
+  -   Password: `admin`
 
-- Profit
+-   Profit
 
 ### Using the image for development
 
@@ -59,22 +59,22 @@ Finally, copy any changes you make outside of the container for commiting to you
 Updating the images should be as simple as `docker-compose pull` which, unless changed in the `docker-compose.yml` file will pull the latest built images.
 
 ### Production
-- It is recommended to specify which build you want to be running, and modify that version number when you would like to upgrade
+-   It is recommended to specify which build you want to be running, and modify that version number when you would like to upgrade
 
-- Use docker-compose with an .env file, or some other config management tool
-  - `docker-compose up -d`
+-   Use docker-compose with an .env file, or some other config management tool
+  -   `docker-compose up -d`
 
-- Directory volume mount SSL Certs `./ssl`: `/etc/ssl/certs`
-    -   Certificate File: `cert.pem`
-    -   Certificate Key File: `key.pem`
-    -   CA File for Cert Authentication (optional) `ca.pem`
+-   Directory volume mount SSL Certs `./ssl`: `/etc/ssl/certs`
+  -   Certificate File: `cert.pem`
+  -   Certificate Key File: `key.pem`
+  -   CA File for Cert Authentication (optional) `ca.pem`
 
-- Directory volume mount and create configs: `/var/www/MISP/app/Config/`
+-   Directory volume mount and create configs: `/var/www/MISP/app/Config/`
 
-- Additional directory volume mounts:
-    -   `/var/www/MISP/app/files`
-    -   `/var/www/MISP/.gnupg`
-    -   `/var/www/MISP/.smime`
+-   Additional directory volume mounts:
+  -   `/var/www/MISP/app/files`
+  -   `/var/www/MISP/.gnupg`
+  -   `/var/www/MISP/.smime`
 
 ### Building
 

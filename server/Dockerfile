@@ -2,7 +2,8 @@ FROM composer:2.2 as composer-build
     ARG MISP_TAG
     WORKDIR /tmp
     ADD https://raw.githubusercontent.com/MISP/MISP/${MISP_TAG}/app/composer.json /tmp
-    RUN composer install --ignore-platform-reqs && \
+    RUN composer config --no-plugins allow-plugins.composer/installers true && \ 
+     composer install --ignore-platform-reqs && \
      composer require jakub-onderka/openid-connect-php:1.0.0-rc1 --ignore-platform-reqs
 
 FROM debian:bullseye-slim as php-build

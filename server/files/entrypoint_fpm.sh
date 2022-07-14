@@ -13,6 +13,13 @@ change_php_vars(){
             sed -i -E "s|^;?date.timezone =.*$|date.timezone = $PHP_TIMEZONE|" "$FILE"
         fi
     done
+    for FILE in /etc/php/*/cli/php.ini
+    do
+        if [ ! -z "$PHP_TIMEZONE" ];
+        then
+            sed -i -E "s|^;?date.timezone =.*$|date.timezone = $PHP_TIMEZONE|" "$FILE"
+        fi
+    done
 }
 
 echo "Configure PHP  | Change PHP values ..." && change_php_vars

@@ -53,7 +53,12 @@ services:
 #      - "CERTAUTH=optional" # Can be set to optional or on - Step 2 of https://github.com/MISP/MISP/tree/2.4/app/Plugin/CertAuth is still required
 #      - "SECURESSL=true" # Enable higher security SSL in nginx
 #      - "MISP_MODULES_FQDN=http://misp-modules" # Set the MISP Modules FQDN, used for Enrichment_services_url/Import_services_url/Export_services_url
-#      - "WORKERS=1" #If set to a value larger than 1 this will increase the number of parallel worker processes
+#      - "WORKERS=1" # Legacy variable controlling the number of parallel workers (use variables below instead)
+#      - "NUM_WORKERS_DEFAULT=5"    # To set the number of default workers
+#      - "NUM_WORKERS_PRIO=5"       # To set the number of prio workers
+#      - "NUM_WORKERS_EMAIL=5"      # To set the number of email workers
+#      - "NUM_WORKERS_UPDATE=1"     # To set the number of update workers
+#      - "NUM_WORKERS_CACHE=5"      # To set the number of cache workers
   misp-modules:
     image: coolacid/misp-docker:modules-latest
     environment:

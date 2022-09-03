@@ -3,7 +3,9 @@ FROM composer:2.1.14 as composer-build
     WORKDIR /tmp
     ADD https://raw.githubusercontent.com/MISP/MISP/${MISP_TAG}/app/composer.json /tmp
     RUN composer install --ignore-platform-reqs && \
-     composer require jakub-onderka/openid-connect-php:1.0.0-rc1 --ignore-platform-reqs
+     composer require jakub-onderka/openid-connect-php:1.0.0-rc1 --ignore-platform-reqs && \
+     composer require --with-all-dependencies supervisorphp/supervisor:^4.0 \
+      guzzlehttp/guzzle php-http/message lstrojny/fxmlrpc --ignore-platform-reqs
 
 FROM debian:bullseye-slim as php-build
     RUN apt-get update; apt-get install -y --no-install-recommends \
@@ -148,12 +150,8 @@ ARG PHP_VER
 
     RUN for dir in /etc/php/*; do echo "extension=ssdeep.so" > "$dir/mods-available/ssdeep.ini"; done \
             ;phpenmod redis \
-    # Enable CakeResque with php-gnupgp
-        ;phpenmod gnupg \
     # Enable ssdeep we build earlier
-        ;phpenmod ssdeep \
-    # To use the scheduler worker for scheduled tasks, do the following:
-        ;cp -fa /var/www/MISP/INSTALL/setup/config.php /var/www/MISP/app/Plugin/CakeResque/Config/config.php
+        ;phpenmod ssdeep
 
 # nginx
     RUN rm /etc/nginx/sites-enabled/*; mkdir /run/php /etc/nginx/certs
@@ -169,11 +167,11 @@ ARG PHP_VER
     RUN cp -R /var/www/MISP/app/Config /var/www/MISP/app/Config.dist
 
 # Entrypoints
-    COPY files/etc/supervisor/supervisor.conf /etc/supervisor/conf.d/supervisord.conf
+    COPY files/etc/supervisor/supervisor.conf /etc/supervisor/conf.d/10-supervisor.conf
+    COPY files/etc/supervisor/workers.conf /etc/supervisor/conf.d/50-workers.conf
     COPY files/entrypoint_fpm.sh /
     COPY files/entrypoint_nginx.sh /
     COPY files/entrypoint_cron.sh /
-    COPY files/entrypoint_workers.sh /
     COPY files/entrypoint.sh /
     ENTRYPOINT [ "/entrypoint.sh" ]
 

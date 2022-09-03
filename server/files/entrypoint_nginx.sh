@@ -13,11 +13,6 @@ MISP_APP_CONFIG_PATH=/var/www/MISP/app/Config
 ENTRYPOINT_PID_FILE="/entrypoint_apache.install"
 [ ! -f $ENTRYPOINT_PID_FILE ] && touch $ENTRYPOINT_PID_FILE
 
-setup_cake_config(){
-    sed -i "s/'host' => 'localhost'.*/'host' => '$REDIS_FQDN',          \/\/ Redis server hostname/" "/var/www/MISP/app/Plugin/CakeResque/Config/config.php"
-    sed -i "s/'host' => '127.0.0.1'.*/'host' => '$REDIS_FQDN',          \/\/ Redis server hostname/" "/var/www/MISP/app/Plugin/CakeResque/Config/config.php"
-}
-
 init_misp_config(){
     [ -f $MISP_APP_CONFIG_PATH/bootstrap.php ] || cp $MISP_APP_CONFIG_PATH.dist/bootstrap.default.php $MISP_APP_CONFIG_PATH/bootstrap.php
     [ -f $MISP_APP_CONFIG_PATH/database.php ] || cp $MISP_APP_CONFIG_PATH.dist/database.default.php $MISP_APP_CONFIG_PATH/database.php
@@ -50,11 +45,20 @@ init_misp_config(){
     /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Export_services_url" "$MISP_MODULES_FQDN"
 
     /var/www/MISP/app/Console/cake Admin setSetting "Plugin.Cortex_services_enable" false
+}
 
-    echo Change number of workers
-    if [ ! -z "$WORKERS" ] && [ "$WORKERS" -gt "1" ]; then
-        sed -i "s/start --interval/start -n $WORKERS --interval/" /var/www/MISP/app/Console/worker/start.sh
-    fi
+init_misp_workers(){
+    # Note that we are doing this after enforcing permissions, so we need to use the www-data user for this
+    echo "Configuring background workers"
+    sudo -u www-data /var/www/MISP/app/Console/cake Admin setSetting "SimpleBackgroundJobs.enabled" true
+    sudo -u www-data /var/www/MISP/app/Console/cake Admin setSetting "SimpleBackgroundJobs.supervisor_host" "127.0.0.1"
+    sudo -u www-data /var/www/MISP/app/Console/cake Admin setSetting "SimpleBackgroundJobs.supervisor_port" 9001
+    sudo -u www-data /var/www/MISP/app/Console/cake Admin setSetting "SimpleBackgroundJobs.supervisor_password" "supervisor"
+    sudo -u www-data /var/www/MISP/app/Console/cake Admin setSetting "SimpleBackgroundJobs.supervisor_user" "supervisor"
+    sudo -u www-data /var/www/MISP/app/Console/cake Admin setSetting "SimpleBackgroundJobs.redis_host" "$REDIS_FQDN"
+
+    echo "Starting background workers"
+    supervisorctl start misp-workers:*
 }
 
 init_misp_files(){
@@ -127,21 +131,21 @@ if [[ "$INIT" == true ]]; then
     echo "Ensure SSL certs exist..." && init_ssl
 fi
 
-# Things that should ALWAYS happen
-echo "Configure Cake | Change Redis host to $REDIS_FQDN ... " && setup_cake_config
-
 # Things we should do if we're configuring MISP via ENV
 echo "Configure MISP | Initialize misp base config..." && init_misp_config
 
 echo "Configure MISP | Sync app files..." && sync_files
 
 echo "Configure MISP | Enforce permissions ..."
-echo "... chown -R www-data.www-data /var/www/MISP ..." && find /var/www/MISP -not -user www-data -exec chown www-data.www-data {} +
+echo "... chown -R www-data:www-data /var/www/MISP ..." && find /var/www/MISP -not -user www-data -exec chown www-data:www-data {} +
 echo "... chmod -R 0750 /var/www/MISP ..." && find /var/www/MISP -perm 550 -type f -exec chmod 0550 {} + && find /var/www/MISP -perm 770 -type d -exec chmod 0770 {} +
 echo "... chmod -R g+ws /var/www/MISP/app/tmp ..." && chmod -R g+ws /var/www/MISP/app/tmp
 echo "... chmod -R g+ws /var/www/MISP/app/files ..." && chmod -R g+ws /var/www/MISP/app/files
 echo "... chmod -R g+ws /var/www/MISP/app/files/scripts/tmp ..." && chmod -R g+ws /var/www/MISP/app/files/scripts/tmp
 echo "... chmod 600 /var/www/MISP/app/Config/config.php /var/www/MISP/app/Config/database.php /var/www/MISP/app/Config/email.php ... " && chmod 600 /var/www/MISP/app/Config/config.php /var/www/MISP/app/Config/database.php /var/www/MISP/app/Config/email.php
+
+# Workers are set to NOT auto start so we have time to enforce permissions on the cache first
+echo "Configure MISP | Starting workers ..." && init_misp_workers
 
 # Work around https://github.com/MISP/MISP/issues/5608
 if [[ ! -f /var/www/MISP/PyMISP/pymisp/data/describeTypes.json ]]; then

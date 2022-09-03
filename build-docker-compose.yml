@@ -6,6 +6,7 @@ services:
         context: server/.
         args:
             - MISP_TAG=${MISP_TAG}
+            - MISP_COMMIT=${MISP_COMMIT}
             - PHP_VER=${PHP_VER}
 
   misp-modules:

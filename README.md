@@ -29,6 +29,8 @@ This is based on some of the work from the DSCO docker build, nearly all of the 
 
 ## Getting Started
 
+-   Copy the `template.env` to `.env` and fill the missing configuration variables
+
 ### Development/Test
 
 -   Grab the `docker-compose.yml` and `server-configs/email.php` files (Keep directory structure)

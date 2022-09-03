@@ -1,4 +1,6 @@
 /logs/
 /files/
 /ssl/
-/server-configs/
+/configs/
+.gnupg
+.env

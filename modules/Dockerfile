@@ -1,6 +1,7 @@
 FROM python:3.9-slim-bullseye  as builder
 ENV DEBIAN_FRONTEND noninteractive
 ARG MODULES_TAG
+ARG MODULES_COMMIT
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
                 cmake \
@@ -19,7 +20,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     RUN mkdir /wheel
     WORKDIR /srv
 
-    RUN git clone --branch ${MODULES_TAG} --depth 1  https://github.com/MISP/misp-modules.git /srv/misp-modules; \
+    RUN git clone --branch ${MODULES_TAG} --depth 1  https://github.com/MISP/misp-modules.git /srv/misp-modules
+    RUN if [ ! -z ${MODULES_COMMIT} ]; then cd /srv/misp-modules && git checkout ${MODULES_COMMIT}; fi; \
+        # Fixed in master - even though __init__.py is not mandatory in py3, wheels skip packages without it
+        touch /srv/misp-modules/misp_modules/modules/action_mod/_utils/__init__.py; \
+        # Fixed in master - missing dependencies
+        echo "Jinja2==3.1.2\nmattermostdriver==7.3.2" >> /srv/misp-modules/REQUIREMENTS; \
         cd /srv/misp-modules || exit; sed -i 's/-e //g' REQUIREMENTS; pip3 wheel -r REQUIREMENTS --no-cache-dir -w /wheel/
 
     RUN git clone --depth 1 https://github.com/stricaud/faup.git /srv/faup; \
@@ -39,10 +45,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
             libxrender1 \
             libxext6 \
             libpoppler-cpp0v5 \
+            libgl1 \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /wheel /wheel
 COPY --from=builder /usr/local/lib/libfaupl* /usr/local/lib/
 RUN pip install --use-deprecated=legacy-resolver /wheel/*.whl; ldconfig
+
+# Since we compile faup ourselves and lua is not required anymore, we can load our own library 
+#   and skip the pre-compiled blob to improve compatibility with other architectures like arm
+RUN sed -i s/LoadLibrary\(LOAD_LIB\)/LoadLibrary\(\"\\/usr\\/local\\/lib\\/libfaupl.so\"\)/ \
+    /usr/local/lib/python3.9/site-packages/pyfaup/__init__.py
 
 ENTRYPOINT [ "/usr/local/bin/misp-modules", "-l", "0.0.0.0"]

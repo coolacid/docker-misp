@@ -1,16 +1,22 @@
 version: '3'
 services:
-  # This is capible to relay via gmail, Amazon SES, or generic relays
-  # See: https://hub.docker.com/r/namshi/smtp
+  # This is capable to relay via gmail, Amazon SES, or generic relays
+  # See: https://hub.docker.com/r/ixdotai/smtp
   mail:
-    image: namshi/smtp
+    image: ixdotai/smtp
+    environment:
+      - "SMARTHOST_ADDRESS=${SMARTHOST_ADDRESS}"
+      - "SMARTHOST_PORT=${SMARTHOST_PORT}"
+      - "SMARTHOST_USER=${SMARTHOST_USER}"
+      - "SMARTHOST_PASSWORD=${SMARTHOST_PASSWORD}"
+      - "SMARTHOST_ALIASES=${SMARTHOST_ALIASES}"
 
   redis:
     image: redis:5.0.6
 
   db:
-    image: mysql:8.0.19
-    command: --default-authentication-plugin=mysql_native_password
+    # We use MariaDB because it supports ARM and has the expected collations
+    image: mariadb:10.8.2
     restart: always
     environment:
       - "MYSQL_USER=misp"
@@ -31,11 +37,12 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - "./server-configs/:/var/www/MISP/app/Config/"
+      - "./configs/:/var/www/MISP/app/Config/"
       - "./logs/:/var/www/MISP/app/tmp/logs/"
       - "./files/:/var/www/MISP/app/files"
       - "./ssl/:/etc/nginx/certs"
 #      - "./examples/custom-entrypoint.sh:/custom-entrypoint.sh" # Use the example custom-entrypoint.sh
+      - "./.gnupg:/var/www/MISP/.gnupg"
     environment:
       - "HOSTNAME=https://localhost"
       - "REDIS_FQDN=redis"
@@ -53,7 +60,20 @@ services:
 #      - "CERTAUTH=optional" # Can be set to optional or on - Step 2 of https://github.com/MISP/MISP/tree/2.4/app/Plugin/CertAuth is still required
 #      - "SECURESSL=true" # Enable higher security SSL in nginx
 #      - "MISP_MODULES_FQDN=http://misp-modules" # Set the MISP Modules FQDN, used for Enrichment_services_url/Import_services_url/Export_services_url
-#      - "WORKERS=1" #If set to a value larger than 1 this will increase the number of parallel worker processes
+#      - "WORKERS=1" # Legacy variable controlling the number of parallel workers (use variables below instead)
+#      - "NUM_WORKERS_DEFAULT=5"    # To set the number of default workers
+#      - "NUM_WORKERS_PRIO=5"       # To set the number of prio workers
+#      - "NUM_WORKERS_EMAIL=5"      # To set the number of email workers
+#      - "NUM_WORKERS_UPDATE=1"     # To set the number of update workers
+#      - "NUM_WORKERS_CACHE=5"      # To set the number of cache workers
+      # Custom Settings
+      - "ADMIN_EMAIL=${ADMIN_EMAIL}"
+      - "ADMIN_KEY=${ADMIN_KEY}"
+      - "ADMIN_ORG=${ADMIN_ORG}"
+      - "GPG_PASSPHRASE=${GPG_PASSPHRASE}"
+      - "NSX_ANALYSIS_API_TOKEN=${NSX_ANALYSIS_API_TOKEN}"
+      - "NSX_ANALYSIS_KEY=${NSX_ANALYSIS_KEY}"
+      - "VIRUSTOTAL_KEY=${VIRUSTOTAL_KEY}"
   misp-modules:
     image: coolacid/misp-docker:modules-latest
     environment:

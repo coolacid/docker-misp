@@ -9,7 +9,7 @@ cat << EOF > /etc/cron.d/misp
 10 3 * * * www-data /var/www/MISP/app/Console/cake Admin updateTaxonomies >/tmp/cronlog 2>/tmp/cronlog
 20 3 * * * www-data /var/www/MISP/app/Console/cake Admin updateWarningLists >/tmp/cronlog 2>/tmp/cronlog
 30 3 * * * www-data /var/www/MISP/app/Console/cake Admin updateNoticeLists >/tmp/cronlog 2>/tmp/cronlog
-45 3 * * * www-data /var/www/MISP/app/Console/cake Admin updateObjectTemplates >/tmp/cronlog 2>/tmp/cronlog
+45 3 * * * www-data /var/www/MISP/app/Console/cake Admin updateObjectTemplates "$CRON_USER_ID" >/tmp/cronlog 2>/tmp/cronlog
 
 EOF
 

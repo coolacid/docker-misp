@@ -38,6 +38,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
             libxrender1 \
             libxext6 \
             libpoppler-cpp0v5 \
+            libgl1 \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /wheel /wheel

@@ -44,4 +44,9 @@ COPY --from=builder /wheel /wheel
 COPY --from=builder /usr/local/lib/libfaupl* /usr/local/lib/
 RUN pip install --use-deprecated=legacy-resolver /wheel/*.whl; ldconfig
 
+# Since we compile faup ourselves and lua is not required anymore, we can load our own library 
+#   and skip the pre-compiled blob to improve compatibility with other architectures like arm
+RUN sed -i s/LoadLibrary\(LOAD_LIB\)/LoadLibrary\(\"\\/usr\\/local\\/lib\\/libfaupl.so\"\)/ \
+    /usr/local/lib/python3.9/site-packages/pyfaup/__init__.py
+
 ENTRYPOINT [ "/usr/local/bin/misp-modules", "-l", "0.0.0.0"]

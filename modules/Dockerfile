@@ -1,4 +1,6 @@
-FROM python:3.9-slim-bullseye  as builder
+ARG DOCKER_HUB_PROXY=""
+
+FROM "${DOCKER_HUB_PROXY}python:3.9-slim-bullseye" as builder
 ENV DEBIAN_FRONTEND noninteractive
 ARG MODULES_TAG
 ARG MODULES_COMMIT
@@ -37,7 +39,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     RUN find . -name "chardet*" | grep -v "chardet-4.0.0" | xargs rm -f
 
 
-FROM python:3.9-slim-bullseye
+FROM "${DOCKER_HUB_PROXY}python:3.9-slim-bullseye"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
             libglib2.0-0 \

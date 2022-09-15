@@ -1,4 +1,6 @@
-FROM composer:2.1.14 as composer-build
+ARG DOCKER_HUB_PROXY=""
+
+FROM "${DOCKER_HUB_PROXY}composer:2.1.14" as composer-build
     ARG MISP_TAG
     WORKDIR /tmp
     ADD https://raw.githubusercontent.com/MISP/MISP/${MISP_TAG}/app/composer.json /tmp
@@ -7,7 +9,7 @@ FROM composer:2.1.14 as composer-build
      composer require --with-all-dependencies supervisorphp/supervisor:^4.0 \
       guzzlehttp/guzzle php-http/message lstrojny/fxmlrpc --ignore-platform-reqs
 
-FROM debian:bullseye-slim as php-build
+FROM "${DOCKER_HUB_PROXY}debian:bullseye-slim" as php-build
     RUN apt-get update; apt-get install -y --no-install-recommends \
         gcc \
         make \
@@ -25,7 +27,7 @@ FROM debian:bullseye-slim as php-build
         RUN git clone --recursive --depth=1 https://github.com/kjdev/php-ext-brotli.git && cd php-ext-brotli && phpize && ./configure && make && make install
         
 
-FROM debian:bullseye-slim as python-build
+FROM "${DOCKER_HUB_PROXY}debian:bullseye-slim" as python-build
     RUN apt-get update; apt-get install -y --no-install-recommends \
         gcc \
         git \
@@ -83,7 +85,7 @@ FROM debian:bullseye-slim as python-build
     RUN find . -name "Sphinx*" | tee /dev/stderr | grep -v "Sphinx-1.5.5" | xargs rm -f
 
 
-FROM debian:bullseye-slim
+FROM "${DOCKER_HUB_PROXY}debian:bullseye-slim"
 ENV DEBIAN_FRONTEND noninteractive
 ARG MISP_TAG
 ARG MISP_COMMIT

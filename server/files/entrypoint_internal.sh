@@ -8,7 +8,7 @@ init_gnupg() {
     GPG_ASC=/var/www/MISP/app/webroot/gpg.asc
     GPG_TMP=/tmp/gpg.tmp
 
-    if [ ! -d ${GPG_DIR} ]; then
+    if [ ! -f "${GPG_DIR}/trustdb.gpg" ]; then
         echo "Generating GPG key ... (please be patient, we need some entropy)"
         cat >${GPG_TMP} <<GPGEOF
 %echo Generating a basic OpenPGP key
@@ -23,11 +23,15 @@ Passphrase: $GPG_PASSPHRASE
 GPGEOF
         mkdir ${GPG_DIR}
         gpg --homedir ${GPG_DIR} --gen-key --batch ${GPG_TMP}
-        chown -R www-data:www-data ${GPG_DIR}
         rm -f ${GPG_TMP}
     else
         echo "Using pre-generated GPG key in ${GPG_DIR}"
     fi
+
+    # Fix permissions
+    chown -R www-data:www-data ${GPG_DIR}
+    find ${GPG_DIR} -type f -exec chmod 600 {} \;
+    find ${GPG_DIR} -type d -exec chmod 700 {} \;
 
     if [ ! -f ${GPG_ASC} ]; then
         echo "Exporting GPG key ..."
@@ -175,6 +179,41 @@ class EmailConfig {
 EOT
 }
 
+add_organization() {
+    # empty uuid fallbacks to auto-generate
+    curl -s --show-error -k \
+     -H "Authorization: ${ADMIN_KEY}" \
+     -H "Accept: application/json" \
+     -H "Content-type: application/json" \
+     -d "{ \
+        \"uuid\": \"${3}\", \
+        \"name\": \"${1}\", \
+        \"local\": ${2} \
+     }" ${HOSTNAME}/admin/organisations/add
+}
+
+get_organization() {
+    curl -s --show-error -k \
+     -H "Authorization: ${ADMIN_KEY}" \
+     -H "Accept: application/json" \
+     -H "Content-type: application/json" ${HOSTNAME}/organisations/view/${1} | jq -e -r ".Organisation.id"
+}
+
+add_server() {
+    curl -s --show-error -k \
+     -H "Authorization: ${ADMIN_KEY}" \
+     -H "Accept: application/json" \
+     -H "Content-type: application/json" \
+     -d "${1}" ${HOSTNAME}/servers/add
+}
+
+get_server() {
+    curl -s --show-error -k \
+     -H "Authorization: ${ADMIN_KEY}" \
+     -H "Accept: application/json" \
+     -H "Content-type: application/json" ${HOSTNAME}/servers | jq -e -r ".[] | select(.Server[\"name\"] == \"${1}\") | .Server.id"
+}
+
 
 echo "Customize MISP | Configure email ..." && configure_email
 
@@ -190,6 +229,29 @@ echo "Customize MISP | Customize installation ..." && apply_custom_settings
 
 # This item last so we had a chance to create the ADMIN_KEY if not specified
 echo "Customize MISP | Configure plugins ..." && configure_plugins
+
+# Create organizations (and silently fail if present already)
+echo "Customize MISP | Creating organizations ..."
+add_organization nuTAU true
+add_organization CBTAU true
+add_organization T-Rex true
+add_organization NDR true
+add_organization MDR true
+
+# Create sync servers
+for ID in $SYNCSERVERS; do
+    NAME="SYNCSERVERS_${ID}_NAME"
+    UUID="SYNCSERVERS_${ID}_UUID"
+    DATA="SYNCSERVERS_${ID}_DATA"
+    KEY="SYNCSERVERS_${ID}_KEY"
+    if ! get_server ${!NAME}; then
+        echo "Customize MISP | Configuring sync server ${!NAME}..."
+        add_organization ${!NAME} false ${!UUID}
+        ORG_ID=$(get_organization ${!UUID})
+        DATA=$(echo "${!DATA}" | jq --arg org_id ${ORG_ID} --arg name ${!NAME} --arg key ${!KEY} '. + {remote_org_id: $org_id, name: $name, authkey: $key}')
+        add_server "$DATA"
+    fi
+done
 
 # Make the instance live
 sudo -u www-data /var/www/MISP/app/Console/cake Admin live 1

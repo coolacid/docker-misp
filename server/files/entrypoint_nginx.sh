@@ -199,18 +199,6 @@ if [[ -x /custom-entrypoint.sh ]]; then
     /custom-entrypoint.sh
 fi
 
-if [[ -x /entrypoint_internal.sh ]]; then
-    export ADMIN_EMAIL=${ADMIN_EMAIL}
-    export ADMIN_ORG=${ADMIN_ORG}
-    export GPG_PASSPHRASE=${GPG_PASSPHRASE}
-    export HOSTNAME=${HOSTNAME}
-    export MYSQLCMD=${MYSQLCMD}
-    export NSX_ANALYSIS_API_TOKEN=${NSX_ANALYSIS_API_TOKEN}
-    export NSX_ANALYSIS_KEY=${NSX_ANALYSIS_KEY}
-    export VIRUSTOTAL_KEY=${VIRUSTOTAL_KEY}
-    /entrypoint_internal.sh
-fi
-
 # delete pid file
 [ -f $ENTRYPOINT_PID_FILE ] && rm $ENTRYPOINT_PID_FILE
 
@@ -220,6 +208,33 @@ if [[ "$WARNING53" == true ]]; then
     echo "This needs to be changed to /etc/nginx/certs."
     echo "See: https://github.com/coolacid/docker-misp/issues/53"
     echo "WARNING - WARNING - WARNING"
+fi
+
+if [[ -x /entrypoint_internal.sh ]]; then
+    ## Re-exporting might not be necessary after all?
+    # export ADMIN_EMAIL=${ADMIN_EMAIL}
+    # export ADMIN_ORG=${ADMIN_ORG}
+    # export ADMIN_KEY=${ADMIN_KEY}
+    # export GPG_PASSPHRASE=${GPG_PASSPHRASE}
+    # export HOSTNAME=${HOSTNAME}
+    # export NSX_ANALYSIS_API_TOKEN=${NSX_ANALYSIS_API_TOKEN}
+    # export NSX_ANALYSIS_KEY=${NSX_ANALYSIS_KEY}
+    # export VIRUSTOTAL_KEY=${VIRUSTOTAL_KEY}
+    # export SYNCSERVERS=${SYNCSERVERS}
+    # for ID in $SYNCSERVERS; do
+    #     NAME="SYNCSERVERS_${ID}_NAME"
+    #     UUID="SYNCSERVERS_${ID}_UUID"
+    #     DATA="SYNCSERVERS_${ID}_DATA"
+    #     KEY="SYNCSERVERS_${ID}_KEY"
+    #     export ${NAME}="${!NAME}"
+    #     export ${UUID}="${!UUID}"
+    #     export ${DATA}="${!DATA}"
+    #     export ${KEY}="${!KEY}"
+    # done
+    export MYSQLCMD=${MYSQLCMD}
+    nginx -g 'daemon on;'
+    /entrypoint_internal.sh
+    killall nginx
 fi
 
 # Start NGINX

@@ -125,6 +125,8 @@ ARG PHP_VER
         libbrotli1 \
         # Unsure we need these
         zip unzip \
+        # Require for advanced an unattended configuration
+        curl jq \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # MISP code

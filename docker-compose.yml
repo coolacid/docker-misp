@@ -48,7 +48,18 @@ services:
       - "REDIS_FQDN=redis"
       - "INIT=true"             # Initialze MISP, things includes, attempting to import SQL and the Files DIR
       - "CRON_USER_ID=1"        # The MISP user ID to run cron jobs as
-#      - "SYNCSERVERS=1 2 3 4"  # The MISP Feed servers to sync in the cron job
+      # Synchronization Servers settings
+      - "SYNCSERVERS=1"
+      - "SYNCSERVERS_1_NAME=${SYNCSERVERS_1_NAME}"
+      - "SYNCSERVERS_1_UUID=${SYNCSERVERS_1_UUID}"
+      - "SYNCSERVERS_1_KEY=${SYNCSERVERS_1_KEY}"
+      - |
+        SYNCSERVERS_1_DATA=
+        {
+          "url": "https://intel.thedfirreport.com/",
+          "pull_rules": "{\"tags\":{\"OR\":[],\"NOT\":[]},\"orgs\":{\"OR\":[],\"NOT\":[]},\"url_params\":\"{\\\"searchanalysis\\\": \\\"2\\\"}\"}",
+          "pull": true
+        }
       # Database Configuration (And their defaults)
 #      - "MYSQL_HOST=db"
 #      - "MYSQL_USER=misp"

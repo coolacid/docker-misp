@@ -29,7 +29,7 @@ services:
       - SYS_NICE  # CAP_SYS_NICE Prevent runaway mysql log
 
   misp:
-    image: coolacid/misp-docker:core-latest
+    image: ostefano/misp-docker:core-latest
     depends_on:
       - redis
       - db
@@ -86,7 +86,7 @@ services:
       - "NSX_ANALYSIS_KEY=${NSX_ANALYSIS_KEY}"
       - "VIRUSTOTAL_KEY=${VIRUSTOTAL_KEY}"
   misp-modules:
-    image: coolacid/misp-docker:modules-latest
+    image: ostefano/misp-docker:modules-latest
     environment:
       - "REDIS_BACKEND=redis"
     depends_on:

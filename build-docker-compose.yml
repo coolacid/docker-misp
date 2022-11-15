@@ -1,7 +1,7 @@
 version: '3'
 services:
   misp:
-    image: coolacid/misp-docker:core-latest
+    image: ostefano/misp-docker:core-latest
     build:
         context: server/.
         args:
@@ -10,7 +10,7 @@ services:
             - PHP_VER=${PHP_VER}
 
   misp-modules:
-    image: coolacid/misp-docker:modules-latest
+    image: ostefano/misp-docker:modules-latest
     build:
         context: modules/.
         args:

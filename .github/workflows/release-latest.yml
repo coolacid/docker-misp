@@ -1,0 +1,23 @@
+name: Build the Docker images and push them to Docker Hub
+
+on:
+  # Only trigger the workflow when there is a new commit to the master branch 
+  push:
+    branches: [ "master" ]
+
+jobs:
+  deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    steps:
+      # checkout the repository in the ubuntu-latest environment
+    - uses: actions/checkout@v3
+
+    - name: Build the Docker images 
+      run: docker compose --file build-docker-compose.yml --env-file template.env build 
+      
+    - name: Push the Docker images to Docker Hub
+      run: |
+        echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        docker compose -f build-docker-compose.yml push 

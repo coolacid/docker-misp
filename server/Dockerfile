@@ -34,7 +34,7 @@ FROM debian:bullseye-slim as python-build
         && curl -fsSL -O https://bootstrap.pypa.io/get-pip.py \
         && python3 get-pip.py --no-cache-dir \
         && rm -f get-pip.py \
-        && python3 -m pip install --no-cache-dir --no-python-version-warning --disable-pip-version-check --no-color \
+        && python3 -m pip install --no-cache-dir --no-python-version-warning --disable-pip-version-check --no-color --upgrade \
             wheel \
             setuptools \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
@@ -125,8 +125,9 @@ ARG PHP_VER
         && curl -fsSL -O https://bootstrap.pypa.io/get-pip.py \
         && python3 get-pip.py --no-cache-dir \
         && rm -f get-pip.py \
-        && python3 -m pip install --no-cache-dir --no-python-version-warning --disable-pip-version-check --no-color \
+        && python3 -m pip install --no-cache-dir --no-python-version-warning --disable-pip-version-check --no-color --upgrade \
             wheel \
+            setuptools \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # MISP code

@@ -22,19 +22,15 @@ FROM debian:bullseye-slim as php-build
         RUN cp "/usr/lib/$(gcc -dumpmachine)"/libfuzzy.* /usr/lib; pecl install ssdeep && pecl install rdkafka
         RUN git clone --recursive --depth=1 https://github.com/kjdev/php-ext-brotli.git && cd php-ext-brotli && phpize && ./configure && make && make install
 
-FROM debian:bullseye-slim as python-build
+FROM python:3.9-slim-bullseye as python-build
     RUN apt-get update; apt-get install -y --no-install-recommends \
         gcc \
         git \
-        python3 \
-        python3-dev \
         libfuzzy-dev \
         libffi-dev \
         ca-certificates \
-        && curl -fsSL -O https://bootstrap.pypa.io/get-pip.py \
-        && python3 get-pip.py --no-cache-dir \
-        && rm -f get-pip.py \
         && python3 -m pip install --no-cache-dir --no-python-version-warning --disable-pip-version-check --no-color --upgrade \
+            pip \
             wheel \
             setuptools \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
@@ -105,6 +101,7 @@ ARG PHP_VER
         rsync \
         # Python Requirements
         python3 \
+        python3-pip \
         # PHP Requirements
         php \
         php-apcu \
@@ -122,10 +119,8 @@ ARG PHP_VER
         libbrotli1 \
         # Unsure we need these
         zip unzip \
-        && curl -fsSL -O https://bootstrap.pypa.io/get-pip.py \
-        && python3 get-pip.py --no-cache-dir \
-        && rm -f get-pip.py \
         && python3 -m pip install --no-cache-dir --no-python-version-warning --disable-pip-version-check --no-color --upgrade \
+            pip \
             wheel \
             setuptools \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*

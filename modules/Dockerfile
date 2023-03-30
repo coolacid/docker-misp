@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     WORKDIR /srv
 
     RUN git clone --branch ${MODULES_TAG} --depth 1  https://github.com/MISP/misp-modules.git /srv/misp-modules; \
-        cd /srv/misp-modules || exit; sed -i 's/-e //g' REQUIREMENTS; pip3 wheel -r REQUIREMENTS --no-cache-dir -w /wheel/
+        cd /srv/misp-modules || exit; sed -i 's/-e //g' REQUIREMENTS; sed -i 's/^domaintools-api==0.6.2/domaintools_misp==0.1.7/g' REQUIREMENTS; pip3 wheel -r REQUIREMENTS --no-cache-dir -w /wheel/
 
     RUN git clone --depth 1 https://github.com/stricaud/faup.git /srv/faup; \
         cd /srv/faup/build || exit; cmake .. && make install; \
@@ -45,4 +45,4 @@ COPY --from=builder /wheel /wheel
 COPY --from=builder /usr/local/lib/libfaupl* /usr/local/lib/
 RUN pip install --use-deprecated=legacy-resolver /wheel/*.whl; ldconfig
 
-ENTRYPOINT [ "/usr/local/bin/misp-modules", "-l", "0.0.0.0"]
+ENTRYPOINT [ "/usr/local/bin/misp-modules", "-m", "domaintools_misp", "-l", "0.0.0.0"]

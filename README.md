@@ -31,21 +31,23 @@ This is based on some of the work from the DSCO docker build, nearly all of the 
 
 ### Development/Test
 
--   Grab the `docker-compose.yml` and `server-configs/email.php` files (Keep directory structure)
+-   Grab the `docker-compose.yml`, `template.env`, and `server-configs/email.php` files (Keep directory structure)
+
+-   Copy `template.env` to `.env`
 
 -   A dry run will create sane default configurations
 
--   `docker-compose up`
+-   `docker-compose up -d`
 
 -   Login to `https://localhost`
-    -   User: `admin@admin.test`
-    -   Password: `admin`
+  -   User: `admin@admin.test`
+  -   Password: `admin`
 
 -   Profit
 
 ### Using the image for development
 
-Pull the entire repository, you can build the images using `docker-compose -f docker-compose.yml -f build-docker-compose.yml build`
+Pull the entire repository, you can build the images using `docker-compose --env-file=build.env -f docker-compose.yml -f build-docker-compose.yml build`
 
 Once you have the docker container up you can access the container by running `docker-compose exec misp /bin/bash`.
 This will provide you with a root shell. You can use `apt update` and then install any tools you wish to use.
@@ -59,23 +61,25 @@ Updating the images should be as simple as `docker-compose pull` which, unless c
 ### Production
 -   It is recommended to specify which build you want to be running, and modify that version number when you would like to upgrade
 
--   Use docker-compose, or some other config management tool
+-   Use docker-compose with an .env file, or some other config management tool
+  -   `docker-compose up -d`
 
 -   Directory volume mount SSL Certs `./ssl`: `/etc/ssl/certs`
-    -   Certificate File: `cert.pem`
-    -   Certificate Key File: `key.pem`
-    -   CA File for Cert Authentication (optional) `ca.pem`
+  -   Certificate File: `cert.pem`
+  -   Certificate Key File: `key.pem`
+  -   CA File for Cert Authentication (optional) `ca.pem`
 
 -   Directory volume mount and create configs: `/var/www/MISP/app/Config/`
 
 -   Additional directory volume mounts:
-    -   `/var/www/MISP/app/files`
-    -   `/var/www/MISP/.gnupg`
-    -   `/var/www/MISP/.smime`
+  -   `/var/www/MISP/app/files`
+  -   `/var/www/MISP/.gnupg`
+  -   `/var/www/MISP/.smime`
 
 ### Building
 
-If you are interested in building the project from scratch - `git clone` or download the entire repo and run `docker-compose -f build-docker-compose.yml build` 
+If you are interested in building the project from scratch - `git clone` or download the entire repo and run 
+`docker-compose --env-file=build.env -f build-docker-compose.yml build` 
 
 ## Image file sizes
 

@@ -6,13 +6,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
                 cmake \
                 git \
                 python3-dev \
-                python3-pip \
-                python3-wheel \
                 build-essential \
                 pkg-config \
                 libpoppler-cpp-dev \
                 libfuzzy-dev \
                 libssl-dev \
+            && python3 -m pip install --no-cache-dir --no-python-version-warning --disable-pip-version-check --no-color --upgrade \
+                pip \
+                wheel \
             && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # Build MISP Modules

@@ -17,24 +17,22 @@ FROM debian:bullseye-slim as php-build
         librdkafka-dev \
         git \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
-        
+
         RUN pecl channel-update pecl.php.net
         RUN cp "/usr/lib/$(gcc -dumpmachine)"/libfuzzy.* /usr/lib; pecl install ssdeep && pecl install rdkafka
         RUN git clone --recursive --depth=1 https://github.com/kjdev/php-ext-brotli.git && cd php-ext-brotli && phpize && ./configure && make && make install
-        
 
-FROM debian:bullseye-slim as python-build
+FROM python:3.9-slim-bullseye as python-build
     RUN apt-get update; apt-get install -y --no-install-recommends \
         gcc \
         git \
-        python3 \
-        python3-dev \
-        python3-pip \
-        python3-setuptools \
-        python3-wheel \
         libfuzzy-dev \
         libffi-dev \
         ca-certificates \
+        && python3 -m pip install --no-cache-dir --no-python-version-warning --disable-pip-version-check --no-color --upgrade \
+            pip \
+            wheel \
+            setuptools \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
     RUN mkdir /wheels
@@ -103,7 +101,6 @@ ARG PHP_VER
         rsync \
         # Python Requirements
         python3 \
-        python3-setuptools \
         python3-pip \
         # PHP Requirements
         php \
@@ -122,6 +119,10 @@ ARG PHP_VER
         libbrotli1 \
         # Unsure we need these
         zip unzip \
+        && python3 -m pip install --no-cache-dir --no-python-version-warning --disable-pip-version-check --no-color --upgrade \
+            pip \
+            wheel \
+            setuptools \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
 # MISP code
@@ -142,7 +143,7 @@ ARG PHP_VER
 
     COPY --from=composer-build /tmp/Vendor /var/www/MISP/app/Vendor
     COPY --from=composer-build /tmp/Plugin /var/www/MISP/app/Plugin
-    
+
     RUN for dir in /etc/php/*; do echo "extension=rdkafka.so" > "$dir/mods-available/rdkafka.ini"; done; phpenmod rdkafka
     RUN for dir in /etc/php/*; do echo "extension=brotli.so" > "$dir/mods-available/brotli.ini"; done; phpenmod brotli
 

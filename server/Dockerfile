@@ -24,6 +24,8 @@ FROM debian:bullseye-slim as php-build
         
 
 FROM debian:bullseye-slim as python-build
+    ARG MISP_TAG
+
     RUN apt-get update; apt-get install -y --no-install-recommends \
         gcc \
         git \
@@ -66,9 +68,7 @@ FROM debian:bullseye-slim as python-build
         echo "-e ." > requirements.txt; pip3 wheel -r requirements.txt --no-cache-dir -w /wheels/
 
     # install PyMISP
-    RUN git clone --depth 1 https://github.com/MISP/PyMISP.git; \
-        cd PyMISP || exit; python3 setup.py bdist_wheel -d /wheels
-
+    RUN python3 -m pip install https://github.com/MISP/PyMISP/archive/refs/tags/$MISP_TAG.tar.gz
     # install pydeep
     RUN git clone --depth 1 https://github.com/coolacid/pydeep.git; \
         cd pydeep || exit; python3 setup.py bdist_wheel -d /wheels

@@ -68,7 +68,7 @@ FROM debian:bullseye-slim as python-build
         echo "-e ." > requirements.txt; pip3 wheel -r requirements.txt --no-cache-dir -w /wheels/
 
     # install PyMISP
-    RUN python3 -m pip install https://github.com/MISP/PyMISP/archive/refs/tags/$MISP_TAG.tar.gz
+    RUN python3 -m pip install https://github.com/MISP/PyMISP/archive/refs/tags/$MISP_TAG.tar.gz --no-cache-dir
     # install pydeep
     RUN git clone --depth 1 https://github.com/coolacid/pydeep.git; \
         cd pydeep || exit; python3 setup.py bdist_wheel -d /wheels

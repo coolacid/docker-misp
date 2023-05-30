@@ -32,6 +32,7 @@ FROM debian:bullseye-slim as python-build
         python3-pip \
         python3-setuptools \
         python3-wheel \
+        python3-venv \
         libfuzzy-dev \
         libffi-dev \
         ca-certificates \
@@ -65,9 +66,12 @@ FROM debian:bullseye-slim as python-build
         cd cti-python-stix2 || exit; python3 setup.py bdist_wheel -d /wheels; \
         echo "-e ." > requirements.txt; pip3 wheel -r requirements.txt --no-cache-dir -w /wheels/
 
+    # Install the new build tool
+    RUN pip3 install build
+
     # install PyMISP
     RUN git clone --depth 1 https://github.com/MISP/PyMISP.git; \
-        cd PyMISP || exit; python3 setup.py bdist_wheel -d /wheels
+        cd PyMISP || exit; python3 -m build --wheel --outdir /wheels
 
     # install pydeep
     RUN git clone --depth 1 https://github.com/coolacid/pydeep.git; \

@@ -37,7 +37,7 @@ services:
       - "./ssl/:/etc/nginx/certs"
 #      - "./examples/custom-entrypoint.sh:/custom-entrypoint.sh" # Use the example custom-entrypoint.sh
     environment:
-      - "HOSTNAME=https://localhost"
+      - "BASEURL=https://localhost"
       - "REDIS_FQDN=redis"
       - "INIT=true"             # Initialze MISP, things includes, attempting to import SQL and the Files DIR
       - "CRON_USER_ID=1"        # The MISP user ID to run cron jobs as

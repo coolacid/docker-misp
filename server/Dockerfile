@@ -1,27 +1,34 @@
-FROM composer:2.1.14 as composer-build
-    ARG MISP_TAG
-    WORKDIR /tmp
-    ADD https://raw.githubusercontent.com/MISP/MISP/${MISP_TAG}/app/composer.json /tmp
-    RUN composer install --ignore-platform-reqs && \
-     composer require jakub-onderka/openid-connect-php:1.0.0-rc1 --ignore-platform-reqs
-
 FROM debian:bullseye-slim as php-build
+ENV DEBIAN_FRONTEND noninteractive
+ARG MISP_TAG
+ARG PHP_VER
+
     RUN apt-get update; apt-get install -y --no-install-recommends \
         gcc \
         make \
         libfuzzy-dev \
         ca-certificates \
         php \
+        php-curl \
         php-dev \
         php-pear \
+        php-mbstring \
+        zip unzip \
         librdkafka-dev \
         git \
         && apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
-        
-        RUN pecl channel-update pecl.php.net
-        RUN cp "/usr/lib/$(gcc -dumpmachine)"/libfuzzy.* /usr/lib; pecl install ssdeep && pecl install rdkafka
-        RUN git clone --recursive --depth=1 https://github.com/kjdev/php-ext-brotli.git && cd php-ext-brotli && phpize && ./configure && make && make install
-        
+
+    RUN pecl channel-update pecl.php.net
+    RUN cp "/usr/lib/$(gcc -dumpmachine)"/libfuzzy.* /usr/lib; pecl install ssdeep && pecl install rdkafka
+    RUN git clone --recursive --depth=1 https://github.com/kjdev/php-ext-brotli.git && cd php-ext-brotli && phpize && ./configure && make && make install
+
+    WORKDIR /tmp
+    COPY --from=composer /usr/bin/composer /usr/bin/composer
+    ADD https://raw.githubusercontent.com/MISP/MISP/${MISP_TAG}/app/composer.json /tmp
+    RUN composer config --no-interaction allow-plugins.composer/installers true && \
+        composer install && \
+        composer require jakub-onderka/openid-connect-php:1.0.0-rc1
+
 
 FROM debian:bullseye-slim as python-build
     RUN apt-get update; apt-get install -y --no-install-recommends \
@@ -144,9 +151,9 @@ ARG PHP_VER
     COPY --from=php-build /usr/lib/php/${PHP_VER}/rdkafka.so /usr/lib/php/${PHP_VER}/rdkafka.so
     COPY --from=php-build /usr/lib/php/${PHP_VER}/brotli.so /usr/lib/php/${PHP_VER}/brotli.so
 
-    COPY --from=composer-build /tmp/Vendor /var/www/MISP/app/Vendor
-    COPY --from=composer-build /tmp/Plugin /var/www/MISP/app/Plugin
-    
+    COPY --from=php-build /tmp/Vendor /var/www/MISP/app/Vendor
+    COPY --from=php-build /tmp/Plugin /var/www/MISP/app/Plugin
+
     RUN for dir in /etc/php/*; do echo "extension=rdkafka.so" > "$dir/mods-available/rdkafka.ini"; done; phpenmod rdkafka
     RUN for dir in /etc/php/*; do echo "extension=brotli.so" > "$dir/mods-available/brotli.ini"; done; phpenmod brotli
 

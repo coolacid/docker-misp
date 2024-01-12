@@ -1,3 +1,7 @@
+# This repo is here for history and no longer required 
+
+Use the offical one https://github.com/MISP/misp-docker
+
 # CoolAcid's MISP Docker images
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e9b0c08774a84b9e8e0454f3ac83651f)](https://app.codacy.com/manual/coolacid/docker-misp?utm_source=github.com&utm_medium=referral&utm_content=coolacid/docker-misp&utm_campaign=Badge_Grade_Dashboard)

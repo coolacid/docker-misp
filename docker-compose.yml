@@ -51,6 +51,7 @@ services:
 #      - "NOREDIR=true" # Do not redirect port 80
 #      - "DISIPV6=true" # Disable IPV6 in nginx
 #      - "CERTAUTH=optional" # Can be set to optional or on - Step 2 of https://github.com/MISP/MISP/tree/2.4/app/Plugin/CertAuth is still required
+#      - "PHP_TIMEZONE=Europe/Oslo" # Set timezone in PHP FPM https://www.php.net/manual/en/timezones.php
 #      - "SECURESSL=true" # Enable higher security SSL in nginx
 #      - "MISP_MODULES_FQDN=http://misp-modules" # Set the MISP Modules FQDN, used for Enrichment_services_url/Import_services_url/Export_services_url
 #      - "WORKERS=1" #If set to a value larger than 1 this will increase the number of parallel worker processes

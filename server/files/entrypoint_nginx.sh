@@ -109,6 +109,7 @@ sync_files(){
     for DIR in $(ls /var/www/MISP/app/files.dist); do
         rsync -azh --delete "/var/www/MISP/app/files.dist/$DIR" "/var/www/MISP/app/files/"
     done
+    rsync -azh "/var/www/MISP/app/webroot/img/orgs.dist/" "/var/www/MISP/app/webroot/img/orgs"
 }
 
 # Ensure SSL certs are where we expect them, for backward comparibility See issue #53

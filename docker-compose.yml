@@ -45,9 +45,10 @@ services:
       # Database Configuration (And their defaults)
 #      - "MYSQL_HOST=db"
 #      - "MYSQL_USER=misp"
-#      - "MYSQL_PASSWORD=example" # NOTE: This should be AlphaNum with no Special Chars. Otherwise, edit config files after first run. 
+#      - "MYSQL_PASSWORD=example" # NOTE: This should be AlphaNum with no Special Chars. Otherwise, edit config files after first run.
 #      - "MYSQL_DATABASE=misp"
       # Optional Settings
+#      - "MYSQL_ROOT_PASSWORD=password" # Enable to allow fixing ONLY_FULL_GROUP_BY MySQL defaults
 #      - "NOREDIR=true" # Do not redirect port 80
 #      - "DISIPV6=true" # Disable IPV6 in nginx
 #      - "CERTAUTH=optional" # Can be set to optional or on - Step 2 of https://github.com/MISP/MISP/tree/2.4/app/Plugin/CertAuth is still required
